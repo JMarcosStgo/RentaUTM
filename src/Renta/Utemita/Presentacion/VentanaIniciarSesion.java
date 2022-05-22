@@ -34,10 +34,10 @@ public class VentanaIniciarSesion extends Application {
     public void start(Stage primaryStage) {
         Pane root = new IniciarSesionVista(primaryStage);
         
-        Image image = new Image(getClass().getResourceAsStream("/imagenes/img1.jpg")); 
-        Label myLabel = new Label("Texto Label");
+        Image image = new Image(getClass().getResourceAsStream("/imagenes/logo2.jpg")); 
+        Label myLabel = new Label("Insertar frase mamalona");
         myLabel.setGraphic(new ImageView(image));
-        
+        root.getChildren().add(myLabel);
         //AnchorPane root2 = new AnchorPane();
         //Button b1= new Button("PRUEBA");
         // place button in the top right corner
@@ -68,7 +68,7 @@ public class VentanaIniciarSesion extends Application {
         primaryStage.setScene(scene);
         //primaryStage.setOpacity(0.9);
         primaryStage.setResizable(false);
-        primaryStage.setFullScreen(true);
+       // primaryStage.setFullScreen(true);
         primaryStage.setTitle("Inicio de sesión");
         primaryStage.show();
     }

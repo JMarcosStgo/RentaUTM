@@ -19,6 +19,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -42,7 +43,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javax.swing.Icon;
-
+import javax.swing.JOptionPane;
 /**
  * se define los elementos que habra en el escenario de inicio de sesión
  * @author Marcos
@@ -55,7 +56,7 @@ public class IniciarSesionVista extends FlowPane{
      *constructor por default
      *
      */
-         Stage primaryStage;
+     Stage primaryStage;
      Label lb1Correo = new Label("Correo");
      TextField txtCorreo = new TextField();
      Label lb2Password = new Label("Password");
@@ -144,17 +145,31 @@ public class IniciarSesionVista extends FlowPane{
                  //si se presiona el boton llama al metodo nuevoVentana para abrir la escena donde esta la vista general
                 if((t).getSource()==bt1IniciarSesion){
                     System.out.println("entra al pulsar"); 
-                    nuevaVentana();
+                    
+                    //conexion con la base de datos
+                    AccesoBD conexion=new AccesoBD();
+                    conexion.iniciarBD();
+                    sesionStatus=conexion.existeUsuario(txtCorreo.getText(), password.getText());
+                    System.out.println("entro"+sesionStatus);
+                    conexion.DesconectarBD();
+                    if(sesionStatus)
+                        nuevaVentana();
+                    else{
+                        System.out.println("error");
+                        /*
+                        Alert mensaje = new Alert(Alert.AlertType.ERROR);
+                        mensaje.setTitle("Error de inicio de sesión");
+                        mensaje.setHeaderText("Password o Correo incorrectos");
+                        mensaje.show();
+                        */
+                       JOptionPane.showMessageDialog(null,"Correo o Password invalidos");
+                        //JOptionPane.showMessageDialog(null,"Usuario o Password son incorrectos");
+                        //new Alert(Alert.AlertType.ERROR, "This is an error!").showAndWait();
+                    }
                }
                  bt1IniciarSesion.setBackground(Background.fill(negro));
                  bt1IniciarSesion.setTextFill(blanco);
                  
-             //conexion con la base de datos
-             //AccesoBD conexion=new AccesoBD();
-             //conexion.iniciarBD();
-             //sesionStatus=conexion.existeUsuario(txtCorreo.getText(), password.getText());
-             //System.out.println("entro"+sesionStatus);
-             //conexion.DesconectarBD();
              }
              
          });
