@@ -11,11 +11,15 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 
@@ -30,6 +34,10 @@ public class VentanaIniciarSesion extends Application {
     public void start(Stage primaryStage) {
         Pane root = new IniciarSesionVista(primaryStage);
         
+        Image image = new Image(getClass().getResourceAsStream("/imagenes/img1.jpg")); 
+        Label myLabel = new Label("Texto Label");
+        myLabel.setGraphic(new ImageView(image));
+        
         //AnchorPane root2 = new AnchorPane();
         //Button b1= new Button("PRUEBA");
         // place button in the top right corner
@@ -42,18 +50,20 @@ public class VentanaIniciarSesion extends Application {
            new Stop(0, Color.PURPLE),
            new Stop(1, Color.BLUE)
         };
-        LinearGradient gp = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+        LinearGradient gp = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REPEAT, stops);
         //root.setBackground(Background.fill(gp));
         
         //se define el color de fondo de la parte interna
-        root.setStyle("-fx-background-color: #b0bec5;");
+        root.setStyle("-fx-background-color: #ffffff;");
         
-        Pane.layoutInArea(root, 400, 100, 100, 100, 100, Insets.EMPTY, true, true, HPos.CENTER, VPos.CENTER, true);
-        Pane.positionInArea(root, 400, 100, 100, 100, 100, Insets.EMPTY, HPos.CENTER, VPos.CENTER, true);
+        Pane.layoutInArea(root, 500, 100, 100, 100, 100, Insets.EMPTY, true, true, HPos.CENTER, VPos.CENTER, true);
+        Pane.positionInArea(root, 500, 0, 100, 100, 100, Insets.EMPTY, HPos.CENTER, VPos.CENTER, true);
+        //padding de la parte central
         root.setPadding(new Insets(200, 400, 100, 500));
         
         //tamaño de la escena ancho-alto
         Scene scene = new Scene(root,1550, 800,gp);
+        
         
         primaryStage.setScene(scene);
         //primaryStage.setOpacity(0.9);
