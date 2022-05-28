@@ -5,44 +5,28 @@
  */
 package Renta.Utemita.Presentacion;
 
-import Renta.Utemita.ServicioBD.AccesoBD;
-import java.awt.Color;
-import java.awt.event.MouseEvent;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.animation.KeyFrame;
+import Renta.Utemita.Almacenamiento.AccesoBD;
+import static java.awt.Event.ENTER;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Cursor;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Bloom;
 import javafx.scene.effect.BlurType;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.effect.Reflection;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.Duration;
-import javax.swing.Icon;
 import javax.swing.JOptionPane;
 /**
  * se define los elementos que habra en el escenario de inicio de sesión
@@ -58,6 +42,7 @@ public class IniciarSesionVista extends FlowPane{
      */
      Stage primaryStage;
      Label lb1Correo = new Label("Correo");
+     Text mensajeError=new Text("Error al ingresar su Correo o Password");
      TextField txtCorreo = new TextField();
      Label lb2Password = new Label("Password");
      final PasswordField password = new PasswordField();
@@ -77,24 +62,26 @@ public class IniciarSesionVista extends FlowPane{
      
      public IniciarSesionVista(Stage escenario){
          primaryStage=escenario; 
+         capturarEnter(txtCorreo);
+         capturarEnter2(password);
+         
          init();
      }
      public void init(){
+         
+         txtCorreo.setStyle("-fx-width:1000px;");
          lb1Correo.setFont(new Font("Serif", 28));
          txtCorreo.setFont(new Font("Serif", 28));
          password.setFont(new Font("Serif", 28));
          bt1IniciarSesion.setFont(new Font("Serif", 28));
          lb2Password.setFont(new Font("Serif", 28));
          registrarse.setFont(new Font("Serif", 28));
+         mensajeError.setFont(new Font("Serif", 28));
          registrarse.setFill(paint);
          ingresarMsj.setFont(new Font("Arial", 38));
          ingresarMsj.setStyle("-fx-font-weight: bold;");
          ingresarMsj.setFill(paint);
-         //ingresarMsj.setEffect(reflection);
-         //ingresarMsj.setEffect(new DropShadow(1, 20, 10,javafx.scene.paint.Color.web("#333333")));
-
          ingresarMsj.setLineSpacing(50);
-         
          //setting the level property 
          shadow.setBlurType(BlurType.GAUSSIAN);  
         shadow.setColor(javafx.scene.paint.Color.web("#eaedf2"));  
@@ -102,47 +89,32 @@ public class IniciarSesionVista extends FlowPane{
         shadow.setRadius(12);  
         shadow.setWidth(20);  
         shadow.setChoke(0.9);
-        
         glow.setLevel(0.4);
         blom.setThreshold(0.8);
         bt1IniciarSesion.setEffect(shadow);
-        //bt1IniciarSesion.setEffect(glow);
         bt1IniciarSesion.setTextFill(blanco);
         bt1IniciarSesion.setBackground(Background.fill(paint2));
-    
-         /*
-         lb1Correo.setAlignment(Pos.CENTER);
-         lb1Correo.setLayoutY(500);
-         lb2Password.setLayoutX(500);
-         lb2Password.setLayoutY(800);
-         bt1IniciarSesion.setLayoutX(1000);
-         */
-        /*grid.setHgap(10);
+
+        grid.setHgap(10);
         grid.setVgap(12);
-        grid.add(lb1Correo, 0, 0);
+        grid.add(lb1Correo, 0, 0);//10,01,11
         grid.add(txtCorreo, 1, 0);
         grid.add(lb2Password, 0, 1);
         grid.add(password, 1, 1);
-        */
+        grid.add(bt1IniciarSesion,1,2);
+        grid.add(registrarse,1,4);
         
-        
-         getChildren().add(ingresarMsj);
-         getChildren().add(lb1Correo);
-         getChildren().add(txtCorreo);        
-         getChildren().add(lb2Password);
-         getChildren().add(password);
-         getChildren().add(bt1IniciarSesion);
-         getChildren().add(registrarse);
-         getChildren().add(grid);
+        getChildren().add(ingresarMsj);
+        getChildren().add(grid);
          
-         //accion al pulsar el boton
+         /*accion al pulsar el boton*/
          bt1IniciarSesion.setOnAction(new EventHandler<ActionEvent>(){
              @Override
              public void handle(ActionEvent t) {
                  bt1IniciarSesion.setBackground(Background.fill(blanco));
                  bt1IniciarSesion.setTextFill(negro);
-                 
-                 //si se presiona el boton llama al metodo nuevoVentana para abrir la escena donde esta la vista general
+                
+                /*si se presiona el boton llama al metodo nuevoVentana para abrir la escena donde esta la vista general*/
                 if((t).getSource()==bt1IniciarSesion){
                     System.out.println("entra al pulsar"); 
                     
@@ -152,34 +124,57 @@ public class IniciarSesionVista extends FlowPane{
                     sesionStatus=conexion.existeUsuario(txtCorreo.getText(), password.getText());
                     System.out.println("entro"+sesionStatus);
                     conexion.DesconectarBD();
-                    if(sesionStatus)
-                        nuevaVentana();
-                    else{
-                        System.out.println("error");
-                        /*
-                        Alert mensaje = new Alert(Alert.AlertType.ERROR);
-                        mensaje.setTitle("Error de inicio de sesión");
-                        mensaje.setHeaderText("Password o Correo incorrectos");
-                        mensaje.show();
-                        */
-                       JOptionPane.showMessageDialog(null,"Correo o Password invalidos");
-                        //JOptionPane.showMessageDialog(null,"Usuario o Password son incorrectos");
-                        //new Alert(Alert.AlertType.ERROR, "This is an error!").showAndWait();
+                    try {
+                        if(sesionStatus)
+                            nuevaVentana();
+                        else{
+                            /*si el usuario ingresa un dato incorrecto se muestra el mensaje de error en pantala*/
+                            System.out.println("error");
+                            grid.add(mensajeError,1,3);
+                        }
+                    } catch (Exception e) {
+                        System.err.println(e.getMessage());
                     }
                }
+                /*Se cambia de color el boton cuando hay un inicio incorrecto*/
                  bt1IniciarSesion.setBackground(Background.fill(negro));
                  bt1IniciarSesion.setTextFill(blanco);
-                 
              }
              
          });
      }
+     
+    public void capturarEnter(TextField entrada){
+        
+        //capturar enter
+        entrada.addEventFilter(KeyEvent.KEY_PRESSED,(KeyEvent E)->{
+            //si se presiona enter
+            if(E.equals(ENTER)){
+                System.out.println("entro cuando se pulso en correo");
+            }
+        });
+        
+    }
+    public void capturarEnter2(PasswordField entrada){
+        
+        //capturar enter
+        entrada.addEventFilter(KeyEvent.KEY_PRESSED,(KeyEvent E)->{
+            //si se presiona enter
+            if(E.equals(ENTER)){
+                System.out.println("entro cuando se pulso en contraseña");
+            }
+        });
+        
+    }
+/**
+ *metodo para lanzar la ventana
+ */
     public void nuevaVentana(){
         try {
             MenuPrincipal1 menuPrincipal1=new MenuPrincipal1();
             menuPrincipal1.start(primaryStage);
         } catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
         }
     }
-   
 }

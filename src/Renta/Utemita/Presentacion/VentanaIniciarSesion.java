@@ -5,7 +5,6 @@
  */
 package Renta.Utemita.Presentacion;
 
-import java.awt.GradientPaint;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -14,12 +13,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 
@@ -29,30 +26,21 @@ import javafx.stage.Stage;
  * @version 1.0
  */
 public class VentanaIniciarSesion extends Application {
-    
+    Double ancho;
+    Double altura;
     @Override
     public void start(Stage primaryStage) {
         Pane root = new IniciarSesionVista(primaryStage);
-        
         Image image = new Image(getClass().getResourceAsStream("/imagenes/logo2.jpg")); 
         Label myLabel = new Label("Insertar frase mamalona");
         myLabel.setGraphic(new ImageView(image));
         root.getChildren().add(myLabel);
-        //AnchorPane root2 = new AnchorPane();
-        //Button b1= new Button("PRUEBA");
-        // place button in the top right corner
-        //AnchorPane.setRightAnchor(b1, 500d); // distance 0 from right side of 
-        //root2.setTopAnchor(b1, 500d); // distance 0 from top
-        //root.getChildren().add(b1);
-        
         //estilo linergradient
         Stop[] stops = new Stop[] {
            new Stop(0, Color.PURPLE),
            new Stop(1, Color.BLUE)
         };
         LinearGradient gp = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REPEAT, stops);
-        //root.setBackground(Background.fill(gp));
-        
         //se define el color de fondo de la parte interna
         root.setStyle("-fx-background-color: #ffffff;");
         
@@ -61,14 +49,16 @@ public class VentanaIniciarSesion extends Application {
         //padding de la parte central
         root.setPadding(new Insets(200, 400, 100, 500));
         
+        ancho=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+        altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        System.out.println("Renta.Utemita.Presentacion.VentanaIniciarSesion.start()"+ancho+altura);
         //tamaño de la escena ancho-alto
-        Scene scene = new Scene(root,1550, 800,gp);
-        
+        Scene scene = new Scene(root,ancho,altura,gp);
         
         primaryStage.setScene(scene);
-        //primaryStage.setOpacity(0.9);
+        root.setOpacity(1);
         primaryStage.setResizable(false);
-       // primaryStage.setFullScreen(true);
+        primaryStage.setFullScreen(true);
         primaryStage.setTitle("Inicio de sesión");
         primaryStage.show();
     }
