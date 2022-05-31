@@ -2,7 +2,6 @@ package Renta.Utemita.Presentacion;
 
 import Renta.Utemita.Almacenamiento.AccesoBD;
 import static java.awt.Event.ENTER;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -24,7 +23,6 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 /**
  * se define los elementos que habra en el escenario de inicio de sesión
  * @author Marcos
@@ -33,7 +31,7 @@ import javafx.util.Duration;
 public class IniciarSesionVista extends FlowPane{
 
     Timeline timeline;
-/*
+    /*
      *constructor por default
      *
      */
@@ -58,8 +56,7 @@ public class IniciarSesionVista extends FlowPane{
      InnerShadow shadow = new InnerShadow(); 
      int bandera=0;
      public IniciarSesionVista(Stage escenario){
-         primaryStage=escenario; 
-         capturarEnter(txtCorreo);
+         primaryStage=escenario;
          init();
      }
      /**
@@ -94,6 +91,8 @@ public class IniciarSesionVista extends FlowPane{
         bt1IniciarSesion.setBackground(Background.fill(paint2));
         grid.setHgap(10);
         grid.setVgap(12);
+        //fondo del grid de inicio de sesion
+        grid.setEffect(blom);
         grid.add(lb1Correo, 0, 0);//10,01,11
         grid.add(txtCorreo, 1, 0);
         grid.add(lb2Password, 0, 1);
@@ -105,15 +104,15 @@ public class IniciarSesionVista extends FlowPane{
         
         getChildren().add(ingresarMsj);
         getChildren().add(grid);
-            /*evento para capturar enter y accionar el boton iniciar*/
-           setOnKeyPressed(ke -> {
-           KeyCode keyCode = ke.getCode();
-           if (keyCode.equals(KeyCode.ENTER)) {
-               bandera=1;
-               iniciarSesion();
-           }else
-               bandera=0;
-            });
+        /*evento para capturar enter y accionar el boton iniciar*/
+        setOnKeyPressed(ke -> {
+        KeyCode keyCode = ke.getCode();
+        if (keyCode.equals(KeyCode.ENTER)) {
+            bandera=1;
+            iniciarSesion();
+        }else
+            bandera=0;
+        });
            
         /*accion al dar clic al boton iniciar sesión*/
         if(bandera!=1){
@@ -139,9 +138,9 @@ public class IniciarSesionVista extends FlowPane{
         });
         
     }
-/**
- *metodo para lanzar la ventana
- */
+    /**
+     *metodo para lanzar la ventana
+     */
     public void nuevaVentana(){
         try {
             MenuPrincipal1 menuPrincipal1=new MenuPrincipal1();
@@ -162,7 +161,7 @@ public class IniciarSesionVista extends FlowPane{
                     datosVerificar=conexion.existeUsuario(txtCorreo.getText(), password.getText());
                     System.out.println("entro"+datosVerificar);
                     conexion.DesconectarBD();
-                     /*si se presiona el boton llama al metodo nuevoVentana para abrir la escena donde esta la vista general*/
+                    /*si se presiona el boton llama al metodo nuevoVentana para abrir la escena donde esta la vista general*/
                     try {
                         if(datosVerificar)
                             nuevaVentana();
@@ -174,7 +173,7 @@ public class IniciarSesionVista extends FlowPane{
                             mostrarAlertas();
                         }
                     } catch (Exception e) {
-                        System.err.println(e.getMessage());
+                        System.out.println(e.getLocalizedMessage());
                     }
     }
     /**
@@ -182,6 +181,5 @@ public class IniciarSesionVista extends FlowPane{
      */
     public void mostrarAlertas() throws InterruptedException{
         mensajeError.setOpacity(1);
-        
     }
 }

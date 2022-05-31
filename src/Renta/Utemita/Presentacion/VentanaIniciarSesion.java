@@ -14,6 +14,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * Ventana de inicio de la aplicacion
@@ -48,11 +49,12 @@ public class VentanaIniciarSesion extends Application {
         altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         System.out.println("Renta.Utemita.Presentacion.VentanaIniciarSesion.start()"+ancho+altura);
         //tamaño de la escena ancho-alto
+        
         Scene scene = new Scene(root,ancho,altura,gp);
         
         primaryStage.setScene(scene);
         root.setOpacity(1);
-        primaryStage.setResizable(false);
+        primaryStage.setResizable(true);
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Inicio de sesión");
         primaryStage.show();
