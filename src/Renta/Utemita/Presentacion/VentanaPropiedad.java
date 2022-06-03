@@ -1,8 +1,10 @@
 package Renta.Utemita.Presentacion;
 
 
+import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad;
 import java.io.File;
 import java.sql.Blob;
+import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -16,8 +18,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
@@ -25,25 +29,42 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.TilePane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Popup;
+
 /**
  * Ventana para el registro y modificación de una propiedad
  * @author Marcos
  * @version 1.0
  */
 public class VentanaPropiedad extends Application{
-
-    /**
-     * @param args llama al metodo star principal de la ventana
-     */
-    
+    RegistrarModificarPropiedad rMP = new RegistrarModificarPropiedad();
     Double ancho;
     Double altura;
     String usuario="";
     GridPane grid = new GridPane();
+    GridPane gridToken = new GridPane();
+    
+    AnchorPane anchorPane=new AnchorPane();
     ScrollPane scrollPane=new ScrollPane();
+    Pane pane=new Pane();
+    Text tokenTitulo=new Text("Ingrese el token de la propiedad");
+    TextField inputToken=new TextField();
+    Button botonToken = new Button("Verificar");
+    InnerShadow shadow = new InnerShadow(); 
+    Paint paint=Paint.valueOf("blue");
+        
+    Text tituloForm = new Text("Registro propiedad");
     Text dCuarto = new Text("Descripción del cuarto");
     TextField lCuarto = new TextField();
+    Text dServicios = new Text("Servicios");
+    TextField lServicios = new TextField();
     Text dPrecio = new Text("Precio");
     TextField lPrecio = new TextField();
     Text dDisponibilidad = new Text("Disponibilidad");
@@ -52,32 +73,72 @@ public class VentanaPropiedad extends Application{
     TextField lUbicacion = new TextField();
     Text dImagenes = new Text("Ingrese las imagenes");
     Paint blanco = Paint.valueOf("#ffffff");
+    File imgFile;
+    Text errorRegPropiedad = new Text("Error,no se ha podido ingreasar los datos, revise sus datos proporcionados");
+    private Button ingresar=new Button("Ingresar datos");
     
-    String descripcionCuarto;
-    float precio;
-    int disponibilidad;
-    String ubicacion;
-    String servicios;
-    Blob imagenes;
-    boolean codigo;
+    private String descripcionCuarto="";
+    private float precio=0.0f;
+    private String disponibilidad="";
+    private String ubicacion="";
+    private String servicios="";
+    private String token=null;
+    private ArrayList<String> imagenes=new ArrayList();
+    private ArrayList<Blob> imagenesBlob=new ArrayList();
+    private int id;
+    private boolean codigo;
+    private boolean datos;
     
+    /**
+     * @param args llama al metodo star principal de la ventana
+     */
     public static void main(String[] args) {
         // TODO code application logic here
         launch(args);
     }
+    
     @Override
     public void start(Stage primaryStage) throws Exception {
         /*alto y ancho de la pantalla*/
         ancho=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        /*elementos del formulario del token*/
+        gridToken.setStyle("-fx-background-color:white");//colorde fondo  del grid
+        gridToken.setPadding(new Insets(altura/5,0,0,0));
+        //grid.setMaxSize(ancho,altura);
+        gridToken.setMinHeight(altura-(altura/10));
+        //ANCHO DEL SCROLL
+        gridToken.setMinWidth(ancho);
+        tokenTitulo.setStyle("-fx-background-color: #ffffff;");
+        tokenTitulo.setFont(new Font("Arial",28));
+        inputToken.setFont(new Font("Arial",28));
+        inputToken.setMinWidth(600);
+        inputToken.setMinHeight(50);
+        shadow.setBlurType(BlurType.GAUSSIAN);  
+        shadow.setColor(javafx.scene.paint.Color.web("#eaedf2"));  
+        shadow.setHeight(25);  
+        shadow.setRadius(12);  
+        shadow.setWidth(20);  
+        shadow.setChoke(0.9);
+        Paint paint2 = Paint.valueOf("#2b6ff6");
+        botonToken.setFont(new Font("Serif", 28));
+        botonToken.setEffect(shadow);
+        botonToken.setTextFill(blanco);
+        botonToken.setBackground(Background.fill(paint2));
+        /*grid del token*/
+        gridToken.add(tokenTitulo,0,0);
+        gridToken.add(inputToken,0,1);
+        gridToken.add(botonToken,1,1);
         
-        grid.setStyle("-fx-background-color:yellow");//colorde fondo  del grid
-        grid.setPadding(new Insets(altura/10,0,0,0));
+        
+
+        /*grid del formulario para registrar modificar propiedad*/
+        grid.setStyle("-fx-background-color:white");//colorde fondo  del grid
+        grid.setPadding(new Insets(altura/5,0,0,0));
         //grid.setMaxSize(ancho,altura);
         grid.setMinHeight(altura-(altura/10));
         //ANCHO DEL SCROLL
         grid.setMinWidth(ancho);
-        
         Label bienvenido=new Label("Bienvenido, usted a ingresado como"+usuario);
         //fondo del label de bienvenida
         bienvenido.setStyle("-fx-background-color: #ff3f5f;");
@@ -86,51 +147,80 @@ public class VentanaPropiedad extends Application{
         bienvenido.setMinWidth(ancho);
         bienvenido.setAlignment(Pos.CENTER);
         
+        errorRegPropiedad.setStyle("-fx-background-color: #ffffff;");
+        errorRegPropiedad.setFont(new Font("Arial",30));
+        errorRegPropiedad.setTextAlignment(TextAlignment.CENTER);
+        errorRegPropiedad.setOpacity(0);
+                
+        tituloForm.setStyle("-fx-background-color: #ffffff;");
+        tituloForm.setFont(new Font("Arial",30));
+        tituloForm.setStyle("-fx-padding-left:600px;");
+        tituloForm.setTextAlignment(TextAlignment.CENTER);
+        tituloForm.setStyle("-fx-font-weight: bold;");
+        tituloForm.setFill(paint);
+        
         dCuarto.setStyle("-fx-background-color: #ffffff;");
         dCuarto.setFont(new Font("Arial",28));
-        
+        lCuarto.setMinWidth(600);
+        lCuarto.setMinHeight(50);
         dPrecio.setStyle("-fx-background-color: #ffffff;");
         dPrecio.setFont(new Font("Arial",28));
-        
+        lPrecio.setMaxWidth(100);
+        lPrecio.setMaxHeight(50);
         dDisponibilidad.setStyle("-fx-background-color: #ffffff;");
         dDisponibilidad.setFont(new Font("Arial",28));
         cb.getItems().addAll("Disponible","No disponible");
         cb.setValue(cb.getItems().get(0));
+        cb.setMaxWidth(100);
+        cb.setMinHeight(30);
+        cb.setStyle("-fx-font-weight: bold;");
         dUbicacion.setStyle("-fx-background-color: #ffffff;");
         dUbicacion.setFont(new Font("Arial",28));
+        lUbicacion.setMinWidth(600);
+        lUbicacion.setMinHeight(30);
+        lServicios.setMinWidth(600);
+        lServicios.setMinHeight(30);
         
         dImagenes.setStyle("-fx-background-color: #000000;");
         dImagenes.setFont(new Font("Arial",28));
         Button imagenesP=new Button("Seleccionar Imagenes");
+        imagenesP.setMinWidth(100);
         
+        tituloForm.setX(ancho/4);
+        pane.getChildren().add(tituloForm);
+        pane.setMinHeight(50);
         
-        imagenesP.setOnAction(event -> {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Buscar Imagen");
-         // Agregar filtros para facilitar la busqueda
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("All Images", "*.*"),
-                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
-                new FileChooser.ExtensionFilter("PNG", "*.png")
-        );
-        
-        // Obtener la imagen seleccionada
-        File imgFile = fileChooser.showOpenDialog(null);
-            System.out.println("file"+imgFile.getAbsolutePath());
-        // Mostar la imagen
-        /*
-        if (imgFile != null) {
-            Image image = new Image("\""+imgFile.getAbsolutePath()+"\"");
-            System.out.println("Ruta imagen"+image);
-            // show the image
-            ImageView iv1 = new ImageView();
-            iv1.setImage(image);
-            
-        }*/
-        
-    });
-        /*grid donde se añade cada elemento del formulario*/
-        //grid.add(bienvenido, 0, 1);
+        /*Abre un pop Up para permitir seleccionar al usuario si desea agregar otra propiedad*/
+        Button button = new Button("Click to open a Popup");
+        GridPane grid3=new GridPane();
+        TilePane tilePane = new TilePane();
+        Label label = new Label("¿Desea agregar otra propiedad?");
+        label.setStyle("-fx-background-color: #ffffff;");
+        label.setFont(new Font("Arial",28));        
+        label.setStyle("-fx-background-color: #ffffff;");
+        label.setFont(new Font("Arial",28));
+        Popup popup = new Popup();
+        label.setStyle("-fx-background-color: #89dab9;");
+        popup.getContent().add(label);
+        Button cancelar = new Button("Cancelar");
+        Button agregar = new Button("Agregar");
+        grid3.add(cancelar, 0, 0);
+        grid3.add(agregar, 1, 0);
+        cancelar.setStyle("-fx-background-color: #2b6ff6;");
+        cancelar.setFont(new Font("Arial",28));
+        agregar.setStyle("-fx-background-color: #2b6ff6;");
+        agregar.setFont(new Font("Arial",28));
+        popup.getContent().add(grid3);
+        //popup.getContent().add(agregar);
+        popup.setX(ancho/2);
+        popup.setY(altura/4);
+        label.setMinWidth(altura/2);
+        label.setMinHeight(ancho/4);
+
+                /*grid donde se añade cada elemento del formulario*/
+        grid.setHgap(10);
+        grid.setVgap(12);
+        grid.add(pane, 0,1);
         grid.add(dCuarto, 0, 2);
         grid.add(lCuarto, 0, 3);
         grid.add(dPrecio,0,4);
@@ -139,16 +229,20 @@ public class VentanaPropiedad extends Application{
         grid.add(cb,0,7);
         grid.add(dUbicacion,0,8);
         grid.add(lUbicacion,0,9);
-        grid.add(imagenesP,0,10);
+        grid.add(dServicios,0,10);
+        grid.add(lServicios,0,11);
+        grid.add(imagenesP,0,12);
+        grid.add(ingresar,0,13);
+        grid.add(errorRegPropiedad,0,14);
         
-        AnchorPane anchorPane=new AnchorPane();
+                /*configuracion de la escena y los elementos que tendra*/
         anchorPane.setMinHeight(altura);
         anchorPane.setMaxWidth(ancho);
         //anchorPane.setMaxSize(ancho,altura);
-        anchorPane.setStyle("-fx-background-color: #000000;");//color de fondo
+        anchorPane.setStyle("-fx-background-color: #ffffff;");//color de fondo
         anchorPane.setPadding(new Insets(50,0,0,0));
         /*Se coloca el grid dentro del pane*/
-        anchorPane.getChildren().add(grid);
+        anchorPane.getChildren().add(gridToken);
         /*Scroll del formulario*/
         ScrollPane scroll = new ScrollPane();
         scroll.setPrefSize(ancho, altura);
@@ -163,7 +257,14 @@ public class VentanaPropiedad extends Application{
         SplitPane sp = new SplitPane();
         final StackPane sp1 = new StackPane();
         //fondo del pandel lateral
-        sp1.setStyle("-fx-background-color: #123456;");
+        Stop[] stops = new Stop[] {
+           new Stop(0, Color.PURPLE),
+           new Stop(1, Color.BLUE)
+        };
+        LinearGradient gp = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REPEAT, stops);
+        
+        sp1.setStyle("-fx-background-color: #0c50cf;");//fondo del lateral izquieerdo
+        //sp1.setOpacity(1);
         //sp1.setMaxWidth(ancho/3);
         sp1.setDisable(true);//no permite que se ajuste el panel
         sp1.setPadding(new Insets(altura,0,0,0));
@@ -174,12 +275,226 @@ public class VentanaPropiedad extends Application{
         /*se añade el splitpane al grupo y el label de bienvenida*/
         root.getChildren().add(sp);
         root.getChildren().add(bienvenido);
-        Scene scene = new Scene(root, ancho, altura);
+        Scene scene = new Scene(root, ancho, altura,gp);
+
+        
+           /*define la accion al pulsar sobre el boton verificar*/
+        botonToken.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                ingresarCodigoPropiedad(inputToken.getText());
+                token=inputToken.getText();
+            }
+        });
+             
+        
+        
+        /*Evento para leer imagenes*/
+        imagenesP.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Buscar Imagen");
+             // Agregar filtros para facilitar la busqueda
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("All Images", "*.*"),
+                    new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                    new FileChooser.ExtensionFilter("PNG", "*.png")
+            );
+
+            // Obtener la imagen seleccionada
+            imgFile = fileChooser.showOpenDialog(null);
+            System.out.println("file"+imgFile.getAbsolutePath());
+            if(this.imagenes.size()<3){
+                this.imagenes.add(imgFile.getAbsolutePath());
+            }
+        });
+        
+
+
+        /*Evento para mostrar la ventana emergente*/
+        EventHandler<ActionEvent> actionEventHandler = et -> {
+                    if (!popup.isShowing()) {
+                        popup.show(primaryStage);
+                        button.setText("Click to Hide a Popup");
+                    } else {
+                        popup.hide();
+                        button.setText("Click to open a Popup");
+                    }
+        };
+
+        button.setOnAction(actionEventHandler);
+        tilePane.getChildren().add(button);
+        grid.add(tilePane,0,15);
+        
+        /*Evento para ingresar datos del formulario*/
+        ingresar.setMaxWidth(100);
+        ingresar.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent t) {
+                try {
+                    System.out.println("token al pulsar boton registro"+token);
+                        //Propiedad temp=rMP.obtenerDatosPropiedad(token);
+                        descripcionCuarto=lCuarto.getText();
+                        precio= Float.valueOf(lPrecio.getText());
+                        if(cb.getItems().get(0).equals("Disponible")){
+                            disponibilidad="Disponible";
+                        }else
+                            disponibilidad="No disponible";
+                        ubicacion=lUbicacion.getText();
+                        servicios=lServicios.getText();
+                        //token=inputToken.getText();
+                        
+                        token=getRandomString();
+                        registrarPropiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,token,imagenesBlob);
+                        descripcionCuarto=null;
+                        precio=0.0f;
+                        disponibilidad=null;
+                        ubicacion=null;
+                        servicios=null;
+                        token=null;
+                        imagenes.removeAll(imagenes);
+                        
+                } catch (NumberFormatException e) {
+                    System.out.println(e.getLocalizedMessage());
+                }
+            }
+            
+        });
+        
         /*Define las propiedades de la escena*/ 
         //se configura el stage principal
         primaryStage.setTitle("Registro Propiedad");
         primaryStage.setScene(scene);
         primaryStage.setFullScreen(true);
         primaryStage.show();
+    }
+    
+    /**
+     * Metodo para mostrar alertas si el casero no ingresar datos correctos en el
+     * formulario de registro.
+     */
+    public void mostrarAlertas(){
+        System.out.println("estado de datos: "+codigo+"error al ingresar datos a la propiedad");
+        errorRegPropiedad.setOpacity(1);
+    }
+    public  String getRandomString() 
+    {   int i=10;
+        String theAlphaNumericS;
+        StringBuilder builder;
+        
+        theAlphaNumericS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                    + "0123456789"; 
+
+        //create the StringBuffer
+        builder = new StringBuilder(i); 
+
+        for (int m = 0; m < i; m++) { 
+
+            // generate numeric
+            int myindex 
+                = (int)(theAlphaNumericS.length() 
+                        * Math.random()); 
+
+            // add the characters
+            builder.append(theAlphaNumericS 
+                        .charAt(myindex)); 
+        }
+        return builder.toString();
+    }
+    
+    /**
+     * Método para verificar la existencia de una propiedad, si existe el token,
+     * se muestra el formulario con los datos precargados, en caso contrario se 
+     * muestra un formulario con los campos vacios.
+     * @param token  
+     */    
+    public void ingresarCodigoPropiedad(String token){
+        this.codigo=rMP.btnExisteCodigoPropiedad(token);
+        System.out.println("token ingresarPropiedad"+token);
+        System.out.println("codigo"+codigo);
+        /*si codigo es falso se muestra el formulario en limpio*/
+        if(codigo==false){
+            anchorPane.getChildren().add(grid);
+            //this.token=getRandomString();
+            System.out.println("token generado"+this.token);
+        }/*se carga los datos en el formulario*/
+        else{
+            /*codigo==true se obtiene los datos de la base de datos*/
+            Propiedad temp=rMP.obtenerDatosPropiedad(token);
+            System.out.println("temp"+temp.getDescripcionCuarto()+temp.getDisponibilidad()+temp.getServicios()+temp.getToken());
+            //campos lCuarto,lPrecio,cb,lUbicacion,lServicios
+            id=temp.getIdPropiedad();
+            lCuarto.setText(temp.getDescripcionCuarto());
+            String x=temp.getPrecio()+"";
+            lPrecio.setText(x);
+            if(temp.getDisponibilidad().equals("Disponible")==true){
+                cb.setValue(cb.getItems().get(0));
+                System.out.println("entor al if");
+            }
+            else
+                cb.setValue(cb.getItems().get(1));
+            lUbicacion.setText(temp.getUbicacion());
+            lServicios.setText(temp.getServicios());
+           
+            imagenesBlob.add(temp.getImagenesBlob().get(0));
+            imagenesBlob.add(temp.getImagenesBlob().get(1));
+            imagenesBlob.add(temp.getImagenesBlob().get(2));
+            //imagenesBlob=temp.getImagenesBlob();
+                        
+            this.token=temp.getToken();
+            System.out.println("token ingresar prop"+this.token);
+            anchorPane.getChildren().add(grid);
+            
+        }
+    }
+    /**
+     * Método para dar de alta una propiedad
+     * @param descripcionCuarto
+     * @param precio
+     * @param disponibilidad
+     * @param ubicacion
+     * @param servicios
+     * @param imagenes 
+     * @param token 
+     * @param imagenesBlob 
+     */
+    public void registrarPropiedad(String descripcionCuarto,float precio,String disponibilidad,String ubicacion,String servicios,ArrayList <String> imagenes,String token,ArrayList <Blob> imagenesBlob){
+        System.out.println("registro propiedad ->>>>>"+descripcionCuarto+"--"+precio+"--"+disponibilidad+"--"+ubicacion+"--"+servicios+"--"+imagenes.size()+"--token: "+token+"--"+imagenesBlob.size());
+        System.out.println("token registro propiedad"+this.token);
+        RegistrarModificarPropiedad rMP2 = new RegistrarModificarPropiedad();
+        this.datos=rMP2.verificarDatos(descripcionCuarto,precio,disponibilidad,ubicacion,imagenes,servicios,token);
+        System.out.println("datos regprop"+datos);
+        if(datos==true)
+        {       RegistrarModificarPropiedad rMP = new RegistrarModificarPropiedad();
+                Propiedad temp=new Propiedad();
+                
+            if(this.codigo==false){
+                rMP = new RegistrarModificarPropiedad();
+                temp=new Propiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,this.token,null,0);
+                //rMP.ingresarPropiedad(temp);
+                rMP.ingresarPropiedad(temp);
+                this.descripcionCuarto=null;
+                this.precio=0.0f;
+                this.disponibilidad=null;
+                this.ubicacion=null;
+                this.servicios=null;
+                this.token=null;
+                this.imagenes.removeAll(imagenes);
+                errorRegPropiedad.setOpacity(0);
+                
+            }
+            else{
+                Propiedad temp2=new Propiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,inputToken.getText(),imagenesBlob,id);
+                System.out.println("modificar propieadad"+temp2.getDescripcionCuarto()+"--"+temp2.getPrecio()+"--"+temp2.getDisponibilidad()+"--"+temp2.getUbicacion()+"--"+temp2.getServicios()+"--"+imagenes.size()+"--token: "+inputToken.getText()+"--"+imagenesBlob.size()+"id"+temp2.getIdPropiedad());
+                
+                rMP.modificarPropiedad(temp2);
+                this.token=null;
+                id=0;
+            }
+            
+        }
+        else{
+            mostrarAlertas();
+        }
     }
 }

@@ -5,6 +5,8 @@
  */
 package Renta.Utemita.Presentacion;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -28,6 +30,12 @@ public class MenuPrincipal1 extends Application {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Hello World!");
+                VentanaPropiedad ventanaP = new VentanaPropiedad();
+                try {
+                    ventanaP.start(primaryStage);
+                } catch (Exception ex) {
+                    Logger.getLogger(MenuPrincipal1.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         
