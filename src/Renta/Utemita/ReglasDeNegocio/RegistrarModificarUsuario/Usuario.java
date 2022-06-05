@@ -12,16 +12,33 @@ public class Usuario {
     private String correo;
     private String matricula;
     private String contraseña;
+    private String tipo;
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
     public Usuario (){}
 
-    public Usuario(String nombre, int telefono, String correo, String contraseña,String matricula) {
+    public Usuario(String nombre, int telefono, String correo, String contraseña,String matricula,int idUsuario) {
         this.nombre = nombre;
         this.telefono = telefono;
         this.correo = correo;
         this.contraseña = contraseña;
         this.matricula= matricula;
+        this.idUsuario=idUsuario;
     }
-
+    public Usuario(String nombre, int telefono, String correo, String contraseña,String matricula,String tipo) {
+        this.nombre = nombre;
+        this.telefono = telefono;
+        this.correo = correo;
+        this.contraseña = contraseña;
+        this.matricula= matricula;
+        this.tipo=tipo;
+    }
     public int getIdUsuario() {
         return idUsuario;
     }

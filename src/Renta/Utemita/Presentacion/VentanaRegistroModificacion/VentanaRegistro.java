@@ -6,7 +6,11 @@ import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.RegistrarModifica
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.Usuario;
 import java.io.File;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -47,6 +51,7 @@ public class VentanaRegistro extends Application{
     Paint paint=Paint.valueOf("blue");
     Text tituloForm = new Text("Registro Usuario");
     Text txtNombre = new Text("Nombre");
+    Text txtTipo = new Text("Seleccione como va ingresar");
     TextField textFNombre = new TextField();
     Text txtCorreo = new Text("Correo");
     TextField txtFCorreo = new TextField();
@@ -76,6 +81,7 @@ public class VentanaRegistro extends Application{
     private String contraseña;
     private boolean datos;
      boolean registro;
+    private String tipo;
     /**
      * @param args llama al metodo star principal de la ventana
      */
@@ -133,6 +139,8 @@ public class VentanaRegistro extends Application{
         txtCorreo.setFont(new Font("Arial",28));
         txtFCorreo.setMinWidth(600);
         txtFCorreo.setMinHeight(50);
+        txtTipo.setStyle("-fx-background-color: #ffffff;");
+        txtTipo.setFont(new Font("Arial",28));
         
         ingresar.setMinSize(200,50);
         ingresar.snapPositionX(200);
@@ -143,26 +151,69 @@ public class VentanaRegistro extends Application{
         tituloForm.setX(200);
         pane.getChildren().add(tituloForm);
         pane.setMinHeight(50);
+        
+        cb.getItems().addAll("Estudiante","Arrendador");
+        cb.setValue(cb.getItems().get(0));
+        cb.setMaxWidth(200);
+        cb.setMinHeight(50);
+        cb.setStyle("-fx-font-weight: bold;");
+        
+        
         /*grid donde se añade cada elemento del formulario*/
-        grid.setHgap(10);
-        grid.setVgap(12);
+        grid.setHgap(5);
+        grid.setVgap(6);
         grid.add(pane, 0,1);
         grid.add(txtNombre, 0, 2);
         grid.add(textFNombre, 0, 3);
-        grid.add(txtMatricula,0,4);
-        grid.add(txtFMatricula,0,5);
-        grid.add(txtContraseña,0,6);
-        grid.add(txtFContraseña,0,7);
-        grid.add(txtCorreo,0,8);
+        grid.add(txtTipo, 0, 4);
+        grid.add(cb, 0, 5);
+        grid.add(txtMatricula,0,6);
+        grid.add(txtFMatricula,0,7);
+        grid.add(txtContraseña,0,8);
+        grid.add(txtFContraseña,0,9);
+        grid.add(txtCorreo,0,10);
         
        // grid.add(lUbicacion,0,9);
-        grid.add(txtFCorreo,0,9);
-        grid.add(txtTelefono,0,10);
-        grid.add(txtFTelefono,0,11);
-        grid.add(ingresar,0,12);
-        grid.add(alerta,0,13);
+        grid.add(txtFCorreo,0,11);
+        grid.add(txtTelefono,0,12);
+        grid.add(txtFTelefono,0,13);
+        grid.add(ingresar,0,14);
+        grid.add(alerta,0,15);
         alerta.setOpacity(0);
         
+        /* accion cuando selecciona cb como estudiante y arrendador*/
+        tipo=(String) cb.getItems().get(0);
+        System.out.println("tipo default"+tipo);
+        cb.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+                 tipo=(String) cb.getItems().get((Integer)t1);
+                 System.out.println(cb.getItems().get((Integer) t1)+"tipo"+tipo);
+                 if(tipo.equals("Arrendador")){
+                     txtMatricula.setOpacity(0);
+                     txtFMatricula.setOpacity(0);
+                 }else{
+                    txtMatricula.setOpacity(1);
+                    txtFMatricula.setOpacity(1);
+                 }
+                 
+            }
+        });
+
+                 
+        /*cb.getItems().addListener(new ListChangeListener() {
+            @Override
+            public void onChanged(ListChangeListener.Change change) {
+                System.out.println("cb evento"+change.getList()+cb.getItems());
+            }
+        });
+        cb.setOnShowing(new EventHandler() {
+            @Override
+            public void handle(Event t) {
+                System.out.println("cb evento2"+t.getSource()+cb.getItems());
+            }
+        });
+        */
         /*evento al pulsar el boton */
         ingresar.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -175,7 +226,7 @@ public class VentanaRegistro extends Application{
                     telefono=Integer.parseInt(tel);
                     matricula=txtFMatricula.getText();
                     System.out.println("telefono"+telefono);
-                    registrarUsuario(nombre, telefono, correo, contraseña,matricula);
+                    registrarUsuario(nombre, telefono, correo, contraseña,matricula,tipo);
                     /*se abre la nueva ventana*/
                     if(registro){
                         IniciarSesion inicio = new IniciarSesion();
@@ -215,9 +266,9 @@ public class VentanaRegistro extends Application{
     
     }
     
-    public void registrarUsuario(String nombre, int telefono, String correo, String contraseña,String matricula){
+    public void registrarUsuario(String nombre, int telefono, String correo, String contraseña,String matricula,String tipo){
         RegistrarModificarUsuario rModUser = new RegistrarModificarUsuario();
-        Usuario usuario=new Usuario(nombre, telefono, correo, contraseña, matricula);
+        Usuario usuario=new Usuario(nombre, telefono, correo, contraseña, matricula,tipo);
         datos=rModUser.verificarDatos(nombre, telefono, correo, matricula, contraseña); 
         System.out.println("datos registrar usuario"+datos+ "---"+nombre+telefono+correo+matricula+contraseña);
         if(datos){

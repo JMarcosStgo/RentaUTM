@@ -202,14 +202,14 @@ public class AccesoBD {
    public boolean RegistroDeDatos(Usuario usuario){
        try {
             //Statement st = con.createStatement();
-            String query="INSERT INTO usuario (correo,password,telefono,matricula,nombre) VALUES (?,?,?,?,?)";
+            String query="INSERT INTO usuario (correo,password,telefono,matricula,nombre,tipo) VALUES (?,?,?,?,?,?)";
             PreparedStatement statment=(PreparedStatement)con.prepareStatement(query);
             statment.setString(1,usuario.getCorreo());
             statment.setString(2,usuario.getContraseña());
             statment.setInt(3,usuario.getTelefono());
             statment.setString(4,usuario.getMatricula());
             statment.setString(5,usuario.getNombre());
-            
+            statment.setString(6,usuario.getTipo());
             statment.execute();
             return true;    
        } catch (SQLException e) {
@@ -221,13 +221,15 @@ public class AccesoBD {
        try {
             Statement st = con.createStatement();
             ResultSet rs=st.executeQuery("SELECT * FROM usuario WHERE idUsuario='"+idUsuario+"'");
-            if(rs.next()){
+            if(rs.next()==true){
                 Usuario usuario = new Usuario();
-                usuario.setCorreo(rs.getString(0));
-                usuario.setContraseña(rs.getString(1));
-                usuario.setIdUsuario(rs.getInt(2));
-                usuario.setTelefono(rs.getInt(3));
-                usuario.setMatricula(rs.getString(4));
+                usuario.setCorreo(rs.getString(1));
+                usuario.setContraseña(rs.getString(2));
+                usuario.setIdUsuario(rs.getInt(3));
+                usuario.setTelefono(rs.getInt(4));
+                usuario.setMatricula(rs.getString(5));
+                usuario.setNombre(rs.getString(6));
+                
                 return usuario;
             }
        } catch (SQLException e) {
@@ -239,7 +241,7 @@ public class AccesoBD {
    public boolean modificarDatos(Usuario usuario){
        try {
             //Statement st = con.createStatement();
-            String query="UPDATE usuario SET correo='"+usuario.getCorreo()+"' ,password='"+usuario.getContraseña()+"'  ,telefono='"+usuario.getTelefono()+"'       ,matricula='"+usuario.getMatricula()+"'" +"where idPropiedad='"+usuario.getIdUsuario()+"'";
+            String query="UPDATE usuario SET correo='"+usuario.getCorreo()+"' ,password='"+usuario.getContraseña()+"'  ,telefono='"+usuario.getTelefono()+"'       ,matricula='"+usuario.getMatricula()+"'       ,nombre='"+usuario.getNombre()+"'  " +"where idUsuario='"+usuario.getIdUsuario()+"'";
             PreparedStatement statment=(PreparedStatement)con.prepareStatement(query);
             statment.executeUpdate();
             return true;

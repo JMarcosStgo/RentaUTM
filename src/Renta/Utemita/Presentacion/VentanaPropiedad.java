@@ -236,7 +236,7 @@ public class VentanaPropiedad extends Application{
         grid.add(ingresar,0,13);
         grid.add(errorRegPropiedad,0,14);
         
-                /*configuracion de la escena y los elementos que tendra*/
+        /*configuracion de la escena y los elementos que tendra*/
         anchorPane.setMinHeight(altura);
         anchorPane.setMaxWidth(ancho);
         //anchorPane.setMaxSize(ancho,altura);

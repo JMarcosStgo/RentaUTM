@@ -10,14 +10,16 @@ import Renta.Utemita.Almacenamiento.AccesoBD;
 public class RegistrarModificarUsuario {
     
     public boolean verificarDatos(String nombre,int telefono,String correo,String matricula,String contraseña){
-       return nombre!=null && telefono>0 && telefono <100000000 && correo!=null && matricula!=null && contraseña!=null;
+       if(nombre.length()>0 && telefono>0 && telefono <100000000 && correo.length()>0 && contraseña.length()>0){return true;}
+       return false;
     }
     public Usuario cargarDatos(int idUsuario){
         AccesoBD conexion = new AccesoBD();
         conexion.iniciarBD();
         Usuario temp = new Usuario();
+        temp=conexion.obtencionDatos(idUsuario);
         conexion.DesconectarBD();
-        return temp=conexion.obtencionDatos(idUsuario);
+        return temp;
     }
     public boolean solicitarRegistro(Usuario usuario){
         try {
@@ -31,9 +33,9 @@ public class RegistrarModificarUsuario {
         }
         return false;
     }
-    public void solicitarModificacion(String nombre,int telefono,String correo,String matricula,String contraseña){
+    public void solicitarModificacion(String nombre,int telefono,String correo,String matricula,String contraseña,int idUsuario){
         AccesoBD conexion = new AccesoBD();
-        Usuario usuario= new Usuario (nombre,telefono,correo,contraseña,matricula);
+        Usuario usuario= new Usuario (nombre,telefono,correo,contraseña,matricula,idUsuario);
         conexion.iniciarBD();
         conexion.modificarDatos(usuario);
         conexion.DesconectarBD();
