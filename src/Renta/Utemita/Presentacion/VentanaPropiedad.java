@@ -23,6 +23,7 @@ import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -35,6 +36,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Popup;
 
@@ -45,12 +47,14 @@ import javafx.stage.Popup;
  */
 public class VentanaPropiedad extends Application{
     RegistrarModificarPropiedad rMP = new RegistrarModificarPropiedad();
-    Double ancho;
-    Double altura;
+    /*alto y ancho de la pantalla*/
+    double ancho=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+    double altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        
     String usuario="";
     GridPane grid = new GridPane();
     GridPane gridToken = new GridPane();
-    
+    int banderaGrid=0;
     AnchorPane anchorPane=new AnchorPane();
     ScrollPane scrollPane=new ScrollPane();
     Pane pane=new Pane();
@@ -69,7 +73,7 @@ public class VentanaPropiedad extends Application{
     TextField lPrecio = new TextField();
     Text dDisponibilidad = new Text("Disponibilidad");
     ChoiceBox cb = new ChoiceBox();
-    Text dUbicacion = new Text("Ubicación");
+    Text dUbicacion = new Text("Ubicación (link Google Maps de la propiedad)");
     TextField lUbicacion = new TextField();
     Text dImagenes = new Text("Ingrese las imagenes");
     Paint blanco = Paint.valueOf("#ffffff");
@@ -99,9 +103,6 @@ public class VentanaPropiedad extends Application{
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-        /*alto y ancho de la pantalla*/
-        ancho=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-        altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         /*elementos del formulario del token*/
         gridToken.setStyle("-fx-background-color:white");//colorde fondo  del grid
         gridToken.setPadding(new Insets(altura/5,0,0,0));
@@ -183,7 +184,7 @@ public class VentanaPropiedad extends Application{
         
         dImagenes.setStyle("-fx-background-color: #000000;");
         dImagenes.setFont(new Font("Arial",28));
-        Button imagenesP=new Button("Seleccionar Imagenes");
+        Button imagenesP=new Button("Seleccionar 3 Imagenes");
         imagenesP.setMinWidth(100);
         
         tituloForm.setX(ancho/4);
@@ -309,21 +310,47 @@ public class VentanaPropiedad extends Application{
         });
         
 
-
-        /*Evento para mostrar la ventana emergente*/
-        EventHandler<ActionEvent> actionEventHandler = et -> {
-                    if (!popup.isShowing()) {
-                        popup.show(primaryStage);
-                        button.setText("Click to Hide a Popup");
-                    } else {
-                        popup.hide();
-                        button.setText("Click to open a Popup");
-                    }
-        };
-
-        button.setOnAction(actionEventHandler);
-        tilePane.getChildren().add(button);
-        grid.add(tilePane,0,15);
+        ///////////////////----------ventana emergente----------------/////////////////////////
+        Popup po = new Popup();
+        po.setX(205);
+        po.setY(304);
+        po.setHeight(altura/2);
+        po.getContent().addAll(new Circle(35, 45, 64, Color.RED));
+        Label tituloVentanaE = new Label ("Desea agregar otra propiedad");
+        Button agregarBtn = new Button("Agregar");
+        HBox hb = new HBox(17);
+        hb.setStyle("-fx-background-color: violet; -fx-padding: 13px;");
+        Button continuar = new Button("Continuar");
+        hb.getChildren().addAll(tituloVentanaE,agregarBtn, continuar);
+        
+        /*acciones a realizar si pulsa en agregar*/
+        agregarBtn.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent en) {
+            //po.show(primaryStage);
+            /*se limpian los campos del formulario y las variables usadas*/
+            lCuarto.setText(null);
+            lServicios.setText(null);
+            lPrecio.setText(null);
+            lUbicacion.setText(null);
+            lServicios.setText(null);
+            imagenes.removeAll(imagenes);
+            token=getRandomString();
+            hb.setOpacity(0);
+            //banderaGrid=0;
+            
+        }
+        });
+        /*acciones a realizar en continuar*/
+        continuar.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent en) {
+            //po.hide();
+            MenuPrincipal1 menuP=new MenuPrincipal1();
+            menuP.start(primaryStage);
+           
+        }});
+        ///////////////////////7
         
         /*Evento para ingresar datos del formulario*/
         ingresar.setMaxWidth(100);
@@ -352,8 +379,18 @@ public class VentanaPropiedad extends Application{
                         ubicacion=null;
                         servicios=null;
                         token=null;
+                        try {
+                        if(banderaGrid==0){
+                            grid.add(hb,0,15);
+                            banderaGrid=1;
+                        }else{
+                            hb.setOpacity(1);
+                        }
                         imagenes.removeAll(imagenes);
                         
+                        } catch (Exception e) {
+                            System.out.println("error grid y imagenes"+e.getLocalizedMessage());
+                        }
                 } catch (NumberFormatException e) {
                     System.out.println(e.getLocalizedMessage());
                 }
@@ -461,13 +498,17 @@ public class VentanaPropiedad extends Application{
     public void registrarPropiedad(String descripcionCuarto,float precio,String disponibilidad,String ubicacion,String servicios,ArrayList <String> imagenes,String token,ArrayList <Blob> imagenesBlob){
         System.out.println("registro propiedad ->>>>>"+descripcionCuarto+"--"+precio+"--"+disponibilidad+"--"+ubicacion+"--"+servicios+"--"+imagenes.size()+"--token: "+token+"--"+imagenesBlob.size());
         System.out.println("token registro propiedad"+this.token);
+        
+        System.out.println("token registrarPropiedad"+token);
+        System.out.println("codigoregistrarPropiedad"+codigo);
+        
         RegistrarModificarPropiedad rMP2 = new RegistrarModificarPropiedad();
         this.datos=rMP2.verificarDatos(descripcionCuarto,precio,disponibilidad,ubicacion,imagenes,servicios,token);
         System.out.println("datos regprop"+datos);
         if(datos==true)
         {       RegistrarModificarPropiedad rMP = new RegistrarModificarPropiedad();
                 Propiedad temp=new Propiedad();
-                
+            this.codigo=rMP.btnExisteCodigoPropiedad(token);
             if(this.codigo==false){
                 rMP = new RegistrarModificarPropiedad();
                 temp=new Propiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,this.token,null,0);

@@ -17,16 +17,21 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author kAarl
+ * @author Marcos
  */
 public class MenuPrincipal1 extends Application {
-    
+    double ancho = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+    double altura = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+       
     @Override
     public void start(Stage primaryStage) {
+        primaryStage.setX(0);
+        primaryStage.setY(0);
+//        primaryStage.showAndWait();
         Button btn = new Button();
         btn.setText("Say 'Hello World'");
         btn.setOnAction(new EventHandler<ActionEvent>() {
-            
+                
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Hello World!");
@@ -42,8 +47,8 @@ public class MenuPrincipal1 extends Application {
         StackPane root = new StackPane();
         root.getChildren().add(btn);
         
-        Scene scene = new Scene(root, 1550, 800);
-        
+        Scene scene = new Scene(root, ancho, altura);
+        primaryStage.setFullScreen(true);
         primaryStage.setTitle("Hello World!");
         primaryStage.setScene(scene);
         primaryStage.show();

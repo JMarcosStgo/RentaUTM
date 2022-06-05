@@ -1,10 +1,14 @@
 package Renta.Utemita.Presentacion;
 
 import Renta.Utemita.Almacenamiento.AccesoBD;
+import Renta.Utemita.Presentacion.VentanaRegistroModificacion.VentanaRegistro;
 import static java.awt.Event.ENTER;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -16,9 +20,11 @@ import javafx.scene.effect.InnerShadow;
 import javafx.scene.effect.Reflection;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -28,7 +34,7 @@ import javafx.stage.Stage;
  * @author Marcos
  * @version 1.0
  */
-public class IniciarSesionVista extends FlowPane{
+public class VentanaLogin extends FlowPane{
 
     Timeline timeline;
     /*
@@ -55,7 +61,7 @@ public class IniciarSesionVista extends FlowPane{
      Bloom blom = new Bloom();
      InnerShadow shadow = new InnerShadow(); 
      int bandera=0;
-     public IniciarSesionVista(Stage escenario){
+     public VentanaLogin(Stage escenario){
          primaryStage=escenario;
          init();
      }
@@ -101,7 +107,9 @@ public class IniciarSesionVista extends FlowPane{
         grid.add(registrarse,1,4);
         mensajeError.setOpacity(0.0);
         grid.add(mensajeError,1,3);
-        
+        grid.setMaxWidth(800);
+        grid.setMaxHeight(200);
+
         getChildren().add(ingresarMsj);
         getChildren().add(grid);
         /*evento para capturar enter y accionar el boton iniciar*/
@@ -127,6 +135,20 @@ public class IniciarSesionVista extends FlowPane{
              } 
          });
         }
+        
+        registrarse.setOnMouseClicked(new EventHandler<MouseEvent>(){
+             @Override
+             public void handle(MouseEvent t) {
+                 System.out.println("CLIC EN REGISTRARSE");
+                 VentanaRegistro vRM = new VentanaRegistro();
+                 try {
+                     vRM.start(primaryStage);
+                 } catch (Exception ex) {
+                     Logger.getLogger(VentanaLogin.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+             }
+            
+        });
      }
      
     public void capturarEnter(TextField entrada){
@@ -143,8 +165,25 @@ public class IniciarSesionVista extends FlowPane{
      */
     public void nuevaVentana(){
         try {
+            double ancho = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+            double altura = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+            System.out.println("nueva ventana"+ancho+altura);
+            //primaryStage.setMaxWidth(ancho);
+            //primaryStage.setMaxHeight(altura);
+           //primaryStage.setFullScreen(true);
+           //Pane pane = new Pane();
+           //Scene scene = new Scene(pane,ancho,altura);
+            //primaryStage.setScene(scene);
+            //primaryStage.setX(0);
+            //primaryStage.setY(0);
+            //primaryStage.showAndWait();
+            Stage stage = new Stage();
+            stage.setWidth(ancho);
+            stage.setHeight(altura);
             MenuPrincipal1 menuPrincipal1=new MenuPrincipal1();
-            menuPrincipal1.start(primaryStage);
+            menuPrincipal1.start(stage);
+            primaryStage.close();
+            //menuPrincipal1.init();
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
         }
