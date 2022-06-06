@@ -1,12 +1,12 @@
 package Renta.Utemita.Presentacion.VentanaRegistroModificacion;
 
 import Renta.Utemita.Presentacion.MenuPrincipal1;
-import Renta.Utemita.ReglasDeNegocio.IniciarSesion;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.RegistrarModificarUsuario;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.Usuario;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -64,7 +64,6 @@ public class VentanaModificacion extends Application{
     Text alerta = new Text("Error, ingresar datos correctos");
     String usuarioBienvenida;
     Label bienvenido=new Label("Bienvenido, usted a ingresado como"+usuarioBienvenida);
-        
     double ancho=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
     double altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
     Paint paint2 = Paint.valueOf("#2b6ff6");
@@ -93,9 +92,17 @@ public class VentanaModificacion extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        /*lectura del archivo*/
+        try {
+            String ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
+            System.out.println("ident"+ident);
+            idUsuario=Integer.parseInt(ident);
+        } catch (NumberFormatException e) {
+            System.out.println("error conversion al leer archivo"+e.getLocalizedMessage());
+        }
         /*cargar los datos*/
         try {
-                btnObtenerDatosModificar(4);
+                btnObtenerDatosModificar(idUsuario);
                 
                 //textFNombre.setText(usuario.getNombre());
                 textFNombre.textProperty().addListener((obs, oldText, newText) -> {
@@ -296,6 +303,21 @@ public class VentanaModificacion extends Application{
         else
             alertasUsuario();
         
+    }
+        public String leeArchivo(String direccion) {
+		String texto="";
+		try{
+			BufferedReader bf =new BufferedReader(new FileReader(direccion));
+			String temp="";
+			String bfRead;
+			while((bfRead=bf.readLine())!= null){
+				temp=temp+bfRead;
+			}
+			texto=temp;
+		}catch(IOException e){
+			System.out.println("no se encontro el archivo txt"+e.getLocalizedMessage());
+		}
+		return texto;
     }
     
 }

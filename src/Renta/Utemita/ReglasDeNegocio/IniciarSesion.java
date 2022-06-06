@@ -1,10 +1,15 @@
 package Renta.Utemita.ReglasDeNegocio;
 
 import Renta.Utemita.Presentacion.VentanaLogin;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import javafx.animation.ScaleTransition;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -15,8 +20,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
 /**
  * Ventana de inicio de la aplicacion
@@ -32,18 +39,56 @@ public class IniciarSesion extends Application {
         altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         //primaryStage.setX(ancho/6);
         //primaryStage.setY(altura/5);
-
+        ///////////////////////////////////////////////////////////////////////////77
+        //Drawing a Circle 
+      Circle circle = new Circle(); 
+      
+      //Setting the position of the circle 
+      circle.setCenterX(0.0f); 
+      circle.setCenterY(0.0f); 
+     
+      //Setting the radius of the circle 
+      circle.setRadius(25.0f); 
+      
+      //Setting the color of the circle 
+      circle.setFill(Color.GREEN); 
+      
+      //Setting the stroke width of the circle 
+      circle.setStrokeWidth(10); 
+       
+      //Creating scale Transition 
+      ScaleTransition scaleTransition = new ScaleTransition(); 
+      
+      //Setting the duration for the transition 
+      scaleTransition.setDuration(Duration.millis(2000)); 
+      
+      //Setting the node for the transition 
+      scaleTransition.setNode(circle); 
+      
+      //Setting the dimensions for scaling 
+      scaleTransition.setByY(1.5); 
+      scaleTransition.setByX(1.5); 
+      
+      //Setting the cycle count for the translation 
+      scaleTransition.setCycleCount(50); 
+      
+      //Setting auto reverse value to true 
+      scaleTransition.setAutoReverse(false); 
+      
+      //Playing the animation 
+      scaleTransition.play(); 
+     
+      //Creating a Group object  
+      Group root3 = new Group(circle); 
+      ///////////////////////////////////////////////////////////////////////////////
+        
         Pane root = new VentanaLogin(primaryStage);
+        
         Image image = new Image(getClass().getResourceAsStream("/imagenes/LOGO4.jpg")); 
         Label myLabel = new Label("Sistema de busqueda de cuartos");
         myLabel.setGraphic(new ImageView(image));
         root.getChildren().add(myLabel);
-        //root.setMinHeight(150);
-        //root.setMinWidth(200);
-        //root.setMaxSize(ancho/6, altura/6);
         root.setMaxSize(ancho/4, altura/4);
-        //root.setPrefSize(ancho/4, altura/4);
-        //estilo linergradient
         Stop[] stops = new Stop[] {
            //new Stop(0, Color.web("#3399ff")),
             new Stop(0, Color.web("blue")),
@@ -53,20 +98,17 @@ public class IniciarSesion extends Application {
            //new Stop(1, Color.web("#33ff9c")),
         };
         LinearGradient gp = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REPEAT, stops);
-        
         //se define el color de fondo de la parte interna
         root.setStyle("-fx-background-color: #ffffff;");
         Pane.layoutInArea(root, 500, 80, 0, 00, 0, Insets.EMPTY, true, true, HPos.CENTER, VPos.CENTER, true);
-        //Pane.positionInArea(root, 100, 0, 0, 100, 0, Insets.EMPTY, HPos.CENTER, VPos.CENTER, true);
         //padding de la parte central
         root.setPadding(new Insets(50, 00, 400, 100));
-        
-        System.out.println("Renta.Utemita.Presentacion.VentanaIniciarSesion.start()"+ancho+altura);
         //tamaño de la escena ancho-alto
         Scene scene = new Scene(root,ancho-(ancho/3),altura-(altura/3),gp);
-        //primaryStage.setMaxHeight(altura/2);
-        //primaryStage.setMaxWidth(ancho/2);
         
+        /*pasar datos entre ventanas*/
+        
+        /**se muestra la escena*/
         primaryStage.setScene(scene);
         root.setOpacity(1);
         primaryStage.setResizable(false);
@@ -81,4 +123,5 @@ public class IniciarSesion extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    
 }

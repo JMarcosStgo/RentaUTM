@@ -21,11 +21,16 @@ import javafx.scene.effect.Reflection;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -99,14 +104,14 @@ public class VentanaLogin extends FlowPane{
         grid.setVgap(12);
         //fondo del grid de inicio de sesion
         grid.setEffect(blom);
-        grid.add(lb1Correo, 0, 0);//10,01,11
-        grid.add(txtCorreo, 1, 0);
-        grid.add(lb2Password, 0, 1);
-        grid.add(password, 1, 1);
-        grid.add(bt1IniciarSesion,1,2);
-        grid.add(registrarse,1,4);
+        grid.add(lb1Correo, 1, 0);//10,01,11
+        grid.add(txtCorreo, 2, 0);
+        grid.add(lb2Password, 1, 1);
+        grid.add(password, 2, 1);
+        grid.add(bt1IniciarSesion,2,2);
+        grid.add(registrarse,2,4);
         mensajeError.setOpacity(0.0);
-        grid.add(mensajeError,1,3);
+        grid.add(mensajeError,2,3);
         grid.setMaxWidth(800);
         grid.setMaxHeight(200);
 

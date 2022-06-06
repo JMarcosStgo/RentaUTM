@@ -5,7 +5,11 @@ import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad;
 import java.io.File;
 import java.sql.Blob;
 import java.util.ArrayList;
+import javafx.animation.RotateTransition;
+import javafx.animation.ScaleTransition;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -37,8 +41,10 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Popup;
+import javafx.util.Duration;
 
 /**
  * Ventana para el registro y modificación de una propiedad
@@ -263,32 +269,39 @@ public class VentanaPropiedad extends Application{
            new Stop(1, Color.BLUE)
         };
         LinearGradient gp = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REPEAT, stops);
-        
         sp1.setStyle("-fx-background-color: #0c50cf;");//fondo del lateral izquieerdo
         //sp1.setOpacity(1);
         //sp1.setMaxWidth(ancho/3);
         sp1.setDisable(true);//no permite que se ajuste el panel
         sp1.setPadding(new Insets(altura,0,0,0));
         sp1.setMaxSize(ancho/3,altura-(altura/10));
+        
         /*agrega al stackpane el scroll y el splitpane*/
         sp.getItems().addAll(sp1, scroll);
         sp.setDividerPositions(0.3f, 0.6f, 0.9f);
         /*se añade el splitpane al grupo y el label de bienvenida*/
         root.getChildren().add(sp);
         root.getChildren().add(bienvenido);
-        Scene scene = new Scene(root, ancho, altura,gp);
 
-        
+        /*evento para cuando seleecione la disponibilidad*/
+        disponibilidad=(String) cb.getItems().get(0);
+        cb.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+             disponibilidad=(String) cb.getItems().get((Integer)t1);
+                System.out.println("disponibilidad " + disponibilidad);
+            }
+        });
            /*define la accion al pulsar sobre el boton verificar*/
         botonToken.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                ingresarCodigoPropiedad(inputToken.getText());
                 token=inputToken.getText();
+                ingresarCodigoPropiedad(token);
+//                
             }
         });
              
-        
         
         /*Evento para leer imagenes*/
         imagenesP.setOnAction(event -> {
@@ -300,15 +313,60 @@ public class VentanaPropiedad extends Application{
                     new FileChooser.ExtensionFilter("JPG", "*.jpg"),
                     new FileChooser.ExtensionFilter("PNG", "*.png")
             );
-
+            try{
             // Obtener la imagen seleccionada
             imgFile = fileChooser.showOpenDialog(null);
             System.out.println("file"+imgFile.getAbsolutePath());
             if(this.imagenes.size()<3){
                 this.imagenes.add(imgFile.getAbsolutePath());
             }
+            }catch(Exception e){
+            System.out.println("Error no se ingresaron imagenes"+e.getLocalizedMessage());
+            }
         });
         
+        ////////////////////////-----------------------------------------------------------------------
+        //Creating a hexagon 
+      Polygon hexagon = new Polygon();        
+      
+      //Adding coordinates to the hexagon 
+      hexagon.getPoints().addAll(new Double[]{        
+         200.0, 50.0, 
+         400.0, 50.0, 
+         450.0, 150.0,          
+         400.0, 250.0, 
+         200.0, 250.0,                   
+         150.0, 150.0, 
+      }); 
+      //Setting the fill color for the hexagon 
+      hexagon.setFill(Color.BLUE); 
+       
+      //Creating a rotate transition    
+      RotateTransition rotateTransition = new RotateTransition(); 
+      
+      //Setting the duration for the transition 
+      rotateTransition.setDuration(Duration.millis(1000)); 
+      
+      //Setting the node for the transition 
+      rotateTransition.setNode(hexagon);       
+      
+      //Setting the angle of the rotation 
+      rotateTransition.setByAngle(360); 
+      
+      //Setting the cycle count for the transition 
+      rotateTransition.setCycleCount(50); 
+      
+      //Setting auto reverse value to false 
+      rotateTransition.setAutoReverse(false); 
+      
+      //Playing the animation 
+      rotateTransition.play(); 
+         
+      //Creating a Group object   
+      Group root2 = new Group(hexagon); 
+         
+        
+        ///////////////////////////////////////////////////////----------------------------------------
 
         ///////////////////----------ventana emergente----------------/////////////////////////
         Popup po = new Popup();
@@ -363,19 +421,14 @@ public class VentanaPropiedad extends Application{
                         //Propiedad temp=rMP.obtenerDatosPropiedad(token);
                         descripcionCuarto=lCuarto.getText();
                         precio= Float.valueOf(lPrecio.getText());
-                        if(cb.getItems().get(0).equals("Disponible")){
-                            disponibilidad="Disponible";
-                        }else
-                            disponibilidad="No disponible";
                         ubicacion=lUbicacion.getText();
                         servicios=lServicios.getText();
                         //token=inputToken.getText();
                         
-                        token=getRandomString();
                         registrarPropiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,token,imagenesBlob);
                         descripcionCuarto=null;
                         precio=0.0f;
-                        disponibilidad=null;
+                        //disponibilidad=null;
                         ubicacion=null;
                         servicios=null;
                         token=null;
@@ -397,7 +450,8 @@ public class VentanaPropiedad extends Application{
             }
             
         });
-        
+        Scene scene = new Scene(root, ancho, altura,gp);
+
         /*Define las propiedades de la escena*/ 
         //se configura el stage principal
         primaryStage.setTitle("Registro Propiedad");
@@ -464,21 +518,27 @@ public class VentanaPropiedad extends Application{
             lCuarto.setText(temp.getDescripcionCuarto());
             String x=temp.getPrecio()+"";
             lPrecio.setText(x);
+            /*
             if(temp.getDisponibilidad().equals("Disponible")==true){
                 cb.setValue(cb.getItems().get(0));
                 System.out.println("entor al if");
             }
             else
                 cb.setValue(cb.getItems().get(1));
+            */
             lUbicacion.setText(temp.getUbicacion());
             lServicios.setText(temp.getServicios());
            
             imagenesBlob.add(temp.getImagenesBlob().get(0));
             imagenesBlob.add(temp.getImagenesBlob().get(1));
             imagenesBlob.add(temp.getImagenesBlob().get(2));
+            imagenes.add(" ");
+            imagenes.add(" ");
+            imagenes.add(" ");
+            
             //imagenesBlob=temp.getImagenesBlob();
                         
-            this.token=temp.getToken();
+            token=temp.getToken();
             System.out.println("token ingresar prop"+this.token);
             anchorPane.getChildren().add(grid);
             
@@ -503,15 +563,17 @@ public class VentanaPropiedad extends Application{
         System.out.println("codigoregistrarPropiedad"+codigo);
         
         RegistrarModificarPropiedad rMP2 = new RegistrarModificarPropiedad();
-        this.datos=rMP2.verificarDatos(descripcionCuarto,precio,disponibilidad,ubicacion,imagenes,servicios,token);
+        this.datos=rMP2.verificarDatos(descripcionCuarto,precio,disponibilidad,ubicacion,imagenes,servicios);
+            
         System.out.println("datos regprop"+datos);
         if(datos==true)
         {       RegistrarModificarPropiedad rMP = new RegistrarModificarPropiedad();
                 Propiedad temp=new Propiedad();
             this.codigo=rMP.btnExisteCodigoPropiedad(token);
             if(this.codigo==false){
+                token=getRandomString();
                 rMP = new RegistrarModificarPropiedad();
-                temp=new Propiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,this.token,null,0);
+                temp=new Propiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,token,null,0);
                 //rMP.ingresarPropiedad(temp);
                 rMP.ingresarPropiedad(temp);
                 this.descripcionCuarto=null;
@@ -525,7 +587,8 @@ public class VentanaPropiedad extends Application{
                 
             }
             else{
-                Propiedad temp2=new Propiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,inputToken.getText(),imagenesBlob,id);
+                token=inputToken.getText();
+                Propiedad temp2=new Propiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,token,imagenesBlob,id);
                 System.out.println("modificar propieadad"+temp2.getDescripcionCuarto()+"--"+temp2.getPrecio()+"--"+temp2.getDisponibilidad()+"--"+temp2.getUbicacion()+"--"+temp2.getServicios()+"--"+imagenes.size()+"--token: "+inputToken.getText()+"--"+imagenesBlob.size()+"id"+temp2.getIdPropiedad());
                 
                 rMP.modificarPropiedad(temp2);

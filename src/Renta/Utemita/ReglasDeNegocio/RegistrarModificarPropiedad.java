@@ -58,7 +58,7 @@ public class RegistrarModificarPropiedad {
     }
     /**
      * Método para validacion de los datos ingresados por el usuario
-     * @param descripcionCaurto
+     * @param descripcionCuarto
      * @param precio
      * @param disponibilidad
      * @param ubicacion
@@ -67,14 +67,13 @@ public class RegistrarModificarPropiedad {
      * @param token
      * @return boolean valor verdaro en caso de no encontrar errores
      */
-    public boolean verificarDatos(String descripcionCaurto,float precio,String disponibilidad,String ubicacion, ArrayList<String> imagenes,String servicios,String token){
+    public boolean verificarDatos(String descripcionCuarto,float precio,String disponibilidad,String ubicacion, ArrayList<String> imagenes,String servicios){
         /*caso 1: sea distinto de null, imagenes menor a 3 y precio sea invalido*/
-        if(descripcionCaurto!=null && precio>0 && precio<50000 && disponibilidad!=null && ubicacion!=null && imagenes.size()==3 &&servicios!=null && token!=null){
+        if(descripcionCuarto.length()>0 && precio>0 && precio<50000 && disponibilidad.length()>0 && ubicacion.length()>0 && imagenes.size()==3 &&servicios.length()>0){
             return true;
         }
         /*caso 2: en cualquier otro caso se toma como datos invalidos*/
-        else
-            return false;
+        return false;
     }
     /**
      * 

@@ -1,16 +1,12 @@
 package Renta.Utemita.Presentacion.VentanaRegistroModificacion;
 
-import Renta.Utemita.Presentacion.VentanaLogin;
 import Renta.Utemita.ReglasDeNegocio.IniciarSesion;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.RegistrarModificarUsuario;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.Usuario;
-import java.io.File;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,9 +14,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.Background;
@@ -36,9 +30,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
-import javafx.util.converter.DoubleStringConverter;
-
 /**
  * 
  * @author Marcos
