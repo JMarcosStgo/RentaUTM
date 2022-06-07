@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Renta.Utemita.Almacenamiento;
 
 import Renta.Utemita.Presentacion.Propiedad;
@@ -11,6 +6,8 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
@@ -27,8 +24,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author kAarl
+ * Clase donde se implementan metodos que realizan las llamadas al gestor de base de datos
+ * @author Marcos
+ * @version 1.0
  */
 public class AccesoBD {
    private final String driver="com.mysql.cj.jdbc.Driver";
@@ -43,15 +41,16 @@ public class AccesoBD {
             con=DriverManager.getConnection(cadenaConeccion,usuario,contraseña);
            // JOptionPane.showMessageDialog(null,"Conexion exitosa a la base de datos");
             
-       } catch (Exception e) {
+       } catch (ClassNotFoundException | SQLException e) {
            JOptionPane.showMessageDialog(null,"Error al establecer la conexion con la base de datos"+e);
        }
    }
    /**
-    * 
+    * Metodo para verificar la existencia de un usuario en la base de datos
     * @param correo
     * @param password
-    * @return 
+    * @return valor boleano verdadero si el usuario existe en la base de datos,
+    *         si no retorna false
     */
    public Boolean existeUsuario(String correo,String password){
      Statement st;
@@ -59,14 +58,18 @@ public class AccesoBD {
            st = con.createStatement();
            ResultSet rs=st.executeQuery("SELECT * FROM usuario WHERE correo='"+correo+"' AND password='"+password+"'");
            //retorna verdadero si encuentra al usuario en la BD, sino False;
-           if(rs.next()==true)
-             return true;
+           if(rs.next()==true){
+               escribeArchivo(rs.getInt(3));
+               return true;
+           }
        } catch (SQLException ex) {
            Logger.getLogger(AccesoBD.class.getName()).log(Level.SEVERE, null, ex);
        }
        return false;
    }
-   
+   /**
+    * Metodo para cerrar la conexion en la base de datos
+    */
    public void DesconectarBD(){
        try {con.close();
            //JOptionPane.showMessageDialog(null,"Sesion BD terminada de manera exitosa");           
@@ -102,13 +105,11 @@ public class AccesoBD {
                 file = new File(propiedad.getImagenes().get(2));
                 input3 = new FileInputStream(file);
                 statment.setBinaryStream(8, input3);
-           } catch (Exception e) {
+           } catch (FileNotFoundException | SQLException e) {
+                System.out.println("error al dar de alta una propiedad"+e.getLocalizedMessage());
            }
             statment.setString(9,propiedad.getToken());
             statment.executeUpdate();
-            
-//          st.executeQuery("INSERT INTO propiedad SET ?"+propiedad);
-//            st.executeQuery(" INSERT INTO propiedad(descripcion,precio,disponibilidad,ubicacion,servicios,imagen1,imagen2,imagen3,token) VALUES (${propiedad.getDescripcionCuarto()},'"+propiedad.getPrecio()+"','"+propiedad.getDisponibilidad()+"','"+propiedad.getUbicacion()+"','"+propiedad.getServicios()+"',' ',' ',' ','"+propiedad.getToken()+"')");
             }catch (SQLException e) {
             System.out.println(e.getLocalizedMessage());
         }
@@ -116,7 +117,7 @@ public class AccesoBD {
    /**
     * Metodo para verificar la existencia de una propiedad en la base de datos
     * @param token
-    * @return 
+    * @return verdadero o falso,para una propiedad en la BD
     */
    public Boolean verificacionCodigoPropiedad(String token){
         boolean retorno=false;
@@ -130,13 +131,12 @@ public class AccesoBD {
         } catch (SQLException ex) {
            Logger.getLogger(AccesoBD.class.getName()).log(Level.SEVERE, null, ex);
        }
-        
        return retorno;
    }
    /**
-    * Metodo para obtener una propiedad a partir del token
+    * Metodo para obtener una propiedad de la BD a partir del token
     * @param token
-    * @return 
+    * @return una propiedad
     */
    public Propiedad obtenerPropiedadModificar(String token){
        Propiedad temp=new Propiedad();
@@ -184,9 +184,9 @@ public class AccesoBD {
    /**
     * Metodo para modificar una propiedad por su identificador
     * @param propiedad
-    * @return boolean
+    * @return valor boleano, verdadero si se actualiza sin error la propiedad
     */
-   public Boolean actualizarPropiedad(Propiedad propiedad){
+   public boolean actualizarPropiedad(Propiedad propiedad){
         try {
             Statement st = con.createStatement();
             String query="UPDATE propiedad SET descripcion='"+propiedad.getDescripcionCuarto()+"' ,precio='"+propiedad.getPrecio()+"'  ,disponibilidad='"+propiedad.getDisponibilidad()+"'       ,ubicacion='"+propiedad.getUbicacion()+"'  ,servicios='"+propiedad.getServicios()+"'  ,imagen1='"+propiedad.getImagenesBlob().get(0)+"'     ,imagen2='"+propiedad.getImagenesBlob().get(1)+"'    ,imagen3='"+propiedad.getImagenesBlob().get(2)+"'"   +",token='"+propiedad.getToken()+"'" +"where idPropiedad='"+propiedad.getIdPropiedad()+"'";
@@ -199,14 +199,18 @@ public class AccesoBD {
         }
        return false;
    }
-   public boolean RegistroDeDatos(Usuario usuario){
+   /**
+    * Método para dar de alta un usuario en la BD
+    * @param usuario
+    * @return valor boleano, verdadero si se ingreso correctamente a la BD
+    */
+   public boolean registroDeDatos(Usuario usuario){
        try {
-            //Statement st = con.createStatement();
             String query="INSERT INTO usuario (correo,password,telefono,matricula,nombre,tipo) VALUES (?,?,?,?,?,?)";
             PreparedStatement statment=(PreparedStatement)con.prepareStatement(query);
             statment.setString(1,usuario.getCorreo());
             statment.setString(2,usuario.getContraseña());
-            statment.setInt(3,usuario.getTelefono());
+            statment.setLong(3,usuario.getTelefono());
             statment.setString(4,usuario.getMatricula());
             statment.setString(5,usuario.getNombre());
             statment.setString(6,usuario.getTipo());
@@ -217,30 +221,38 @@ public class AccesoBD {
        }
        return false;
    }
+   /**
+    * Método para obtener los datos de un usuario a partir de su id
+    * @param idUsuario
+    * @return retorna un usuario
+    */
    public Usuario obtencionDatos(int idUsuario){
        try {
             Statement st = con.createStatement();
             ResultSet rs=st.executeQuery("SELECT * FROM usuario WHERE idUsuario='"+idUsuario+"'");
             if(rs.next()==true){
-                Usuario usuario = new Usuario();
-                usuario.setCorreo(rs.getString(1));
-                usuario.setContraseña(rs.getString(2));
-                usuario.setIdUsuario(rs.getInt(3));
-                usuario.setTelefono(rs.getInt(4));
-                usuario.setMatricula(rs.getString(5));
-                usuario.setNombre(rs.getString(6));
+                Usuario usuarioBD = new Usuario();
+                usuarioBD.setCorreo(rs.getString(1));
+                usuarioBD.setContraseña(rs.getString(2));
+                usuarioBD.setIdUsuario(rs.getInt(3));
+                usuarioBD.setTelefono(rs.getInt(4));
+                usuarioBD.setMatricula(rs.getString(5));
+                usuarioBD.setNombre(rs.getString(6));
                 
-                return usuario;
+                return usuarioBD;
             }
        } catch (SQLException e) {
             System.out.println("error obtencion de datos"+e.getLocalizedMessage());
        }
        return null;
    }
-   
+   /**
+    * Método para modificar los datos de un usuario en la BD
+    * @param usuario
+    * @return valor boleano, verdadero si si modifica exitosamente un usuario
+    */
    public boolean modificarDatos(Usuario usuario){
        try {
-            //Statement st = con.createStatement();
             String query="UPDATE usuario SET correo='"+usuario.getCorreo()+"' ,password='"+usuario.getContraseña()+"'  ,telefono='"+usuario.getTelefono()+"'       ,matricula='"+usuario.getMatricula()+"'       ,nombre='"+usuario.getNombre()+"'  " +"where idUsuario='"+usuario.getIdUsuario()+"'";
             PreparedStatement statment=(PreparedStatement)con.prepareStatement(query);
             statment.executeUpdate();
@@ -250,4 +262,25 @@ public class AccesoBD {
        }
        return false;
    }
+   
+   public void escribeArchivo(int idUsuario){
+        //Un texto cualquiera guardado en una variable
+        String saludo =String.valueOf(idUsuario);
+
+        try {
+            //Crear un objeto File se encarga de crear o abrir acceso a un archivo que se especifica en su constructor
+            File archivo = new File("..\\RentaUTM\\src\\Imagenes\\id.txt");
+            archivo.delete();
+            //Crear objeto FileWriter que sera el que nos ayude a escribir sobre archivo
+            FileWriter escribir = new FileWriter(archivo, true);
+            //escribir.write("");
+            escribir.write(saludo);
+
+            //Cerramos la conexion
+            escribir.close();
+        } //Si existe un problema al escribir cae aqui
+        catch (IOException e) {
+            System.out.println("Error al escribir"+e.getLocalizedMessage());
+        }
+    }
 }

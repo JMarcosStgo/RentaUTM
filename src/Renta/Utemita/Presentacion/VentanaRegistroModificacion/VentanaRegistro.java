@@ -1,12 +1,14 @@
 package Renta.Utemita.Presentacion.VentanaRegistroModificacion;
 
-import Renta.Utemita.ReglasDeNegocio.IniciarSesion;
+import Renta.Utemita.ReglasDeNegocio.VentanaLogin;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.RegistrarModificarUsuario;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.Usuario;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
+import javafx.event.EventDispatcher;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -31,11 +33,13 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 /**
- * 
+ * Ventana para el registro de un usuario en la BD
  * @author Marcos
  * @version 1.0
  */
 public class VentanaRegistro extends Application{
+    double ancho=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+    double altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
     GridPane grid = new GridPane();
     Pane pane=new Pane();
     InnerShadow shadow = new InnerShadow(); 
@@ -56,22 +60,17 @@ public class VentanaRegistro extends Application{
     Paint blanco = Paint.valueOf("#ffffff");
     private Button ingresar=new Button("Registrarse");
     Text alerta = new Text("Error, ingresar datos correctos");
-    
-    double ancho=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-    double altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
     Paint paint2 = Paint.valueOf("#2b6ff6");
      
-    
-    
-    
+    /*variables*/
     private int idUsuario;
     private String nombre;
-    private int telefono;
+    private long telefono;
     private String correo;
     private String matricula;
     private String contraseña;
     private boolean datos;
-     boolean registro;
+    private boolean registro;
     private String tipo;
     /**
      * @param args llama al metodo star principal de la ventana
@@ -171,67 +170,6 @@ public class VentanaRegistro extends Application{
         grid.add(ingresar,0,14);
         grid.add(alerta,0,15);
         alerta.setOpacity(0);
-        
-        /* accion cuando selecciona cb como estudiante y arrendador*/
-        tipo=(String) cb.getItems().get(0);
-        System.out.println("tipo default"+tipo);
-        cb.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
-                 tipo=(String) cb.getItems().get((Integer)t1);
-                 System.out.println(cb.getItems().get((Integer) t1)+"tipo"+tipo);
-                 if(tipo.equals("Arrendador")){
-                     txtMatricula.setOpacity(0);
-                     txtFMatricula.setOpacity(0);
-                 }else{
-                    txtMatricula.setOpacity(1);
-                    txtFMatricula.setOpacity(1);
-                 }
-                 
-            }
-        });
-
-                 
-        /*cb.getItems().addListener(new ListChangeListener() {
-            @Override
-            public void onChanged(ListChangeListener.Change change) {
-                System.out.println("cb evento"+change.getList()+cb.getItems());
-            }
-        });
-        cb.setOnShowing(new EventHandler() {
-            @Override
-            public void handle(Event t) {
-                System.out.println("cb evento2"+t.getSource()+cb.getItems());
-            }
-        });
-        */
-        /*evento al pulsar el boton */
-        ingresar.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                try {
-                    nombre=textFNombre.getText();
-                    correo=txtFCorreo.getText();
-                    contraseña=txtFContraseña.getText();
-                    String tel=txtFTelefono.getText();
-                    telefono=Integer.parseInt(tel);
-                    matricula=txtFMatricula.getText();
-                    System.out.println("telefono"+telefono);
-                    registrarUsuario(nombre, telefono, correo, contraseña,matricula,tipo);
-                    /*se abre la nueva ventana*/
-                    if(registro){
-                        IniciarSesion inicio = new IniciarSesion();
-                        primaryStage.setX(ancho/6);
-                        inicio.start(primaryStage);
-                    }
-                } catch (NumberFormatException e) {
-                    alertasUsuario();
-                    System.out.println("error "+ e.getLocalizedMessage());
-                }
-            }
-        });
-        
-        
         /*configuracion de la escena y los elementos que tendra*/
         Group root = new Group();
         final StackPane sp1 = new StackPane();
@@ -245,10 +183,70 @@ public class VentanaRegistro extends Application{
         root.getChildren().add(grid);
         Scene scene = new Scene(root, ancho, altura,gp);
         
-        /*cierra la ventana*/
+        /* accion cuando selecciona cb como estudiante y arrendador*/
+        tipo=(String) cb.getItems().get(0);
+        System.out.println("tipo default"+tipo);
+        cb.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+                 tipo=(String) cb.getItems().get((Integer)t1);
+                 System.out.println(cb.getItems().get((Integer) t1)+"tipo"+tipo);
+                 if(tipo.equals("Arrendador")){
+                     txtMatricula.setOpacity(0);
+                     txtFMatricula.setOpacity(0);
+                     matricula="";
+                     System.out.println("entra if cb"+matricula);
+                 }else{
+                    matricula=txtFMatricula.getText();
+                    txtMatricula.setOpacity(1);
+                    txtFMatricula.setOpacity(1);
+                    System.out.println("entra else cb"+matricula);
+                 }
+                 
+            }
+        });
+        
+        /*esperar campos llenos para habilitar boton*/
+        /*
+        ingresar.eventDispatcherProperty().addListener(new ChangeListener<EventDispatcher>() {
+            @Override
+            public void changed(ObservableValue<? extends EventDispatcher> ov, EventDispatcher t, EventDispatcher t1) {
+                    if(nombre.length()>0 && telefono>0 && telefono <10000000000L && correo.length()>0 && contraseña.length()>0){
+                    System.out.println("desbloquea el boton");
+                    ingresar.setDisable(false);
+                }
+                else
+                    ingresar.setDisable(true);
             
+            }
+        });
+        */    
+        /*evento al pulsar el boton */
+        ingresar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                try {
+                    nombre=textFNombre.getText();
+                    correo=txtFCorreo.getText();
+                    contraseña=txtFContraseña.getText();
+                    String tel=txtFTelefono.getText();
+                    telefono=Long.parseLong(tel);
+                    matricula=txtFMatricula.getText();
+                    System.out.println("telefono"+telefono);
+                    registrarUsuario(nombre, telefono, correo, contraseña,matricula,tipo);
+                    /*se abre la nueva ventana*/
+                    if(registro){
+                        VentanaLogin inicio = new VentanaLogin();
+                        primaryStage.setX(ancho/6);
+                        inicio.start(primaryStage);
+                    }
+                } catch (NumberFormatException e) {
+                    alertasUsuario();
+                    System.out.println("error "+ e.getLocalizedMessage());
+                }
+            }
+        });
         /*Define las propiedades de la escena*/ 
-        //se configura el stage principal
         primaryStage.setTitle("Registro Usuario");
         primaryStage.setScene(scene);
         primaryStage.setFullScreen(true);
@@ -256,12 +254,20 @@ public class VentanaRegistro extends Application{
     
     
     }
-    
-    public void registrarUsuario(String nombre, int telefono, String correo, String contraseña,String matricula,String tipo){
+    /**
+     * Método para hacer la solicitud de registro de un usuario
+     * @param nombre
+     * @param telefono
+     * @param correo
+     * @param contraseña
+     * @param matricula
+     * @param tipo 
+     */
+    public void registrarUsuario(String nombre, long telefono, String correo, String contraseña,String matricula,String tipo){
         RegistrarModificarUsuario rModUser = new RegistrarModificarUsuario();
         Usuario usuario=new Usuario(nombre, telefono, correo, contraseña, matricula,tipo);
         datos=rModUser.verificarDatos(nombre, telefono, correo, matricula, contraseña); 
-        System.out.println("datos registrar usuario"+datos+ "---"+nombre+telefono+correo+matricula+contraseña);
+        System.out.println("datos registrar usuario"+datos+"longitud matricula"+matricula.length()+ "---"+nombre+telefono+correo+matricula+contraseña);
         if(datos){
             registro=rModUser.solicitarRegistro(usuario);
             System.out.println("registro "+registro);
@@ -270,13 +276,11 @@ public class VentanaRegistro extends Application{
             alertasUsuario();
         
     }
+    /**
+     * Método para mostrar la alerta cuando uno o mas campos no se ingresan correctamente
+     */
     public void alertasUsuario(){
         alerta.setOpacity(1);
         System.out.println("alertas usuario");
-    }
-    public void btnObtenerDatosModificar(int idUsuario){
-        RegistrarModificarUsuario rModUser = new RegistrarModificarUsuario();
-        Usuario temp=rModUser.cargarDatos(idUsuario);
-        
     }
 }

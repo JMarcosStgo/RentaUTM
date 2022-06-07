@@ -1,14 +1,14 @@
 package Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario;
 
 /**
- *
+ * Clase para definir y recuperar la información de un usuario
  * @author Marcos
  * @version 1.0
  */
 public class Usuario {
     private int idUsuario;
     private String nombre;
-    private int telefono;
+    private long  telefono;
     private String correo;
     private String matricula;
     private String contraseña;
@@ -23,7 +23,7 @@ public class Usuario {
     }
     public Usuario (){}
 
-    public Usuario(String nombre, int telefono, String correo, String contraseña,String matricula,int idUsuario) {
+    public Usuario(String nombre, long telefono, String correo, String contraseña,String matricula,int idUsuario) {
         this.nombre = nombre;
         this.telefono = telefono;
         this.correo = correo;
@@ -31,7 +31,7 @@ public class Usuario {
         this.matricula= matricula;
         this.idUsuario=idUsuario;
     }
-    public Usuario(String nombre, int telefono, String correo, String contraseña,String matricula,String tipo) {
+    public Usuario(String nombre, long telefono, String correo, String contraseña,String matricula,String tipo) {
         this.nombre = nombre;
         this.telefono = telefono;
         this.correo = correo;
@@ -55,11 +55,11 @@ public class Usuario {
         this.nombre = nombre;
     }
 
-    public int getTelefono() {
+    public long getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(long telefono) {
         this.telefono = telefono;
     }
 

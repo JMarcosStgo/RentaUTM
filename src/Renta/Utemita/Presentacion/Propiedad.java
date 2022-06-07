@@ -5,22 +5,21 @@ import java.sql.Blob;
 import java.util.ArrayList;
 
 /**
- * Clase para instanciar un objeto de tipo propiedad
+ * Clase para asignar y recuperar datos de una propiedad
  * @author Marcos
+ * @version 1.0
  */
 public class Propiedad {
-    String descripcionCuarto;
-    float precio;
-    String disponibilidad;
-    String ubicacion;
-    String servicios;
-    ArrayList <String> imagenes = new ArrayList();
-    ArrayList <Blob> imagenesBlob = new ArrayList();
-    ArrayList <Image> imagenesP = new ArrayList();
-    
-    
-    int idPropiedad;
-    String token;
+    private String descripcionCuarto;
+    private float precio;
+    private String disponibilidad;
+    private String ubicacion;
+    private String servicios;
+    private ArrayList <String> imagenes = new ArrayList();
+    private ArrayList <Blob> imagenesBlob = new ArrayList();
+    private ArrayList <Image> imagenesP = new ArrayList();
+    private int idPropiedad;
+    private String token;
     public Propiedad(String descripcionCuarto, float precio, String disponibilidad, String ubicacion, String servicios,ArrayList <String> imagenes,String token,ArrayList <Blob> imagenesBlob,int idPropiedad) {
         this.descripcionCuarto = descripcionCuarto;
         this.precio = precio;
@@ -32,8 +31,6 @@ public class Propiedad {
         this.token=token;
         this.idPropiedad=idPropiedad;
     }
-    
-
     public Propiedad(){}
     
     public ArrayList<Blob> getImagenesBlob() {

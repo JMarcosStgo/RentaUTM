@@ -3,12 +3,15 @@ package Renta.Utemita.Presentacion;
 import Renta.Utemita.Almacenamiento.AccesoBD;
 import Renta.Utemita.Presentacion.VentanaRegistroModificacion.VentanaRegistro;
 import static java.awt.Event.ENTER;
+import java.awt.HeadlessException;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -21,16 +24,10 @@ import javafx.scene.effect.Reflection;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
-import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -39,13 +36,9 @@ import javafx.stage.Stage;
  * @author Marcos
  * @version 1.0
  */
-public class VentanaLogin extends FlowPane{
+public class IniciarSesion extends FlowPane{
 
-    Timeline timeline;
-    /*
-     *constructor por default
-     *
-     */
+     Timeline timeline;
      Stage primaryStage;
      Label lb1Correo = new Label("Correo");
      Text mensajeError=new Text("Error al ingresar su Correo o Password");
@@ -66,7 +59,11 @@ public class VentanaLogin extends FlowPane{
      Bloom blom = new Bloom();
      InnerShadow shadow = new InnerShadow(); 
      int bandera=0;
-     public VentanaLogin(Stage escenario){
+     
+     /*
+     *constructor por default
+     */
+     public IniciarSesion(Stage escenario){
          primaryStage=escenario;
          init();
      }
@@ -149,7 +146,7 @@ public class VentanaLogin extends FlowPane{
                  try {
                      vRM.start(primaryStage);
                  } catch (Exception ex) {
-                     Logger.getLogger(VentanaLogin.class.getName()).log(Level.SEVERE, null, ex);
+                     Logger.getLogger(IniciarSesion.class.getName()).log(Level.SEVERE, null, ex);
                  }
              }
             
@@ -173,15 +170,6 @@ public class VentanaLogin extends FlowPane{
             double ancho = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
             double altura = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
             System.out.println("nueva ventana"+ancho+altura);
-            //primaryStage.setMaxWidth(ancho);
-            //primaryStage.setMaxHeight(altura);
-           //primaryStage.setFullScreen(true);
-           //Pane pane = new Pane();
-           //Scene scene = new Scene(pane,ancho,altura);
-            //primaryStage.setScene(scene);
-            //primaryStage.setX(0);
-            //primaryStage.setY(0);
-            //primaryStage.showAndWait();
             Stage stage = new Stage();
             stage.setWidth(ancho);
             stage.setHeight(altura);
@@ -189,7 +177,7 @@ public class VentanaLogin extends FlowPane{
             menuPrincipal1.start(stage);
             primaryStage.close();
             //menuPrincipal1.init();
-        } catch (Exception e) {
+        } catch (HeadlessException e) {
             System.out.println(e.getLocalizedMessage());
         }
     }
@@ -202,6 +190,7 @@ public class VentanaLogin extends FlowPane{
                     /*conexion con la base de datos*/
                     AccesoBD conexion=new AccesoBD();
                     conexion.iniciarBD();
+                    
                     datosVerificar=conexion.existeUsuario(txtCorreo.getText(), password.getText());
                     System.out.println("entro"+datosVerificar);
                     conexion.DesconectarBD();
@@ -216,14 +205,17 @@ public class VentanaLogin extends FlowPane{
                             /*si el usuario ingresa un dato incorrecto se muestra el mensaje de error en pantala*/
                             mostrarAlertas();
                         }
-                    } catch (Exception e) {
+                    } catch (InterruptedException e) {
                         System.out.println(e.getLocalizedMessage());
                     }
     }
     /**
      * Metodo que muestra mensaje de error al iniciar sesión
+     * @throws java.lang.InterruptedException
      */
     public void mostrarAlertas() throws InterruptedException{
         mensajeError.setOpacity(1);
     }
+    
+    
 }

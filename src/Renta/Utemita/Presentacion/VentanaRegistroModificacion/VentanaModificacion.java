@@ -37,7 +37,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 /**
- *
+ * Ventana para la modificación de los datos de un usuario
  * @author Marcos
  * @version 1.0
  */
@@ -67,10 +67,8 @@ public class VentanaModificacion extends Application{
     double ancho=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
     double altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
     Paint paint2 = Paint.valueOf("#2b6ff6");
-     
     
-    
-    
+    /*variables*/
     private int idUsuario;
     private String nombre;
     private int telefono;
@@ -81,6 +79,7 @@ public class VentanaModificacion extends Application{
     boolean registro;
     RegistrarModificarUsuario rMU=new RegistrarModificarUsuario();
     Usuario usuario = new Usuario();
+    
     /**
      * @param args the command line arguments
      */
@@ -89,7 +88,11 @@ public class VentanaModificacion extends Application{
  
         launch(args);
     }
-
+    /**
+     * Método para iniciar la interfaz
+     * @param primaryStage
+     * @throws Exception 
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         /*lectura del archivo*/
@@ -100,17 +103,15 @@ public class VentanaModificacion extends Application{
         } catch (NumberFormatException e) {
             System.out.println("error conversion al leer archivo"+e.getLocalizedMessage());
         }
-        /*cargar los datos*/
+        /*cargar los datos al formulario*/
         try {
                 btnObtenerDatosModificar(idUsuario);
-                
-                //textFNombre.setText(usuario.getNombre());
                 textFNombre.textProperty().addListener((obs, oldText, newText) -> {
                     System.out.println("Text changed from "+oldText+" to "+newText.length());
                     textFNombre.setText(newText);
                     
                 });
-                
+                textFNombre.setText(usuario.getNombre());
                 txtFContraseña.setText(usuario.getContraseña());
                 txtFCorreo.setText(usuario.getCorreo());
                 txtFMatricula.setText(usuario.getMatricula());
@@ -121,7 +122,7 @@ public class VentanaModificacion extends Application{
         }
         
 
-        /*-----------------------------------------------------------------------------------------*/
+/*--------------------------------configuracion interfaz ---------------------------------------*/
         shadow.setBlurType(BlurType.GAUSSIAN);  
         shadow.setColor(javafx.scene.paint.Color.web("#eaedf2"));  
         shadow.setHeight(25);  
@@ -246,9 +247,9 @@ public class VentanaModificacion extends Application{
         root.getChildren().add(sp);
         root.getChildren().add(bienvenido);
         Scene scene = new Scene(root, ancho, altura,gp);
-        /*--------------------------------------------------------------------------------------------*/
+/*-----------------------------fin interfaz-----------------------------------------------------------*/
         
-        /*evento al pulsar el boton */
+        /*evento al pulsar el boton de iniciar sesion */
         ingresar.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
@@ -260,7 +261,6 @@ public class VentanaModificacion extends Application{
                     telefono=Integer.parseInt(tel);
                     matricula=txtFMatricula.getText();
                     System.out.println("telefono"+telefono);
-                    //datos=rMU.verificarDatos(nombre, telefono, correo, matricula, contraseña);
                     modificarUsuario(nombre, telefono, correo, contraseña,matricula,idUsuario);
                     /*se abre la nueva ventana*/
                     if(datos){
@@ -271,11 +271,8 @@ public class VentanaModificacion extends Application{
                     alertasUsuario();
                     System.out.println("error "+ e.getLocalizedMessage());
                 }
-
             }
         });
-        
-        
         /*Define las propiedades de la escena*/ 
         primaryStage.setTitle("Modificar perfil Usuario");
         primaryStage.setScene(scene);
@@ -283,15 +280,31 @@ public class VentanaModificacion extends Application{
         primaryStage.show();
     
     }
+    /**
+     * Método para mostrar alertas de datos incorrectos ingresados por el usuario
+     */
     public void alertasUsuario(){
         alerta.setOpacity(1);
         System.out.println("alertas usuario");
     }
+    /**
+     * Método para obtener los datos a modificar y se puedan cargar en el formulario
+     * @param idUsuario 
+     */
     public void btnObtenerDatosModificar(int idUsuario){
         RegistrarModificarUsuario rModUser = new RegistrarModificarUsuario();
         usuario=rModUser.cargarDatos(idUsuario);
         System.out.println("btnObtenerDatosM"+usuario.getContraseña()+usuario.getCorreo()+usuario.getMatricula());
     }
+    /**
+     * Método para pasar los datos a modificar de un usuario
+     * @param nombre
+     * @param telefono
+     * @param correo
+     * @param contraseña
+     * @param matricula
+     * @param idUsuario 
+     */
     public void modificarUsuario(String nombre, int telefono, String correo, String contraseña,String matricula,int idUsuario){
         System.out.println("modificar usuario"+nombre+telefono+correo+contraseña+matricula+idUsuario);
         datos=rMU.verificarDatos(nombre, telefono, correo, matricula, contraseña);
@@ -304,7 +317,7 @@ public class VentanaModificacion extends Application{
             alertasUsuario();
         
     }
-        public String leeArchivo(String direccion) {
+    public String leeArchivo(String direccion) {
 		String texto="";
 		try{
 			BufferedReader bf =new BufferedReader(new FileReader(direccion));

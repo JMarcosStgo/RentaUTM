@@ -1,5 +1,6 @@
 package Renta.Utemita.Presentacion;
 
+import Renta.Utemita.Presentacion.VentanaRegistroModificacion.VentanaModificacion;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -29,7 +30,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
- *
+ * Ventana para la busqueda de cuartos 
  * @author Marcos
  * @version 1.0
  */
@@ -68,7 +69,7 @@ public class MenuPrincipal1 extends Application {
         } catch (NumberFormatException e) {
             System.out.println("error conversion al leer archivo"+e.getLocalizedMessage());
         }
-        /*configuracion de la pantalla-----------------------------------------*/
+/*----------------------configuracion de la pantalla-----------------------------------------*/
         shadow.setBlurType(BlurType.GAUSSIAN);  
         shadow.setColor(javafx.scene.paint.Color.web("#eaedf2"));  
         shadow.setHeight(25);  
@@ -84,7 +85,6 @@ public class MenuPrincipal1 extends Application {
         /*grid del formulario para registrar modificar propiedad*/
         grid.setStyle("-fx-background-color:white");//colorde fondo  del grid
         grid.setPadding(new Insets(altura/8,0,50,100));
-        //grid.setMaxSize(ancho,altura);
         grid.setMinHeight(altura-(altura/10));
         //ANCHO DEL SCROLL
         grid.setMinWidth(ancho);
@@ -129,17 +129,10 @@ public class MenuPrincipal1 extends Application {
         /*se añade el splitpane al grupo y el label de bienvenida*/
         root.getChildren().add(sp);
         root.getChildren().add(bienvenido);
-        
-        
-        
-        
-        
-        
-        
-        
-        Button btn = new Button();
-        btn.setText("Modificar propiedad'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
+/*----------------------fin configuracion de la pantalla-----------------------------------------*/
+        Button btnModificar = new Button();
+        btnModificar.setText("Modificar propiedad'");
+        btnModificar.setOnAction(new EventHandler<ActionEvent>() {
                 
             @Override
             public void handle(ActionEvent event) {
@@ -152,9 +145,31 @@ public class MenuPrincipal1 extends Application {
                 }
             }
         });
-        //StackPane root = new StackPane();
-        root.getChildren().add(btn);
+        
+        Button btnModificarUsuario = new Button();
+        btnModificarUsuario.setText("Modificar usuario'");
+        btnModificarUsuario.setOnAction(new EventHandler<ActionEvent>() {
+                
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Hello World!");
+                VentanaModificacion ventanaP = new VentanaModificacion();
+                try {
+                    ventanaP.start(primaryStage);
+                } catch (Exception ex) {
+                    Logger.getLogger(MenuPrincipal1.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        
         /*configuracion de la escena*/
+        GridPane gridTitulo = new GridPane();
+        gridTitulo.add(btnModificar,0,0);
+        gridTitulo.add(btnModificarUsuario,1,0);
+        //root.getChildren().add(btnModificar);
+        //btnModificarUsuario.setAlignment(Pos.CENTER);
+        root.getChildren().add(gridTitulo);
+        
         Scene scene = new Scene(root, ancho, altura);
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Hello World!");

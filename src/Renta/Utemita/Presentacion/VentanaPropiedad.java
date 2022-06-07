@@ -6,7 +6,6 @@ import java.io.File;
 import java.sql.Blob;
 import java.util.ArrayList;
 import javafx.animation.RotateTransition;
-import javafx.animation.ScaleTransition;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -56,7 +55,6 @@ public class VentanaPropiedad extends Application{
     /*alto y ancho de la pantalla*/
     double ancho=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
     double altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-        
     String usuario="";
     GridPane grid = new GridPane();
     GridPane gridToken = new GridPane();
@@ -87,6 +85,7 @@ public class VentanaPropiedad extends Application{
     Text errorRegPropiedad = new Text("Error,no se ha podido ingreasar los datos, revise sus datos proporcionados");
     private Button ingresar=new Button("Ingresar datos");
     
+    /*variables*/
     private String descripcionCuarto="";
     private float precio=0.0f;
     private String disponibilidad="";
@@ -106,9 +105,14 @@ public class VentanaPropiedad extends Application{
         // TODO code application logic here
         launch(args);
     }
-    
+    /**
+     * Lanza la interfaz
+     * @param primaryStage
+     * @throws Exception 
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
+/*----------------------------------------interfaz--------------------------------------------------*/        
         /*elementos del formulario del token*/
         gridToken.setStyle("-fx-background-color:white");//colorde fondo  del grid
         gridToken.setPadding(new Insets(altura/5,0,0,0));
@@ -136,9 +140,6 @@ public class VentanaPropiedad extends Application{
         gridToken.add(tokenTitulo,0,0);
         gridToken.add(inputToken,0,1);
         gridToken.add(botonToken,1,1);
-        
-        
-
         /*grid del formulario para registrar modificar propiedad*/
         grid.setStyle("-fx-background-color:white");//colorde fondo  del grid
         grid.setPadding(new Insets(altura/5,0,0,0));
@@ -223,8 +224,7 @@ public class VentanaPropiedad extends Application{
         popup.setY(altura/4);
         label.setMinWidth(altura/2);
         label.setMinHeight(ancho/4);
-
-                /*grid donde se añade cada elemento del formulario*/
+        /*grid donde se añade cada elemento del formulario*/
         grid.setHgap(10);
         grid.setVgap(12);
         grid.add(pane, 0,1);
@@ -280,10 +280,92 @@ public class VentanaPropiedad extends Application{
         sp.getItems().addAll(sp1, scroll);
         sp.setDividerPositions(0.3f, 0.6f, 0.9f);
         /*se añade el splitpane al grupo y el label de bienvenida*/
+        sp.setMaxHeight(500);
         root.getChildren().add(sp);
         root.getChildren().add(bienvenido);
-
-        /*evento para cuando seleecione la disponibilidad*/
+/*--------------------------------------fin interfaz--------------------------------------------------*/
+      //Creating a hexagon 
+      Polygon hexagon = new Polygon();        
+      
+      //Adding coordinates to the hexagon 
+      hexagon.getPoints().addAll(new Double[]{        
+         200.0, 50.0, 
+         400.0, 50.0, 
+         450.0, 150.0,          
+         400.0, 250.0, 
+         200.0, 250.0,                   
+         150.0, 150.0, 
+      }); 
+      //Setting the fill color for the hexagon 
+      hexagon.setFill(Color.CORAL); 
+     
+      //Creating a rotate transition    
+      RotateTransition rotateTransition = new RotateTransition(); 
+      
+      //Setting the duration for the transition 
+      rotateTransition.setDuration(Duration.millis(10000)); 
+      
+      //Setting the node for the transition 
+      rotateTransition.setNode(hexagon);       
+      
+      //Setting the angle of the rotation 
+      rotateTransition.setByAngle(360); 
+      
+      //Setting the cycle count for the transition 
+      rotateTransition.setCycleCount(100); 
+      
+      //Setting auto reverse value to false 
+      rotateTransition.setAutoReverse(false); 
+      
+      //Playing the animation 
+      rotateTransition.play(); 
+         
+      //Creating a Group object   
+      
+      Group root2 = new Group(hexagon); 
+      //root2.setLayoutX(0);
+      //anchorPane.setLayoutY(1000);
+      //gridToken.add(root2,1,5);
+        
+        ///////////////////----------ventana emergente----------------/////////////////////////
+        Popup po = new Popup();
+        po.setX(205);
+        po.setY(304);
+        po.setHeight(altura/2);
+        po.getContent().addAll(new Circle(35, 45, 64, Color.RED));
+        Label tituloVentanaE = new Label ("Desea agregar otra propiedad");
+        Button agregarBtn = new Button("Agregar");
+        HBox hb = new HBox(17);
+        hb.setStyle("-fx-background-color: violet; -fx-padding: 13px;");
+        Button continuar = new Button("Continuar");
+        hb.getChildren().addAll(tituloVentanaE,agregarBtn, continuar);
+        
+        /*acciones a realizar si pulsa en agregar*/
+        agregarBtn.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent en) {
+            /*se limpian los campos del formulario y las variables usadas*/
+            lCuarto.setText(null);
+            lServicios.setText(null);
+            lPrecio.setText(null);
+            lUbicacion.setText(null);
+            lServicios.setText(null);
+            imagenes.removeAll(imagenes);
+            token=getRandomString();
+            hb.setOpacity(0);
+        }
+        });
+        /*acciones a realizar en continuar*/
+        continuar.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent en) {
+            //po.hide();
+            MenuPrincipal1 menuP=new MenuPrincipal1();
+            menuP.start(primaryStage);
+           
+        }});
+        ///////////////////////fin ventana emergente/////////////////////////////////////
+          /*evento para cuando seleecione la disponibilidad*/
         disponibilidad=(String) cb.getItems().get(0);
         cb.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -292,17 +374,14 @@ public class VentanaPropiedad extends Application{
                 System.out.println("disponibilidad " + disponibilidad);
             }
         });
-           /*define la accion al pulsar sobre el boton verificar*/
+        /*define la accion al pulsar sobre el boton verificar*/
         botonToken.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
                 token=inputToken.getText();
                 ingresarCodigoPropiedad(token);
-//                
-            }
+           }
         });
-             
-        
         /*Evento para leer imagenes*/
         imagenesP.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
@@ -325,90 +404,7 @@ public class VentanaPropiedad extends Application{
             }
         });
         
-        ////////////////////////-----------------------------------------------------------------------
-        //Creating a hexagon 
-      Polygon hexagon = new Polygon();        
       
-      //Adding coordinates to the hexagon 
-      hexagon.getPoints().addAll(new Double[]{        
-         200.0, 50.0, 
-         400.0, 50.0, 
-         450.0, 150.0,          
-         400.0, 250.0, 
-         200.0, 250.0,                   
-         150.0, 150.0, 
-      }); 
-      //Setting the fill color for the hexagon 
-      hexagon.setFill(Color.BLUE); 
-       
-      //Creating a rotate transition    
-      RotateTransition rotateTransition = new RotateTransition(); 
-      
-      //Setting the duration for the transition 
-      rotateTransition.setDuration(Duration.millis(1000)); 
-      
-      //Setting the node for the transition 
-      rotateTransition.setNode(hexagon);       
-      
-      //Setting the angle of the rotation 
-      rotateTransition.setByAngle(360); 
-      
-      //Setting the cycle count for the transition 
-      rotateTransition.setCycleCount(50); 
-      
-      //Setting auto reverse value to false 
-      rotateTransition.setAutoReverse(false); 
-      
-      //Playing the animation 
-      rotateTransition.play(); 
-         
-      //Creating a Group object   
-      Group root2 = new Group(hexagon); 
-         
-        
-        ///////////////////////////////////////////////////////----------------------------------------
-
-        ///////////////////----------ventana emergente----------------/////////////////////////
-        Popup po = new Popup();
-        po.setX(205);
-        po.setY(304);
-        po.setHeight(altura/2);
-        po.getContent().addAll(new Circle(35, 45, 64, Color.RED));
-        Label tituloVentanaE = new Label ("Desea agregar otra propiedad");
-        Button agregarBtn = new Button("Agregar");
-        HBox hb = new HBox(17);
-        hb.setStyle("-fx-background-color: violet; -fx-padding: 13px;");
-        Button continuar = new Button("Continuar");
-        hb.getChildren().addAll(tituloVentanaE,agregarBtn, continuar);
-        
-        /*acciones a realizar si pulsa en agregar*/
-        agregarBtn.setOnAction(new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent en) {
-            //po.show(primaryStage);
-            /*se limpian los campos del formulario y las variables usadas*/
-            lCuarto.setText(null);
-            lServicios.setText(null);
-            lPrecio.setText(null);
-            lUbicacion.setText(null);
-            lServicios.setText(null);
-            imagenes.removeAll(imagenes);
-            token=getRandomString();
-            hb.setOpacity(0);
-            //banderaGrid=0;
-            
-        }
-        });
-        /*acciones a realizar en continuar*/
-        continuar.setOnAction(new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent en) {
-            //po.hide();
-            MenuPrincipal1 menuP=new MenuPrincipal1();
-            menuP.start(primaryStage);
-           
-        }});
-        ///////////////////////7
         
         /*Evento para ingresar datos del formulario*/
         ingresar.setMaxWidth(100);
@@ -450,10 +446,9 @@ public class VentanaPropiedad extends Application{
             }
             
         });
-        Scene scene = new Scene(root, ancho, altura,gp);
 
         /*Define las propiedades de la escena*/ 
-        //se configura el stage principal
+        Scene scene = new Scene(root, ancho, altura,gp);
         primaryStage.setTitle("Registro Propiedad");
         primaryStage.setScene(scene);
         primaryStage.setFullScreen(true);
@@ -506,42 +501,27 @@ public class VentanaPropiedad extends Application{
         /*si codigo es falso se muestra el formulario en limpio*/
         if(codigo==false){
             anchorPane.getChildren().add(grid);
-            //this.token=getRandomString();
             System.out.println("token generado"+this.token);
         }/*se carga los datos en el formulario*/
         else{
             /*codigo==true se obtiene los datos de la base de datos*/
             Propiedad temp=rMP.obtenerDatosPropiedad(token);
             System.out.println("temp"+temp.getDescripcionCuarto()+temp.getDisponibilidad()+temp.getServicios()+temp.getToken());
-            //campos lCuarto,lPrecio,cb,lUbicacion,lServicios
             id=temp.getIdPropiedad();
             lCuarto.setText(temp.getDescripcionCuarto());
             String x=temp.getPrecio()+"";
             lPrecio.setText(x);
-            /*
-            if(temp.getDisponibilidad().equals("Disponible")==true){
-                cb.setValue(cb.getItems().get(0));
-                System.out.println("entor al if");
-            }
-            else
-                cb.setValue(cb.getItems().get(1));
-            */
             lUbicacion.setText(temp.getUbicacion());
             lServicios.setText(temp.getServicios());
-           
             imagenesBlob.add(temp.getImagenesBlob().get(0));
             imagenesBlob.add(temp.getImagenesBlob().get(1));
             imagenesBlob.add(temp.getImagenesBlob().get(2));
             imagenes.add(" ");
             imagenes.add(" ");
             imagenes.add(" ");
-            
-            //imagenesBlob=temp.getImagenesBlob();
-                        
             token=temp.getToken();
             System.out.println("token ingresar prop"+this.token);
             anchorPane.getChildren().add(grid);
-            
         }
     }
     /**
@@ -574,7 +554,6 @@ public class VentanaPropiedad extends Application{
                 token=getRandomString();
                 rMP = new RegistrarModificarPropiedad();
                 temp=new Propiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,token,null,0);
-                //rMP.ingresarPropiedad(temp);
                 rMP.ingresarPropiedad(temp);
                 this.descripcionCuarto=null;
                 this.precio=0.0f;
@@ -584,18 +563,15 @@ public class VentanaPropiedad extends Application{
                 this.token=null;
                 this.imagenes.removeAll(imagenes);
                 errorRegPropiedad.setOpacity(0);
-                
             }
             else{
                 token=inputToken.getText();
                 Propiedad temp2=new Propiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,token,imagenesBlob,id);
                 System.out.println("modificar propieadad"+temp2.getDescripcionCuarto()+"--"+temp2.getPrecio()+"--"+temp2.getDisponibilidad()+"--"+temp2.getUbicacion()+"--"+temp2.getServicios()+"--"+imagenes.size()+"--token: "+inputToken.getText()+"--"+imagenesBlob.size()+"id"+temp2.getIdPropiedad());
-                
                 rMP.modificarPropiedad(temp2);
                 this.token=null;
                 id=0;
             }
-            
         }
         else{
             mostrarAlertas();
