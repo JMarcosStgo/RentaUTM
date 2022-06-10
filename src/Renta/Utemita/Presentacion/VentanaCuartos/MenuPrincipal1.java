@@ -15,8 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.beans.property.StringProperty;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -31,6 +29,7 @@ import javafx.scene.effect.BlurType;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
@@ -64,8 +63,8 @@ public class MenuPrincipal1 extends Application {
     Label bienvenido=new Label("Bienvenido a");
     Label bienvenidopt2=new Label("Renta Utemita");
     Label bienvenidopt3=new Label("Usted a ingresado como "+usuarioBienvenida);
-    Button btnModificar = new Button();
-    Button btnModificarUsuario = new Button();
+    //Button btnModificar = new Button();
+    //Button btnModificarUsuario = new Button();
     Button b1= new Button("ver info");
     Button b2= new Button("apartar");
     Paint blanco = Paint.valueOf("#ffffff");
@@ -89,13 +88,9 @@ public class MenuPrincipal1 extends Application {
     @Override
     public void start(Stage primaryStage) {
         /*bienvenida*/
-        //Thread mith = Thread.currentThread();
-        
+
         primaryStage.setX(0);
         primaryStage.setY(0);
-        btnModificar.setText("Modificar propiedad'");
-        btnModificarUsuario.setText("Modificar usuario'");
-    
         /*lectura del archivo*/
         try {
             String ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
@@ -116,7 +111,7 @@ public class MenuPrincipal1 extends Application {
         bienvenidopt2.setFont(new Font("Arial",28));
         bienvenidopt3.setFont(new Font("Arial",24));
         
-        bienvenido.setMinHeight(altura/10);
+        bienvenido.setMinHeight(altura/15);
         bienvenido.setMinWidth(ancho);
         bienvenido.setLayoutX(0);
         bienvenidopt2.setLayoutX(500);;
@@ -124,8 +119,6 @@ public class MenuPrincipal1 extends Application {
        
         AnchorPane tituloBienvenidad = new AnchorPane();
         tituloBienvenidad.getChildren().add(bienvenido);
-        //bienvenidopt2.setLayoutX(400);
-        //bienvenidopt3.setLayoutX(800);
         tituloBienvenidad.getChildren().add(bienvenidopt2);
         tituloBienvenidad.getChildren().add(bienvenidopt3);
         tituloBienvenidad.setMaxWidth(ancho);
@@ -168,45 +161,9 @@ public class MenuPrincipal1 extends Application {
         anchorPane.getChildren().add(grid);
         sp1.setStyle("-fx-background-color: #00ff77;");//fondo del lateral izquieerdo
         sp1.setDisable(false);//no permite que se ajuste el panel
-        //sp1.setPadding(new Insets(altura/4,0,0,0));
-        //sp1.setLayoutY(500);
-        sp1.setMaxSize(ancho/5,altura-(altura/18));
+        sp1.setMaxSize(ancho/5,altura);
         
-        sp1.setPadding(new Insets(100,0,00,0));
-        //btnModificar.setLayoutY(1000);
-        //btnModificar.setLayoutX(200);
-        btnModificar.setBackground(Background.fill(blanco));
-        //btnModificar.setLayoutY(500);
-        AnchorPane paneLateral = new AnchorPane();
-        paneLateral.getChildren().add(btnModificar);
-        //paneLateral.setMinWidth(ancho/5);
-        //paneLateral.setMinHeight(altura/2);
-        Group x = new Group();
-        x.getChildren().add(btnModificar);
-        //sp1.getChildren().addAll(btnModificar);
-        //Drawing a Circle 
-      Circle circle = new Circle(300, 135, 100); 
-      circle.setFill(Color.DARKSLATEBLUE); 
-      circle.setStroke(Color.BLACK);
-      Rectangle rectangulo = new Rectangle();
-      rectangulo.setX(50);
-        rectangulo.setY(50);
-        rectangulo.setWidth(200);
-        rectangulo.setHeight(400);
-        rectangulo.setArcWidth(100);
-        rectangulo.setArcHeight(100);
-      Rectangle rectangulo2 = new Rectangle();
-      rectangulo2.setX(50);
-        rectangulo2.setY(500);
-        rectangulo2.setWidth(200);
-        rectangulo2.setHeight(200);
-        rectangulo2.setArcWidth(20);
-        rectangulo2.setArcHeight(20);
-        rectangulo2.setLayoutY(400);
-      //Drawing Sphere 
-      Sphere sphere = new Sphere(100); 
-       
-      //Creating a text 
+        sp1.setPadding(new Insets(200,0,00,0));
       Text modificarProp = new Text("Modificar Propiedad"); 
       //Setting the font of the text 
       modificarProp.setFont(Font.font(null, FontWeight.BOLD, 15));     
@@ -225,29 +182,13 @@ public class MenuPrincipal1 extends Application {
       modificarPer.setFill(Color.CRIMSON); 
       //setting the position of the text 
       modificarPer.setX(20); 
-      modificarPer.setY(400);       
+      modificarPer.setY(200);       
+      Group paneLateral2 = new Group();
+      paneLateral2.getChildren().addAll(modificarPer,modificarProp);
       
-      //Creating a Stackpane 
-      //StackPane stackPane = new StackPane(); 
       
-      //Setting the margin for the circle 
-      
-      //sp1.setMargin(rectangulo, new Insets(50, 50, 50, 50));       
-      //Retrieving the observable list of the Stack Pane 
-      //ObservableList list = sp1.getChildren(); 
-      
-      //Adding all the nodes to the pane 
-      //list.addAll(rectangulo, btnModificar,modificarProp); 
-      //list.addAll(rectangulo2, btnModificarUsuario,modificarPer);
       sp1.setPrefSize(400, 600);
-      sp1.getChildren().add(modificarProp);
-      sp1.getChildren().add(modificarPer);
-      
-        
-       // paneLateral.setPadding(new Insets(800,0,0,0));
-        //sp1.getChildren().add(paneLateral);
-        //paneLateral.setPadding(new Insets(500,300,200,100));
-        //sp1.getChildren().add(x);
+      sp1.getChildren().add(paneLateral2);
         /*agrega al stackpane el scroll y el splitpane*/
         sp.getItems().addAll(sp1, scroll);
         sp.setDividerPositions(0.3f, 0.6f, 0.9f);
@@ -371,9 +312,6 @@ public class MenuPrincipal1 extends Application {
                 pane.setPadding(new Insets(0,0,0,0));
                 //tres propiedades por fila
                 anchorPane.getChildren().add(pane);
-                
-                //grid.addRow(6,image2);
-                //grid.addRow(7,image3);
             } catch (SQLException e) {
                 System.out.println("error al cargar las imagenes de la BD"+e.getLocalizedMessage());
             }
@@ -382,40 +320,33 @@ public class MenuPrincipal1 extends Application {
         }
     /*********************campo de busquedad***************/    
 /*-------------------------------------------------------------------------------------------------*/
-        btnModificar.setOnAction(new EventHandler<ActionEvent>() {
-                
+        /*Evento al presionar el texto modificar propiedad*/
+        modificarProp.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-                VentanaPropiedad ventanaP = new VentanaPropiedad();
+            public void handle(MouseEvent t) {
+               VentanaPropiedad ventanaP = new VentanaPropiedad();
                 try {
                     ventanaP.start(primaryStage);
                 } catch (Exception ex) {
                     Logger.getLogger(MenuPrincipal1.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                } 
             }
         });
-        
-        btnModificarUsuario.setOnAction(new EventHandler<ActionEvent>() {
-                
+        /*Evento al presionar el texto modificar perfil*/
+        modificarPer.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-                VentanaModificacion ventanaP = new VentanaModificacion();
+            public void handle(MouseEvent t) {
+                VentanaModificacion ventanaModificacionPerfil = new VentanaModificacion();
                 try {
-                    ventanaP.start(primaryStage);
+                    ventanaModificacionPerfil.start(primaryStage);
                 } catch (Exception ex) {
                     Logger.getLogger(MenuPrincipal1.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                } 
             }
         });
-        
+
         /*configuracion de la escena*/
         GridPane gridTitulo = new GridPane();
-        gridTitulo.add(btnModificar,0,0);
-        gridTitulo.add(btnModificarUsuario,1,0);
-        //root.getChildren().add(btnModificar);
-        //btnModificarUsuario.setAlignment(Pos.CENTER);
         root.getChildren().add(gridTitulo);
         
         Scene scene = new Scene(root, ancho, altura);
