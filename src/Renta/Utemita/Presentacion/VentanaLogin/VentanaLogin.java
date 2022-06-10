@@ -1,12 +1,10 @@
-package Renta.Utemita.Presentacion;
+package Renta.Utemita.Presentacion.VentanaLogin;
 
-import Renta.Utemita.Almacenamiento.AccesoBD;
+import Renta.Utemita.Almacenamiento.AccesoBD.AccesoBD;
+import Renta.Utemita.Presentacion.VentanaCuartos.MenuPrincipal1;
 import Renta.Utemita.Presentacion.VentanaRegistroModificacion.VentanaRegistro;
 import static java.awt.Event.ENTER;
 import java.awt.HeadlessException;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.Timeline;
@@ -36,7 +34,7 @@ import javafx.stage.Stage;
  * @author Marcos
  * @version 1.0
  */
-public class IniciarSesion extends FlowPane{
+public class VentanaLogin extends FlowPane{
 
      Timeline timeline;
      Stage primaryStage;
@@ -63,7 +61,7 @@ public class IniciarSesion extends FlowPane{
      /*
      *constructor por default
      */
-     public IniciarSesion(Stage escenario){
+     public VentanaLogin(Stage escenario){
          primaryStage=escenario;
          init();
      }
@@ -74,10 +72,10 @@ public class IniciarSesion extends FlowPane{
          
          txtCorreo.setStyle("-fx-width:1000px;");
          lb1Correo.setFont(new Font("Serif", 28));
-         txtCorreo.setFont(new Font("Serif", 28));
+         txtCorreo.setFont(new Font("Serif", 26));
          password.setFont(new Font("Serif", 28));
          bt1IniciarSesion.setFont(new Font("Serif", 28));
-         lb2Password.setFont(new Font("Serif", 28));
+         lb2Password.setFont(new Font("Serif", 26));
          registrarse.setFont(new Font("Serif", 28));
          mensajeError.setFont(new Font("Serif", 28));
          registrarse.setFill(paint);
@@ -100,7 +98,7 @@ public class IniciarSesion extends FlowPane{
         grid.setHgap(10);
         grid.setVgap(12);
         //fondo del grid de inicio de sesion
-        grid.setEffect(blom);
+        //grid.setEffect(blom);
         grid.add(lb1Correo, 1, 0);//10,01,11
         grid.add(txtCorreo, 2, 0);
         grid.add(lb2Password, 1, 1);
@@ -146,7 +144,7 @@ public class IniciarSesion extends FlowPane{
                  try {
                      vRM.start(primaryStage);
                  } catch (Exception ex) {
-                     Logger.getLogger(IniciarSesion.class.getName()).log(Level.SEVERE, null, ex);
+                     Logger.getLogger(VentanaLogin.class.getName()).log(Level.SEVERE, null, ex);
                  }
              }
             

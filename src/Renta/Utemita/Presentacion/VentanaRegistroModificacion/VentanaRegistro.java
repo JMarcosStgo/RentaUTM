@@ -1,14 +1,12 @@
 package Renta.Utemita.Presentacion.VentanaRegistroModificacion;
 
-import Renta.Utemita.ReglasDeNegocio.VentanaLogin;
+import Renta.Utemita.ReglasDeNegocio.IniciarSesion.IniciarSesion;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.RegistrarModificarUsuario;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.Usuario;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
-import javafx.event.EventDispatcher;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -148,7 +146,12 @@ public class VentanaRegistro extends Application{
         cb.setMinHeight(50);
         cb.setStyle("-fx-font-weight: bold;");
         
-        
+        /*letra de los inputs del formulario*/
+        textFNombre.setFont(new Font("Serif", 22));
+        txtFContraseña.setFont(new Font("Serif", 22));
+        txtFCorreo.setFont(new Font("Serif", 22));
+        txtFMatricula.setFont(new Font("Serif", 22));
+        txtFTelefono.setFont(new Font("Serif", 22));
         /*grid donde se añade cada elemento del formulario*/
         grid.setHgap(5);
         grid.setVgap(6);
@@ -236,7 +239,7 @@ public class VentanaRegistro extends Application{
                     registrarUsuario(nombre, telefono, correo, contraseña,matricula,tipo);
                     /*se abre la nueva ventana*/
                     if(registro){
-                        VentanaLogin inicio = new VentanaLogin();
+                        IniciarSesion inicio = new IniciarSesion();
                         primaryStage.setX(ancho/6);
                         inicio.start(primaryStage);
                     }

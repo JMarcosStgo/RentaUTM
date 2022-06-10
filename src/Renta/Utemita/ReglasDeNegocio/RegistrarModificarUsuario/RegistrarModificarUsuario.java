@@ -1,6 +1,6 @@
 package Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario;
 
-import Renta.Utemita.Almacenamiento.AccesoBD;
+import Renta.Utemita.Almacenamiento.AccesoBD.AccesoBD;
 
 /**
  * Clase que implementa el subsistema 

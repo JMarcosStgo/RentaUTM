@@ -1,9 +1,12 @@
-package Renta.Utemita.ReglasDeNegocio;
+package Renta.Utemita.ReglasDeNegocio.IniciarSesion;
 
-import Renta.Utemita.Presentacion.IniciarSesion;
+import Renta.Utemita.Almacenamiento.AccesoBD.EmailUtil;
+import Renta.Utemita.Almacenamiento.AccesoBD.enviarConGMail;
+import Renta.Utemita.Presentacion.VentanaLogin.VentanaLogin;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -14,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
@@ -21,7 +25,7 @@ import javafx.stage.Stage;
  * @author Marcos
  * @version 1.0
  */
-public class VentanaLogin extends Application {
+public class IniciarSesion extends Application {
     private double ancho;
     private double altura;
     
@@ -36,10 +40,12 @@ public class VentanaLogin extends Application {
     public void start(Stage primaryStage) {
         ancho=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-      
-        Pane root = new IniciarSesion(primaryStage);
+        primaryStage.getIcons().add(new Image("/imagenes/LOGO4.jpg"));
+        Pane root = new VentanaLogin(primaryStage);
         Image image = new Image(getClass().getResourceAsStream("/imagenes/LOGO4.jpg")); 
         Label myLabel = new Label("Sistema de busqueda de cuartos");
+        myLabel.setFont(new Font("Serif", 20));
+        myLabel.setAlignment(Pos.CENTER);
         myLabel.setGraphic(new ImageView(image));
         root.getChildren().add(myLabel);
         root.setMaxSize(ancho/4, altura/4);
@@ -58,6 +64,10 @@ public class VentanaLogin extends Application {
         
         /*pasar datos entre ventanas*/
         
+        /*prueba de envio del correo*/
+        EmailUtil correo = new EmailUtil();
+        enviarConGMail envio = new enviarConGMail();
+        System.out.println("correo");
         /**se muestra la escena*/
         primaryStage.setScene(scene);
         root.setOpacity(1);

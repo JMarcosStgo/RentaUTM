@@ -1,7 +1,6 @@
 package Renta.Utemita.ReglasDeNegocio;
 
-import Renta.Utemita.Almacenamiento.AccesoBD;
-import Renta.Utemita.Presentacion.Propiedad;
+import Renta.Utemita.Almacenamiento.AccesoBD.AccesoBD;
 import java.util.ArrayList;
 
 /**

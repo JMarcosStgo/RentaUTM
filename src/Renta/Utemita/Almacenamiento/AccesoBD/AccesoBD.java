@@ -1,6 +1,6 @@
-package Renta.Utemita.Almacenamiento;
+package Renta.Utemita.Almacenamiento.AccesoBD;
 
-import Renta.Utemita.Presentacion.Propiedad;
+import Renta.Utemita.ReglasDeNegocio.Propiedad;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.Usuario;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -147,7 +147,7 @@ public class AccesoBD {
             if(rs.next()==true){
                 temp.setIdPropiedad(rs.getInt(1));
                 temp.setDescripcionCuarto(rs.getString(2));
-                temp.setPrecio(rs.getFloat(3));
+                temp.setPrecio(rs.getInt(3));
                 temp.setDisponibilidad(rs.getString(4));
                 temp.setUbicacion(rs.getString(5));
                 temp.setServicios(rs.getString(6));

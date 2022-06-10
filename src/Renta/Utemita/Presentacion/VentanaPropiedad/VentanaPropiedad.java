@@ -1,6 +1,8 @@
-package Renta.Utemita.Presentacion;
+package Renta.Utemita.Presentacion.VentanaPropiedad;
 
 
+import Renta.Utemita.Presentacion.VentanaCuartos.MenuPrincipal1;
+import Renta.Utemita.ReglasDeNegocio.Propiedad;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad;
 import java.io.File;
 import java.sql.Blob;
@@ -87,7 +89,7 @@ public class VentanaPropiedad extends Application{
     
     /*variables*/
     private String descripcionCuarto="";
-    private float precio=0.0f;
+    private int precio=0;
     private String disponibilidad="";
     private String ubicacion="";
     private String servicios="";
@@ -416,14 +418,14 @@ public class VentanaPropiedad extends Application{
                     System.out.println("token al pulsar boton registro"+token);
                         //Propiedad temp=rMP.obtenerDatosPropiedad(token);
                         descripcionCuarto=lCuarto.getText();
-                        precio= Float.valueOf(lPrecio.getText());
+                        precio= Integer.valueOf(lPrecio.getText());
                         ubicacion=lUbicacion.getText();
                         servicios=lServicios.getText();
                         //token=inputToken.getText();
                         
                         registrarPropiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,token,imagenesBlob);
                         descripcionCuarto=null;
-                        precio=0.0f;
+                        precio=0;
                         //disponibilidad=null;
                         ubicacion=null;
                         servicios=null;
@@ -535,7 +537,7 @@ public class VentanaPropiedad extends Application{
      * @param token 
      * @param imagenesBlob 
      */
-    public void registrarPropiedad(String descripcionCuarto,float precio,String disponibilidad,String ubicacion,String servicios,ArrayList <String> imagenes,String token,ArrayList <Blob> imagenesBlob){
+    public void registrarPropiedad(String descripcionCuarto,int precio,String disponibilidad,String ubicacion,String servicios,ArrayList <String> imagenes,String token,ArrayList <Blob> imagenesBlob){
         System.out.println("registro propiedad ->>>>>"+descripcionCuarto+"--"+precio+"--"+disponibilidad+"--"+ubicacion+"--"+servicios+"--"+imagenes.size()+"--token: "+token+"--"+imagenesBlob.size());
         System.out.println("token registro propiedad"+this.token);
         
@@ -556,7 +558,7 @@ public class VentanaPropiedad extends Application{
                 temp=new Propiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,token,null,0);
                 rMP.ingresarPropiedad(temp);
                 this.descripcionCuarto=null;
-                this.precio=0.0f;
+                this.precio=0;
                 this.disponibilidad=null;
                 this.ubicacion=null;
                 this.servicios=null;

@@ -1,4 +1,4 @@
-package Renta.Utemita.Presentacion;
+package Renta.Utemita.ReglasDeNegocio;
 
 import java.awt.Image;
 import java.sql.Blob;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class Propiedad {
     private String descripcionCuarto;
-    private float precio;
+    private int precio;
     private String disponibilidad;
     private String ubicacion;
     private String servicios;
@@ -20,7 +20,7 @@ public class Propiedad {
     private ArrayList <Image> imagenesP = new ArrayList();
     private int idPropiedad;
     private String token;
-    public Propiedad(String descripcionCuarto, float precio, String disponibilidad, String ubicacion, String servicios,ArrayList <String> imagenes,String token,ArrayList <Blob> imagenesBlob,int idPropiedad) {
+    public Propiedad(String descripcionCuarto, int precio, String disponibilidad, String ubicacion, String servicios,ArrayList <String> imagenes,String token,ArrayList <Blob> imagenesBlob,int idPropiedad) {
         this.descripcionCuarto = descripcionCuarto;
         this.precio = precio;
         this.disponibilidad = disponibilidad;
@@ -49,11 +49,11 @@ public class Propiedad {
         this.descripcionCuarto = descripcionCuarto;
     }
 
-    public float getPrecio() {
+    public int getPrecio() {
         return precio;
     }
 
-    public void setPrecio(float precio) {
+    public void setPrecio(int precio) {
         this.precio = precio;
     }
 

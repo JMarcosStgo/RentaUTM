@@ -1,6 +1,6 @@
 package Renta.Utemita.Presentacion.VentanaRegistroModificacion;
 
-import Renta.Utemita.Presentacion.MenuPrincipal1;
+import Renta.Utemita.Presentacion.VentanaCuartos.MenuPrincipal1;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.RegistrarModificarUsuario;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.Usuario;
 import java.io.BufferedReader;
