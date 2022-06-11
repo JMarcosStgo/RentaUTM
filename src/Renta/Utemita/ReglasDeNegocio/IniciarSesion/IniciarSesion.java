@@ -1,7 +1,5 @@
 package Renta.Utemita.ReglasDeNegocio.IniciarSesion;
 
-import Renta.Utemita.Almacenamiento.AccesoBD.EmailUtil;
-import Renta.Utemita.Almacenamiento.AccesoBD.enviarConGMail;
 import Renta.Utemita.Presentacion.VentanaLogin.VentanaLogin;
 import javafx.application.Application;
 import javafx.geometry.HPos;
@@ -65,8 +63,6 @@ public class IniciarSesion extends Application {
         /*pasar datos entre ventanas*/
         
         /*prueba de envio del correo*/
-        EmailUtil correo = new EmailUtil();
-        enviarConGMail envio = new enviarConGMail();
         System.out.println("correo");
         /**se muestra la escena*/
         primaryStage.setScene(scene);

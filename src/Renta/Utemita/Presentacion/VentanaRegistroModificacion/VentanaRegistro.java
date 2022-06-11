@@ -184,7 +184,13 @@ public class VentanaRegistro extends Application{
         LinearGradient gp = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REPEAT, stops);
         grid.setAlignment(Pos.CENTER);
         root.getChildren().add(grid);
+        /*Define las propiedades de la escena*/ 
         Scene scene = new Scene(root, ancho, altura,gp);
+        primaryStage.setTitle("Registro Usuario");
+        primaryStage.setScene(scene);
+        
+        primaryStage.setResizable(false);
+        primaryStage.setFullScreen(true);
         
         /* accion cuando selecciona cb como estudiante y arrendador*/
         tipo=(String) cb.getItems().get(0);
@@ -249,10 +255,7 @@ public class VentanaRegistro extends Application{
                 }
             }
         });
-        /*Define las propiedades de la escena*/ 
-        primaryStage.setTitle("Registro Usuario");
-        primaryStage.setScene(scene);
-        primaryStage.setFullScreen(true);
+        /*muestra interfaz*/
         primaryStage.show();
     
     

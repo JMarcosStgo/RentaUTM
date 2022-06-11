@@ -1,7 +1,7 @@
 package Renta.Utemita.Presentacion.VentanaLogin;
 
 import Renta.Utemita.Almacenamiento.AccesoBD.AccesoBD;
-import Renta.Utemita.Presentacion.VentanaCuartos.MenuPrincipal1;
+import Renta.Utemita.Presentacion.VentanaCuartos.VentanaCuartos;
 import Renta.Utemita.Presentacion.VentanaRegistroModificacion.VentanaRegistro;
 import static java.awt.Event.ENTER;
 import java.awt.HeadlessException;
@@ -171,7 +171,7 @@ public class VentanaLogin extends FlowPane{
             Stage stage = new Stage();
             stage.setWidth(ancho);
             stage.setHeight(altura);
-            MenuPrincipal1 menuPrincipal1=new MenuPrincipal1();
+            VentanaCuartos menuPrincipal1=new VentanaCuartos();
             menuPrincipal1.start(stage);
             primaryStage.close();
             //menuPrincipal1.init();

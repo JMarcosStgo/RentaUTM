@@ -1,12 +1,15 @@
 package Renta.Utemita.Presentacion.VentanaPropiedad;
 
 
-import Renta.Utemita.Presentacion.VentanaCuartos.MenuPrincipal1;
+import Renta.Utemita.Presentacion.VentanaCuartos.VentanaCuartos;
+import Renta.Utemita.Presentacion.VentanaRegistroModificacion.VentanaModificacion;
 import Renta.Utemita.ReglasDeNegocio.Propiedad;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad;
 import java.io.File;
 import java.sql.Blob;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.RotateTransition;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -25,6 +28,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
@@ -43,6 +47,9 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Popup;
 import javafx.util.Duration;
@@ -200,6 +207,12 @@ public class VentanaPropiedad extends Application{
         pane.getChildren().add(tituloForm);
         pane.setMinHeight(50);
         
+        /*tamaño de letra de los inputs*/
+        lCuarto.setFont(new Font("Serif", 22));
+        lPrecio.setFont(new Font("Serif", 22));
+        lServicios.setFont(new Font("Serif", 22));
+        lUbicacion.setFont(new Font("Serif", 22));
+        
         /*Abre un pop Up para permitir seleccionar al usuario si desea agregar otra propiedad*/
         Button button = new Button("Click to open a Popup");
         GridPane grid3=new GridPane();
@@ -271,64 +284,46 @@ public class VentanaPropiedad extends Application{
            new Stop(1, Color.BLUE)
         };
         LinearGradient gp = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REPEAT, stops);
-        sp1.setStyle("-fx-background-color: #0c50cf;");//fondo del lateral izquieerdo
-        //sp1.setOpacity(1);
-        //sp1.setMaxWidth(ancho/3);
-        sp1.setDisable(true);//no permite que se ajuste el panel
-        sp1.setPadding(new Insets(altura,0,0,0));
-        sp1.setMaxSize(ancho/3,altura-(altura/10));
-        
+        sp1.setStyle("-fx-background-color: #00ff77;");//fondo del lateral izquieerdo
+        sp1.setDisable(false);//no permite que se ajuste el panel
+        //sp1.setPadding(new Insets(altura,0,0,0));
+        sp1.setMaxSize(ancho/5,altura);
+        Text menu = new Text("Menú Principal"); 
+        //Setting the font of the text 
+        menu.setFont(Font.font(null, FontWeight.BOLD, 15));     
+        //Setting the color of the text 
+        menu.setFill(Color.CRIMSON); 
+        //setting the position of the text 
+        menu.setX(20); 
+        menu.setY(00);       
+        //Creating a text 
+        Text modificarPer = new Text("Modificar Perfil"); 
+        //Setting the font of the text 
+        modificarPer.setFont(Font.font(null, FontWeight.BOLD, 15));     
+        //Setting the color of the text 
+        modificarPer.setFill(Color.CRIMSON); 
+        //setting the position of the text 
+        modificarPer.setX(20); 
+        modificarPer.setY(200);       
+        Group paneLateral2 = new Group();
+        paneLateral2.getChildren().addAll(modificarPer,menu);
+        sp1.getChildren().add(paneLateral2);
+
         /*agrega al stackpane el scroll y el splitpane*/
         sp.getItems().addAll(sp1, scroll);
         sp.setDividerPositions(0.3f, 0.6f, 0.9f);
-        /*se añade el splitpane al grupo y el label de bienvenida*/
-        sp.setMaxHeight(500);
         root.getChildren().add(sp);
-        root.getChildren().add(bienvenido);
-/*--------------------------------------fin interfaz--------------------------------------------------*/
-      //Creating a hexagon 
-      Polygon hexagon = new Polygon();        
-      
-      //Adding coordinates to the hexagon 
-      hexagon.getPoints().addAll(new Double[]{        
-         200.0, 50.0, 
-         400.0, 50.0, 
-         450.0, 150.0,          
-         400.0, 250.0, 
-         200.0, 250.0,                   
-         150.0, 150.0, 
-      }); 
-      //Setting the fill color for the hexagon 
-      hexagon.setFill(Color.CORAL); 
-     
-      //Creating a rotate transition    
-      RotateTransition rotateTransition = new RotateTransition(); 
-      
-      //Setting the duration for the transition 
-      rotateTransition.setDuration(Duration.millis(10000)); 
-      
-      //Setting the node for the transition 
-      rotateTransition.setNode(hexagon);       
-      
-      //Setting the angle of the rotation 
-      rotateTransition.setByAngle(360); 
-      
-      //Setting the cycle count for the transition 
-      rotateTransition.setCycleCount(100); 
-      
-      //Setting auto reverse value to false 
-      rotateTransition.setAutoReverse(false); 
-      
-      //Playing the animation 
-      rotateTransition.play(); 
-         
-      //Creating a Group object   
-      
-      Group root2 = new Group(hexagon); 
-      //root2.setLayoutX(0);
-      //anchorPane.setLayoutY(1000);
-      //gridToken.add(root2,1,5);
+        //root.getChildren().add(bienvenido);
+        /*Define las propiedades de la escena*/ 
+        Scene scene = new Scene(root, ancho, altura,gp);
+        primaryStage.setTitle("Registro Propiedad");
+        primaryStage.setResizable(false);
         
+        primaryStage.setFullScreen(true);
+        primaryStage.setScene(scene);
+        
+/*--------------------------------------fin interfaz--------------------------------------------------*/
+       
         ///////////////////----------ventana emergente----------------/////////////////////////
         Popup po = new Popup();
         po.setX(205);
@@ -342,6 +337,31 @@ public class VentanaPropiedad extends Application{
         Button continuar = new Button("Continuar");
         hb.getChildren().addAll(tituloVentanaE,agregarBtn, continuar);
         
+        /*Evento al presionar el texto modificar propiedad*/
+        menu.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+               VentanaCuartos busqueda = new VentanaCuartos();
+                try {
+                    busqueda.start(primaryStage);
+                } catch (Exception ex) {
+                    Logger.getLogger(VentanaCuartos.class.getName()).log(Level.SEVERE, null, ex);
+                } 
+            }
+        });
+        /*Evento al presionar el texto modificar perfil*/
+        modificarPer.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+                VentanaModificacion ventanaModificacionPerfil = new VentanaModificacion();
+                try {
+                    ventanaModificacionPerfil.start(primaryStage);
+                } catch (Exception ex) {
+                    Logger.getLogger(VentanaCuartos.class.getName()).log(Level.SEVERE, null, ex);
+                } 
+            }
+        });
+
         /*acciones a realizar si pulsa en agregar*/
         agregarBtn.setOnAction(new EventHandler<ActionEvent>() {
         @Override
@@ -362,7 +382,7 @@ public class VentanaPropiedad extends Application{
         @Override
         public void handle(ActionEvent en) {
             //po.hide();
-            MenuPrincipal1 menuP=new MenuPrincipal1();
+            VentanaCuartos menuP=new VentanaCuartos();
             menuP.start(primaryStage);
            
         }});
@@ -411,7 +431,6 @@ public class VentanaPropiedad extends Application{
         /*Evento para ingresar datos del formulario*/
         ingresar.setMaxWidth(100);
         ingresar.setOnAction(new EventHandler<ActionEvent>() {
-            
             @Override
             public void handle(ActionEvent t) {
                 try {
@@ -448,12 +467,7 @@ public class VentanaPropiedad extends Application{
             }
             
         });
-
-        /*Define las propiedades de la escena*/ 
-        Scene scene = new Scene(root, ancho, altura,gp);
-        primaryStage.setTitle("Registro Propiedad");
-        primaryStage.setScene(scene);
-        primaryStage.setFullScreen(true);
+        /*muestra interfaz*/
         primaryStage.show();
     }
     

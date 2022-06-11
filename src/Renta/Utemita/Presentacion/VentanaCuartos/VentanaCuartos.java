@@ -3,7 +3,7 @@ package Renta.Utemita.Presentacion.VentanaCuartos;
 import Renta.Utemita.ReglasDeNegocio.Propiedad;
 import Renta.Utemita.Presentacion.VentanaPropiedad.VentanaPropiedad;
 import Renta.Utemita.Presentacion.VentanaRegistroModificacion.VentanaModificacion;
-import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad;
+import Renta.Utemita.ReglasDeNegocio.Busqueda.Busqueda;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileReader;
@@ -21,7 +21,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
@@ -31,7 +33,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -41,9 +42,6 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Sphere;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -54,26 +52,28 @@ import javafx.stage.Stage;
  * @author Marcos
  * @version 1.0
  */
-public class MenuPrincipal1 extends Application {
+public class VentanaCuartos extends Application {
     double ancho = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
     double altura = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
     InnerShadow shadow = new InnerShadow();
-    String usuarioBienvenida =" -user-";
+    Label usuarioBienvenida = new Label();
     GridPane grid = new GridPane();
     Label bienvenido=new Label("Bienvenido a");
     Label bienvenidopt2=new Label("Renta Utemita");
-    Label bienvenidopt3=new Label("Usted a ingresado como "+usuarioBienvenida);
     //Button btnModificar = new Button();
     //Button btnModificarUsuario = new Button();
     Button b1= new Button("ver info");
     Button b2= new Button("apartar");
     Paint blanco = Paint.valueOf("#ffffff");
-     
+    Label bienvenidopt3;
     AnchorPane anchorPane=new AnchorPane();
     
     /*variables*/
     private int idUsuario = 0;
-    
+    private int idCuarto;
+    private int precioFinal=50000;
+    private int precioInicial=0;
+    ArrayList<Propiedad> propiedades = new ArrayList();
     
     /**
      * @param args the command line arguments
@@ -93,9 +93,12 @@ public class MenuPrincipal1 extends Application {
         primaryStage.setY(0);
         /*lectura del archivo*/
         try {
-            String ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
+            ArrayList<String>  ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
             System.out.println("ident"+ident);
-            idUsuario=Integer.parseInt(ident);
+            idUsuario=Integer.parseInt(ident.get(0));
+            usuarioBienvenida.setText(ident.get(1));
+            bienvenidopt3=new Label("Usted a ingresado como ");
+    
         } catch (NumberFormatException e) {
             System.out.println("error conversion al leer archivo"+e.getLocalizedMessage());
         }
@@ -106,28 +109,35 @@ public class MenuPrincipal1 extends Application {
         shadow.setRadius(12);  
         shadow.setWidth(20);  
         shadow.setChoke(0.9);
-        bienvenido.setStyle("-fx-background-color: #ff3f5f;");
+        bienvenido.setStyle("-fx-background-color: #2962ff;");
         bienvenido.setFont(new Font("Arial",20));
         bienvenidopt2.setFont(new Font("Arial",28));
-        bienvenidopt3.setFont(new Font("Arial",24));
-        
+        bienvenidopt3.setFont(new Font("Arial",20));
+        usuarioBienvenida.setTextFill(blanco);
+        bienvenidopt2.setTextFill(blanco);
+        usuarioBienvenida.setFont(new Font("Arial",28));
+        usuarioBienvenida.setAlignment(Pos.TOP_RIGHT);
         bienvenido.setMinHeight(altura/15);
         bienvenido.setMinWidth(ancho);
-        bienvenido.setLayoutX(0);
-        bienvenidopt2.setLayoutX(500);;
+        bienvenido.setAlignment(Pos.TOP_LEFT);
+        bienvenido.setPadding(new Insets(0,0,0,350));
+        bienvenidopt2.setAlignment(Pos.CENTER);
+        bienvenidopt2.setLayoutX(500);
         bienvenidopt3.setLayoutX(1000);
+        usuarioBienvenida.setLayoutX(ancho-250);
        
         AnchorPane tituloBienvenidad = new AnchorPane();
         tituloBienvenidad.getChildren().add(bienvenido);
         tituloBienvenidad.getChildren().add(bienvenidopt2);
         tituloBienvenidad.getChildren().add(bienvenidopt3);
+        tituloBienvenidad.getChildren().add(usuarioBienvenida);
         tituloBienvenidad.setMaxWidth(ancho);
         /*grid del formulario para registrar modificar propiedad*/
         grid.setStyle("-fx-background-color:white");//colorde fondo  del grid
         grid.setPadding(new Insets(100,0,altura-(altura/3),0));
         grid.setMinHeight(altura);
         //ANCHO DEL SCROLL
-        grid.setMinWidth(ancho-(ancho/5));
+        grid.setMinWidth(ancho-(ancho/3));
         /*configuracion de la escena y los elementos que tendra*/
         Group root = new Group();
         final StackPane sp1 = new StackPane();
@@ -161,41 +171,86 @@ public class MenuPrincipal1 extends Application {
         anchorPane.getChildren().add(grid);
         sp1.setStyle("-fx-background-color: #00ff77;");//fondo del lateral izquieerdo
         sp1.setDisable(false);//no permite que se ajuste el panel
-        sp1.setMaxSize(ancho/5,altura);
-        
+        sp1.setMaxSize(ancho/6,altura);
         sp1.setPadding(new Insets(200,0,00,0));
-      Text modificarProp = new Text("Modificar Propiedad"); 
-      //Setting the font of the text 
-      modificarProp.setFont(Font.font(null, FontWeight.BOLD, 15));     
-      //Setting the color of the text 
-      modificarProp.setFill(Color.CRIMSON); 
-      //setting the position of the text 
-      modificarProp.setX(20); 
-      modificarProp.setY(00);       
-       
-      
-      //Creating a text 
-      Text modificarPer = new Text("Modificar Perfil"); 
-      //Setting the font of the text 
-      modificarPer.setFont(Font.font(null, FontWeight.BOLD, 15));     
-      //Setting the color of the text 
-      modificarPer.setFill(Color.CRIMSON); 
-      //setting the position of the text 
-      modificarPer.setX(20); 
-      modificarPer.setY(200);       
-      Group paneLateral2 = new Group();
-      paneLateral2.getChildren().addAll(modificarPer,modificarProp);
-      
-      
-      sp1.setPrefSize(400, 600);
-      sp1.getChildren().add(paneLateral2);
+        Text modificarProp = new Text("Modificar Propiedad"); 
+        //Setting the font of the text 
+        modificarProp.setFont(Font.font(null, FontWeight.BOLD, 15));     
+        //Setting the color of the text 
+        modificarProp.setFill(Color.CRIMSON); 
+        //setting the position of the text 
+        modificarProp.setX(20); 
+        modificarProp.setY(00);       
+        Text salir = new Text("Cerrar sesión"); 
+        //Setting the font of the text 
+        salir.setFont(Font.font(null, FontWeight.BOLD, 15));     
+        //Setting the color of the text 
+        salir.setFill(Color.CRIMSON); 
+        //setting the position of the text 
+        salir.setX(20); 
+        salir.setY(400);       
+        //Creating a text 
+        Text modificarPer = new Text("Modificar Perfil"); 
+        //Setting the font of the text 
+        modificarPer.setFont(Font.font(null, FontWeight.BOLD, 15));     
+        //Setting the color of the text 
+        modificarPer.setFill(Color.CRIMSON); 
+        //setting the position of the text 
+        modificarPer.setX(20); 
+        modificarPer.setY(200);       
+        Group paneLateral2 = new Group();
+        /*se determina si se muestra modificar propiedad o no*/
+        if(usuarioBienvenida.getText().equals("Estudiante"))
+            paneLateral2.getChildren().addAll(modificarPer,salir);
+        else
+            paneLateral2.getChildren().addAll(modificarPer,modificarProp,salir);
+        sp1.getChildren().add(paneLateral2);
+        //panel de la derecha
+        final StackPane panelDerecho = new StackPane();
+        panelDerecho.setStyle("-fx-background-color: #00ff77;");
+        panelDerecho.setMaxSize(650,altura);
+        panelDerecho.setDisable(false);
+        panelDerecho.setAlignment(Pos.CENTER_LEFT);
+/******corrijiendo*/
+        TextField buscador = new TextField();
+        //buscador.setMinSize(20,50);
+        buscador.setPromptText("Search Box");
+        
+        //buscador.setPadding(new Insets(0,300,0,0));
+        ComboBox comboBox = new ComboBox();
+        buscador.textProperty().addListener((ov, t, t1) -> {
+        });
+        ListView<Object> itemView = new ListView<>();
+        itemView.setItems(comboBox.getItems());
+        VBox boxDerecho = new VBox(buscador,itemView);
+        boxDerecho.setLayoutX(0);
+        //itemView.setPrefSize(200,900);
+        Group paneLateralDer = new Group();
+        paneLateralDer.getChildren().addAll(boxDerecho);
+        paneLateralDer.setLayoutX(0);
+        
+        //paneLateralDer.prefWidth(300);
+        //paneLateralDer.prefHeight(altura);
+        //boxDerecho.setPadding(new Insets(0,300,0,0));
+        panelDerecho.getChildren().add(paneLateralDer);
+        //panelDerecho.snapPositionX(0);
+/******corrijiendo*/
         /*agrega al stackpane el scroll y el splitpane*/
-        sp.getItems().addAll(sp1, scroll);
+        sp.getItems().addAll(sp1, scroll,panelDerecho);
         sp.setDividerPositions(0.3f, 0.6f, 0.9f);
         /*se añade el splitpane al grupo y el label de bienvenida*/
         root.getChildren().add(sp);
         root.getChildren().add(tituloBienvenidad);
         
+        /*configuracion de la escena*/
+        GridPane gridTitulo = new GridPane();
+        root.getChildren().add(gridTitulo);
+        primaryStage.setResizable(false);
+        
+        primaryStage.setFullScreen(true);
+        Scene scene = new Scene(root, ancho, altura,gp);
+        primaryStage.setTitle("Busqueda de cuartos");
+        primaryStage.setScene(scene);
 /*----------------------fin configuracion de la pantalla-----------------------------------------*/
         /* chat
         TextField searchBox = new TextField();
@@ -226,25 +281,52 @@ public class MenuPrincipal1 extends Application {
         searchBoxF.setMinHeight(50);
         grid.setHgap(10);
         //grid.setVgap(12);
+        /**lista todas las propiedades*/
+        //propiedades=buscarCuartos(precioInicial,precioFinal);
         /*escucha para bloquear letras y solo aceptar 5 numeros*/
         searchBox.textProperty().addListener((ov, t, t1) -> {
-            System.out.println("cambio busqueda"+ov);
+           // System.out.println("cambio busqueda"+ov);
              //Se asigna al valor anterior
             if(!t1.matches("[0-9]{0,5}") || t1.length()>8){
                 ((StringProperty) ov).setValue(t);
             }else{
                 //Se asigna el nuevo valor, porque sí coincide con la expresión
                 ((StringProperty)ov).setValue(t1);
+                try {
+                    if(ov.getValue().equals(""))
+                        precioInicial=0;
+                    else
+                        precioInicial=Integer.parseInt(ov.getValue());
+                }catch (NumberFormatException e) {
+                    System.out.println("error"+e.getLocalizedMessage());
+                }
+                propiedades=buscarCuartos(precioInicial,precioFinal);
+                ver();
+              //  System.out.println("cambio .."+ov + precioInicial);
+              //  System.out.println("tamaño de propiedades"+propiedades.size());
             }
         });
         searchBoxF.textProperty().addListener((ov, t, t1) -> {
-            System.out.println("cambio busqueda"+ov);
+            //System.out.println("cambio busqueda"+ov);
              //Se asigna al valor anterior
             if(!t1.matches("[0-9]{0,5}") || t1.length()>8){
                 ((StringProperty) ov).setValue(t);
             }else{
                 //Se asigna el nuevo valor, porque sí coincide con la expresión
                 ((StringProperty)ov).setValue(t1);
+                try {
+                    if(ov.getValue().equals(""))
+                        precioFinal=0;
+                   else
+                        precioFinal=Integer.parseInt(ov.getValue());
+                }catch (NumberFormatException e) {
+                    System.out.println("error"+e.getLocalizedMessage());
+                }
+               // System.out.println("cambio .."+ov + precioInicial);
+                propiedades=buscarCuartos(precioInicial,precioFinal);
+                ver();
+                //System.out.println("tamaño de propiedades"+propiedades);
+                
             }
         });
         
@@ -256,13 +338,93 @@ public class MenuPrincipal1 extends Application {
         
         //se obtiene todas las propiedades dentro del rango de fechas
         //el array me devuelve todos las imagenes
-        ArrayList<Propiedad> propiedades = new ArrayList();
-        RegistrarModificarPropiedad rMP = new RegistrarModificarPropiedad();
-        Propiedad prop=rMP.obtenerDatosPropiedad("9999998");
-        propiedades.add(prop);
-        ImageView image1,image2,image3;
+        
+        //RegistrarModificarPropiedad rMP = new RegistrarModificarPropiedad();
+        //Propiedad prop=rMP.obtenerDatosPropiedad("9999998");
+        //propiedades.add(prop);
+        
+    /*********************campo de busquedad***************/    
+/*-------------------------------------------------------------------------------------------------*/
+        /*Evento para cerrar sesión*/
+        salir.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+                try {
+                    primaryStage.close();
+                } catch (Exception e) {
+                }
+            }
+        });
+        /*Evento al presionar el texto modificar propiedad*/
+        modificarProp.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+               VentanaPropiedad ventanaP = new VentanaPropiedad();
+                try {
+                    ventanaP.start(primaryStage);
+                } catch (Exception ex) {
+                    Logger.getLogger(VentanaCuartos.class.getName()).log(Level.SEVERE, null, ex);
+                } 
+            }
+        });
+        /*Evento al presionar el texto modificar perfil*/
+        modificarPer.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+                VentanaModificacion ventanaModificacionPerfil = new VentanaModificacion();
+                try {
+                    ventanaModificacionPerfil.start(primaryStage);
+                } catch (Exception ex) {
+                    Logger.getLogger(VentanaCuartos.class.getName()).log(Level.SEVERE, null, ex);
+                } 
+            }
+        });
+        /*muestra interfaz*/
+        primaryStage.show();
+    }
+
+    public void idUsuarioOnline(int idUsuario){
+        this.idUsuario=idUsuario;
+    }
+    
+    public ArrayList<String> leeArchivo(String direccion) {
+		ArrayList<String> tmp = new ArrayList();
+		try{
+			BufferedReader bf =new BufferedReader(new FileReader(direccion));
+			String temp="";
+			String bfRead;
+			while((bfRead=bf.readLine())!= null){
+				temp=temp+bfRead;
+                                tmp.add(temp);
+                                temp="";
+                        }
+		}catch(IOException e){
+			System.out.println("no se encontro el archivo txt"+e.getLocalizedMessage());
+		}
+		return tmp;
+    }
+    /**
+     * Método para obtener los cuartos dentro del rango ingresado por el usuario
+     * @param precioInicial
+     * @param precioFinal
+     * @return un arreglo de propiedades
+     */
+    public ArrayList<Propiedad> buscarCuartos(int precioInicial, int precioFinal){
+        Busqueda busqueda = new Busqueda();
+        return busqueda.obtenerCuartos(precioInicial,precioFinal);
+    }
+    /**
+     * Método para mostrar la informacion de una propiedad
+     * @param idPropiedad 
+     */
+    public void btnObtnerInformacion(int idPropiedad){
+        /*cargar ventana emergente con informacion de la propiedad*/
+    }
+    public void ver(){
+    ImageView image1,image2,image3;
          byte byteImage[] = null;
         for (int i = 0; i <propiedades.size() ; i++) {
+            System.out.println("i "+i);
             try {
                 Blob blo1=propiedades.get(i).getImagenesBlob().get(0);
                 byteImage=blo1.getBytes(1,(int)blo1.length());
@@ -318,61 +480,5 @@ public class MenuPrincipal1 extends Application {
                 
 
         }
-    /*********************campo de busquedad***************/    
-/*-------------------------------------------------------------------------------------------------*/
-        /*Evento al presionar el texto modificar propiedad*/
-        modificarProp.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent t) {
-               VentanaPropiedad ventanaP = new VentanaPropiedad();
-                try {
-                    ventanaP.start(primaryStage);
-                } catch (Exception ex) {
-                    Logger.getLogger(MenuPrincipal1.class.getName()).log(Level.SEVERE, null, ex);
-                } 
-            }
-        });
-        /*Evento al presionar el texto modificar perfil*/
-        modificarPer.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent t) {
-                VentanaModificacion ventanaModificacionPerfil = new VentanaModificacion();
-                try {
-                    ventanaModificacionPerfil.start(primaryStage);
-                } catch (Exception ex) {
-                    Logger.getLogger(MenuPrincipal1.class.getName()).log(Level.SEVERE, null, ex);
-                } 
-            }
-        });
-
-        /*configuracion de la escena*/
-        GridPane gridTitulo = new GridPane();
-        root.getChildren().add(gridTitulo);
-        
-        Scene scene = new Scene(root, ancho, altura);
-        primaryStage.setFullScreen(true);
-        primaryStage.setTitle("Hello World!");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-    public void idUsuarioOnline(int idUsuario){
-        this.idUsuario=idUsuario;
-    }
-    
-    public String leeArchivo(String direccion) {
-		String texto="";
-		try{
-			BufferedReader bf =new BufferedReader(new FileReader(direccion));
-			String temp="";
-			String bfRead;
-			while((bfRead=bf.readLine())!= null){
-				temp=temp+bfRead;
-			}
-			texto=temp;
-		}catch(IOException e){
-			System.out.println("no se encontro el archivo txt"+e.getLocalizedMessage());
-		}
-		return texto;
     }
 }

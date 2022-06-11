@@ -1,11 +1,15 @@
 package Renta.Utemita.Presentacion.VentanaRegistroModificacion;
 
-import Renta.Utemita.Presentacion.VentanaCuartos.MenuPrincipal1;
+import Renta.Utemita.Presentacion.VentanaCuartos.VentanaCuartos;
+import Renta.Utemita.Presentacion.VentanaPropiedad.VentanaPropiedad;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.RegistrarModificarUsuario;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.Usuario;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -21,6 +25,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
@@ -32,6 +37,7 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -67,7 +73,7 @@ public class VentanaModificacion extends Application{
     double ancho=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
     double altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
     Paint paint2 = Paint.valueOf("#2b6ff6");
-    
+    String user;
     /*variables*/
     private int idUsuario;
     private String nombre;
@@ -97,9 +103,11 @@ public class VentanaModificacion extends Application{
     public void start(Stage primaryStage) throws Exception {
         /*lectura del archivo*/
         try {
-            String ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
+            ArrayList<String> ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
             System.out.println("ident"+ident);
-            idUsuario=Integer.parseInt(ident);
+            idUsuario=Integer.parseInt(ident.get(0));
+            user=ident.get(1);
+                
         } catch (NumberFormatException e) {
             System.out.println("error conversion al leer archivo"+e.getLocalizedMessage());
         }
@@ -185,14 +193,17 @@ public class VentanaModificacion extends Application{
         tituloForm.setX(200);
         pane.getChildren().add(tituloForm);
         pane.setMinHeight(50);
+        /*si es alumno se muestra la matricula*/
+        if(user.equals("Estudiante")){
+            grid.add(txtMatricula,0,4);
+            grid.add(txtFMatricula,0,5);
+        }
         /*grid donde se añade cada elemento del formulario*/
         grid.setHgap(10);
         grid.setVgap(12);
         grid.add(pane, 0,1);
         grid.add(txtNombre, 0, 2);
         grid.add(textFNombre, 0, 3);
-        grid.add(txtMatricula,0,4);
-        grid.add(txtFMatricula,0,5);
         grid.add(txtContraseña,0,6);
         grid.add(txtFContraseña,0,7);
         grid.add(txtCorreo,0,8);
@@ -236,19 +247,76 @@ public class VentanaModificacion extends Application{
         //se crea un Group para colocar dentro al splipane 
         SplitPane sp = new SplitPane();
         anchorPane.getChildren().add(grid);
-        sp1.setStyle("-fx-background-color: #0c50cf;");//fondo del lateral izquieerdo
-        sp1.setDisable(true);//no permite que se ajuste el panel
-        sp1.setPadding(new Insets(altura,0,0,0));
-        sp1.setMaxSize(ancho/3,altura-(altura/10));
+        sp1.setStyle("-fx-background-color: #00ff77;");//fondo del lateral izquieerdo
+        sp1.setDisable(false);//no permite que se ajuste el panel
+        sp1.setMaxSize(ancho/5,altura);
+        Text modificarProp = new Text("Modificar Propiedad"); 
+        //Setting the font of the text 
+        modificarProp.setFont(Font.font(null, FontWeight.BOLD, 15));     
+        //Setting the color of the text 
+        modificarProp.setFill(Color.CRIMSON); 
+        //setting the position of the text 
+        modificarProp.setX(20); 
+        modificarProp.setY(00);       
+
+
+        //Creating a text 
+        Text menu = new Text("Menú principal"); 
+        //Setting the font of the text 
+        menu.setFont(Font.font(null, FontWeight.BOLD, 15));     
+        //Setting the color of the text 
+        menu.setFill(Color.CRIMSON); 
+        //setting the position of the text 
+        menu.setX(20); 
+        menu.setY(200);       
+        Group paneLateral2 = new Group();
+        /*valida vista de menu lateral*/
+        if(user.equals("Estudiante"))
+            paneLateral2.getChildren().addAll(menu);
+        else
+            paneLateral2.getChildren().addAll(menu,modificarProp);
+        sp1.getChildren().add(paneLateral2);
         /*agrega al stackpane el scroll y el splitpane*/
         sp.getItems().addAll(sp1, scroll);
         sp.setDividerPositions(0.3f, 0.6f, 0.9f);
         /*se añade el splitpane al grupo y el label de bienvenida*/
         root.getChildren().add(sp);
-        root.getChildren().add(bienvenido);
+        //root.getChildren().add(bienvenido);
         Scene scene = new Scene(root, ancho, altura,gp);
-/*-----------------------------fin interfaz-----------------------------------------------------------*/
         
+        /*Define las propiedades de la escena*/ 
+      
+        primaryStage.setResizable(false);
+        primaryStage.setFullScreen(true);
+        primaryStage.setTitle("Modificar perfil Usuario");
+        primaryStage.setScene(scene);
+        
+/*-----------------------------fin interfaz-----------------------------------------------------------*/
+        /*Evento al presionar el texto modificar propiedad*/
+        modificarProp.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+               VentanaPropiedad ventanaP = new VentanaPropiedad();
+                try {
+                    ventanaP.start(primaryStage);
+                } catch (Exception ex) {
+                    Logger.getLogger(VentanaCuartos.class.getName()).log(Level.SEVERE, null, ex);
+                } 
+            }
+        });
+        /*Evento al presionar el texto menu principal*/
+        menu.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+                 VentanaCuartos busqueda = new VentanaCuartos();
+                try {
+                    busqueda.start(primaryStage);
+                } catch (Exception ex) {
+                    Logger.getLogger(VentanaCuartos.class.getName()).log(Level.SEVERE, null, ex);
+                } 
+            }
+        });
+
         /*evento al pulsar el boton de iniciar sesion */
         ingresar.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -264,7 +332,7 @@ public class VentanaModificacion extends Application{
                     modificarUsuario(nombre, telefono, correo, contraseña,matricula,idUsuario);
                     /*se abre la nueva ventana*/
                     if(datos){
-                       MenuPrincipal1 inicio = new MenuPrincipal1();
+                       VentanaCuartos inicio = new VentanaCuartos();
                        inicio.start(primaryStage);
                     }
                 } catch (NumberFormatException e) {
@@ -273,10 +341,7 @@ public class VentanaModificacion extends Application{
                 }
             }
         });
-        /*Define las propiedades de la escena*/ 
-        primaryStage.setTitle("Modificar perfil Usuario");
-        primaryStage.setScene(scene);
-        primaryStage.setFullScreen(true);
+        /*muestra la interfaz*/
         primaryStage.show();
     
     }
@@ -317,20 +382,21 @@ public class VentanaModificacion extends Application{
             alertasUsuario();
         
     }
-    public String leeArchivo(String direccion) {
-		String texto="";
-		try{
-			BufferedReader bf =new BufferedReader(new FileReader(direccion));
-			String temp="";
-			String bfRead;
-			while((bfRead=bf.readLine())!= null){
-				temp=temp+bfRead;
-			}
-			texto=temp;
-		}catch(IOException e){
-			System.out.println("no se encontro el archivo txt"+e.getLocalizedMessage());
-		}
-		return texto;
+    public ArrayList<String>  leeArchivo(String direccion) {
+        ArrayList<String> tmp = new ArrayList();
+        try{
+            BufferedReader bf =new BufferedReader(new FileReader(direccion));
+            String temp="";
+	    String bfRead;
+	    while((bfRead=bf.readLine())!= null){
+		temp=temp+bfRead;
+                tmp.add(temp);
+                temp="";
+            }
+            }catch(IOException e){
+		System.out.println("no se encontro el archivo txt"+e.getLocalizedMessage());
+	}
+	return tmp;
     }
     
 }

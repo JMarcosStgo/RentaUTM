@@ -59,7 +59,7 @@ public class AccesoBD {
            ResultSet rs=st.executeQuery("SELECT * FROM usuario WHERE correo='"+correo+"' AND password='"+password+"'");
            //retorna verdadero si encuentra al usuario en la BD, sino False;
            if(rs.next()==true){
-               escribeArchivo(rs.getInt(3));
+               escribeArchivo(rs.getInt(3),rs.getString(7));
                return true;
            }
        } catch (SQLException ex) {
@@ -263,10 +263,9 @@ public class AccesoBD {
        return false;
    }
    
-   public void escribeArchivo(int idUsuario){
+   public void escribeArchivo(int idUsuario,String tipo){
         //Un texto cualquiera guardado en una variable
         String saludo =String.valueOf(idUsuario);
-
         try {
             //Crear un objeto File se encarga de crear o abrir acceso a un archivo que se especifica en su constructor
             File archivo = new File("..\\RentaUTM\\src\\Imagenes\\id.txt");
@@ -275,6 +274,10 @@ public class AccesoBD {
             FileWriter escribir = new FileWriter(archivo, true);
             //escribir.write("");
             escribir.write(saludo);
+            escribir.write("\n");
+            escribir.write(tipo);
+            
+            
 
             //Cerramos la conexion
             escribir.close();
@@ -283,4 +286,101 @@ public class AccesoBD {
             System.out.println("Error al escribir"+e.getLocalizedMessage());
         }
     }
+   /**
+    * Método para listar todos los cuartos dentro del rango del precio
+    * @param precioInicial
+    * @param precioFianl
+    * @return valor Propiedad, una lista de cuartos 
+    */
+   public ArrayList<Propiedad> listCuartosPrecios(int precioInicial , int precioFianl){
+            //String query="SELECT * FROM propiedad WHERE precio>='"+precioInicial+"' AND precio<='"+precioFianl+"'";
+            //st = con.createStatement();
+           //ResultSet rs=st.executeQuery("SELECT * FROM usuario WHERE correo='"+correo+"' AND password='"+password+"'");
+        ArrayList <Propiedad> tem = new ArrayList();
+        try{
+            Statement st = con.createStatement();
+            ResultSet rs=st.executeQuery("SELECT idPropiedad,imagen1,imagen2,imagen3 FROM propiedad WHERE precio>='"+precioInicial+"' AND precio<='"+precioFianl+"'");
+            //System.out.println("try listar cuartos");
+            while (rs.next()) {
+                //System.out.println("lista cuartos x precio");
+                Propiedad temp = new Propiedad();
+                temp.setIdPropiedad(rs.getInt(1));
+                //temp.setDescripcionCuarto(rs.getString(2));
+                //temp.setPrecio(rs.getInt(3));
+                //temp.setDisponibilidad(rs.getString(4));
+                //temp.setUbicacion(rs.getString(5));
+                //temp.setServicios(rs.getString(6));
+                //temp.setToken(rs.getString(10));
+                /*lectura de los archivos blob y se convierten en tipo Image*/
+                try {
+                    ArrayList <Image> imagenes = new ArrayList();
+                    ArrayList <Blob> imagenesBlob = new ArrayList();
+                    
+                    InputStream in = rs.getBinaryStream(2);
+                    BufferedImage image = ImageIO.read(in);
+                    imagenes.add(image);
+                    in = rs.getBinaryStream(3);
+                    image = ImageIO.read(in);
+                    imagenes.add(image);
+                    in = rs.getBinaryStream(4);
+                    image = ImageIO.read(in);
+                    imagenes.add(image);
+                    //temp.setImagenesP(imagenes);
+                    imagenesBlob.add(rs.getBlob(2));
+                    imagenesBlob.add(rs.getBlob(3));
+                    imagenesBlob.add(rs.getBlob(4));
+                    temp.setImagenesBlob(imagenesBlob);
+                    tem.add(temp);
+                }catch (IOException | SQLException e) {
+                    System.out.println("error al cargar datos en listar cuartos precio "+e.getLocalizedMessage());
+                }
+            }
+        } catch(SQLException e){
+            System.out.println("error consulta lista cuartos precio "+e.getLocalizedMessage());
+        }
+        return tem;
+   }
+   /**
+    * Método para devolver la información de un cuarto en especifico
+    * @param idPropiedad
+    * @return valor propiedad
+    * @throws java.io.IOException
+    */
+   public Propiedad getCuarto(int idPropiedad) throws IOException{
+       Propiedad temp = new Propiedad();
+       try {
+            Statement st = con.createStatement();
+            ResultSet rs=st.executeQuery("SELECT * FROM propiedad WHERE idPropiedad='"+idPropiedad+"'");
+                temp.setDescripcionCuarto(rs.getString(contraseña));
+                temp.setIdPropiedad(rs.getInt(1));
+                temp.setDescripcionCuarto(rs.getString(2));
+                temp.setPrecio(rs.getInt(3));
+                temp.setDisponibilidad(rs.getString(4));
+                temp.setUbicacion(rs.getString(5));
+                temp.setServicios(rs.getString(6));
+                
+                ArrayList <Image> imagenes = new ArrayList();
+                    ArrayList <Blob> imagenesBlob = new ArrayList();
+                    
+                    InputStream in = rs.getBinaryStream(7);
+                    BufferedImage image = ImageIO.read(in);
+                    imagenes.add(image);
+                    in = rs.getBinaryStream(8);
+                    image = ImageIO.read(in);
+                    imagenes.add(image);
+                    in = rs.getBinaryStream(9);
+                    image = ImageIO.read(in);
+                    imagenes.add(image);
+                    temp.setImagenesP(imagenes);
+                    imagenesBlob.add(rs.getBlob(7));
+                    imagenesBlob.add(rs.getBlob(8));
+                    imagenesBlob.add(rs.getBlob(9));
+                    temp.setImagenesBlob(imagenesBlob);
+                    
+                
+        } catch (SQLException e) {
+           System.out.println("error consulta get cuarto "+e.getLocalizedMessage());
+       }
+       return temp;
+   }
 }
