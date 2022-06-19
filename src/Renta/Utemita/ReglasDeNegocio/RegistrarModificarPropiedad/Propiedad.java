@@ -1,4 +1,4 @@
-package Renta.Utemita.ReglasDeNegocio;
+package Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad;
 
 import java.awt.Image;
 import java.sql.Blob;

@@ -1,6 +1,6 @@
 package Renta.Utemita.Almacenamiento.AccesoBD;
 
-import Renta.Utemita.ReglasDeNegocio.Propiedad;
+import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad.Propiedad;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.Usuario;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -177,7 +177,7 @@ public class AccesoBD {
             }
             System.out.println(temp);
         }catch (SQLException e) {
-            System.out.println(e.getLocalizedMessage());
+            System.out.println("error alta propiedad"+e.getLocalizedMessage());
         }
        return temp;
    }
@@ -299,18 +299,18 @@ public class AccesoBD {
         ArrayList <Propiedad> tem = new ArrayList();
         try{
             Statement st = con.createStatement();
-            ResultSet rs=st.executeQuery("SELECT idPropiedad,imagen1,imagen2,imagen3 FROM propiedad WHERE precio>='"+precioInicial+"' AND precio<='"+precioFianl+"'");
+            ResultSet rs=st.executeQuery("SELECT token,imagen1,imagen2,imagen3 FROM propiedad WHERE precio>='"+precioInicial+"' AND precio<='"+precioFianl+"'");
             //System.out.println("try listar cuartos");
             while (rs.next()) {
                 //System.out.println("lista cuartos x precio");
                 Propiedad temp = new Propiedad();
-                temp.setIdPropiedad(rs.getInt(1));
+                //temp.setIdPropiedad(rs.getInt(1));
                 //temp.setDescripcionCuarto(rs.getString(2));
                 //temp.setPrecio(rs.getInt(3));
                 //temp.setDisponibilidad(rs.getString(4));
                 //temp.setUbicacion(rs.getString(5));
                 //temp.setServicios(rs.getString(6));
-                //temp.setToken(rs.getString(10));
+                temp.setToken(rs.getString(1));
                 /*lectura de los archivos blob y se convierten en tipo Image*/
                 try {
                     ArrayList <Image> imagenes = new ArrayList();

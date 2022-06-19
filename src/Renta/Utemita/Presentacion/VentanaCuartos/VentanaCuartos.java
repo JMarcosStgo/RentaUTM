@@ -1,9 +1,10 @@
 package Renta.Utemita.Presentacion.VentanaCuartos;
 
-import Renta.Utemita.ReglasDeNegocio.Propiedad;
+import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad.Propiedad;
 import Renta.Utemita.Presentacion.VentanaPropiedad.VentanaPropiedad;
 import Renta.Utemita.Presentacion.VentanaRegistroModificacion.VentanaModificacion;
 import Renta.Utemita.ReglasDeNegocio.Busqueda.Busqueda;
+import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad.RegistrarModificarPropiedad;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileReader;
@@ -15,11 +16,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -33,18 +39,23 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 /**
@@ -62,18 +73,19 @@ public class VentanaCuartos extends Application {
     Label bienvenidopt2=new Label("Renta Utemita");
     //Button btnModificar = new Button();
     //Button btnModificarUsuario = new Button();
-    Button b1= new Button("ver info");
     Button b2= new Button("apartar");
     Paint blanco = Paint.valueOf("#ffffff");
     Label bienvenidopt3;
     AnchorPane anchorPane=new AnchorPane();
-    
+    int bandera=0;
+    int banderafist=0;
     /*variables*/
     private int idUsuario = 0;
     private int idCuarto;
-    private int precioFinal=50000;
+    private int precioFinal=0;
     private int precioInicial=0;
     ArrayList<Propiedad> propiedades = new ArrayList();
+    ArrayList<Propiedad> propiedadesCpy = new ArrayList();
     
     /**
      * @param args the command line arguments
@@ -160,6 +172,7 @@ public class VentanaCuartos extends Application {
         /*Scroll del formulario*/
         ScrollPane scroll = new ScrollPane();
         scroll.setPrefSize(ancho, altura);
+        //scroll.setStyle("-fx-background-color: black;");//fondo del lateral izquieerdo
         /*Se asigna contenido al scrol*/
         scroll.setContent(anchorPane);
         //scroll.setStyle("-fx-background-color: #000000;");
@@ -280,8 +293,6 @@ public class VentanaCuartos extends Application {
         searchBoxF.setMinWidth(ancho/5);
         searchBoxF.setMinHeight(50);
         grid.setHgap(10);
-        //grid.setVgap(12);
-        /**lista todas las propiedades*/
         //propiedades=buscarCuartos(precioInicial,precioFinal);
         /*escucha para bloquear letras y solo aceptar 5 numeros*/
         searchBox.textProperty().addListener((ov, t, t1) -> {
@@ -293,15 +304,28 @@ public class VentanaCuartos extends Application {
                 //Se asigna el nuevo valor, porque sí coincide con la expresión
                 ((StringProperty)ov).setValue(t1);
                 try {
-                    if(ov.getValue().equals(""))
+                    if(ov.getValue().equals("") || ov.getValue().equals(" "))
                         precioInicial=0;
                     else
                         precioInicial=Integer.parseInt(ov.getValue());
                 }catch (NumberFormatException e) {
                     System.out.println("error"+e.getLocalizedMessage());
                 }
+                //fila=new GridPane();
+                
+                //fila.getChildren().clear();
+                propiedades.removeAll(propiedades);
                 propiedades=buscarCuartos(precioInicial,precioFinal);
+                for (int i = 0; i <propiedades.size(); i++) {
+                    propiedadesCpy.add(propiedades.get(i));
+                }
+                //propiedadesCpy.addAll(propiedades);
                 ver();
+               // eliminaDibujo();
+                
+        //Node node = fila.getChildren().get(0);
+        //fila.getChildren().clear();
+        //fila.getChildren().add(0,node);
               //  System.out.println("cambio .."+ov + precioInicial);
               //  System.out.println("tamaño de propiedades"+propiedades.size());
             }
@@ -315,7 +339,7 @@ public class VentanaCuartos extends Application {
                 //Se asigna el nuevo valor, porque sí coincide con la expresión
                 ((StringProperty)ov).setValue(t1);
                 try {
-                    if(ov.getValue().equals(""))
+                    if(ov.getValue().equals("") || ov.getValue().equals(" ") )
                         precioFinal=0;
                    else
                         precioFinal=Integer.parseInt(ov.getValue());
@@ -323,19 +347,32 @@ public class VentanaCuartos extends Application {
                     System.out.println("error"+e.getLocalizedMessage());
                 }
                // System.out.println("cambio .."+ov + precioInicial);
+                //fila=new GridPane();
+                
+               // fila.getChildren().clear();
+                propiedades.removeAll(propiedades);
                 propiedades=buscarCuartos(precioInicial,precioFinal);
+                for (int i = 0; i <propiedades.size(); i++) {
+                    propiedadesCpy.add(propiedades.get(i));
+                    //System.out.println("prop evento"+propiedades.get(i).getDescripcionCuarto()+propiedades.get(i).getIdPropiedad()+propiedades.get(i).getToken());
+                }
+                
                 ver();
+                //eliminaDibujo();
                 //System.out.println("tamaño de propiedades"+propiedades);
                 
             }
         });
         
+        //campos de busqueda
         VBox box = new VBox(searchBox);
         VBox box2 = new VBox(searchBoxF);
         grid.add(box,0,0);
         grid.add(box2,1,0);
         
-        
+        /*prubea ver*/
+        //propiedades=buscarCuartos(1,50000);
+        //ver();
         //se obtiene todas las propiedades dentro del rango de fechas
         //el array me devuelve todos las imagenes
         
@@ -421,64 +458,100 @@ public class VentanaCuartos extends Application {
         /*cargar ventana emergente con informacion de la propiedad*/
     }
     public void ver(){
-    ImageView image1,image2,image3;
+         ImageView image11,image2,image3;
          byte byteImage[] = null;
-        for (int i = 0; i <propiedades.size() ; i++) {
-            System.out.println("i "+i);
-            try {
-                Blob blo1=propiedades.get(i).getImagenesBlob().get(0);
-                byteImage=blo1.getBytes(1,(int)blo1.length());
-                Image img1 = new Image(new ByteArrayInputStream(byteImage));
-                image1 = new ImageView(img1);
-                
-                Blob blo2=propiedades.get(i).getImagenesBlob().get(1);
-                byteImage=blo2.getBytes(1,(int)blo2.length());
-                Image img2 = new Image(new ByteArrayInputStream(byteImage));
-                image2 = new ImageView(img2);
-                
-                Blob blo3=propiedades.get(i).getImagenesBlob().get(2);
-                byteImage=blo3.getBytes(1,(int)blo3.length());
-                Image img3 = new Image(new ByteArrayInputStream(byteImage));
-                image3 = new ImageView(img3);
-                
-                image1.setFitHeight(ancho/5);
-                image1.setFitWidth(ancho/5);
-                image2.setFitHeight(ancho/5);
-                image2.setFitWidth(ancho/5);
-                image3.setFitHeight(ancho/5);
-                image3.setFitWidth(ancho/5);
-                image1.setX(100);
-                image1.setY(altura/30);
-                image2.setX(450);
-                image2.setY(altura/30);
-                image3.setX(800);
-                image3.setY(altura/30);
-                
-                Group group1=new Group();
-                b1.setLayoutY(350);
-                b1.setLayoutX(150);
-                b2.setLayoutY(350);
-                b2.setLayoutX(300);
-                
-                group1.getChildren().add(image1);
-                group1.getChildren().add(b1);
-                group1.getChildren().add(b2);
-                
-                Pane pane = new Pane();
-                pane.setMinWidth(ancho-(ancho/5));
-                pane.getChildren().add(group1);
-                pane.getChildren().add(image2);
-                pane.getChildren().add(image3);
-                pane.setLayoutY(altura/3);
-                pane.setStyle("-fx-background-color: white;");//fondo del pane de las imagenes
-                pane.setPadding(new Insets(0,0,0,0));
-                //tres propiedades por fila
-                anchorPane.getChildren().add(pane);
-            } catch (SQLException e) {
-                System.out.println("error al cargar las imagenes de la BD"+e.getLocalizedMessage());
-            }
-                
+         double posY=(ancho/6)+600;
+         double posX=ancho/6;
+         System.out.println("entra ve -------------------------------------------"+posY+posX);    
+         ArrayList<ImageView>imagenesBuscador = new ArrayList();
+         GridPane fila=new GridPane();
+          /**lista todas las propiedades*/
+         fila.setMinWidth(ancho-(ancho/3));
+         fila.setBackground(Background.fill(blanco));
+         fila.setPadding(new Insets(0,0,0,0));
+         fila.setLayoutY(altura/3);
+         fila.setVgap(12);
+         
+         bandera=propiedades.size();
+        fila.getChildren().clear();
+        if(propiedades.size()>0){
+            /*cargar todas las imagens*/
+            for (int j = 0; j < propiedades.size(); j++) {
+               try {
+                   Blob blo1=propiedades.get(j).getImagenesBlob().get(0);
+                   byteImage=blo1.getBytes(1,(int)blo1.length());
+                   Image img1 = new Image(new ByteArrayInputStream(byteImage));
+                   ImageView image1 = new ImageView(img1);
+                   imagenesBuscador.add(image1);
+               } catch (SQLException e) {
+                   System.out.println("Error, no se pudieron cargar las imagenes, "+e.getLocalizedMessage());
+               }
+           }
 
+           for (int i = 0; i <imagenesBuscador.size(); i++) {
+                System.out.println("i "+i);
+                image11=imagenesBuscador.get(i);
+                image11.setFitHeight(posX+200);
+                image11.setFitWidth(posX+200);
+                image11.setX(100);
+                image11.setY(posY);
+                Button btnInformacion= new Button("Apartar");
+                btnInformacion.setId(""+i);
+                btnInformacion.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent t) {
+                        
+                        Stage inicio = new Stage();
+                        Group elementosVenEmer= new Group();
+                        
+                        
+                        Popup po = new Popup();
+                        po.setX(1020);
+                        po.setY(704);
+                        po.setHeight(altura/2);
+                        po.getContent().addAll(new Circle(35, 45, 64, Color.RED));
+                        Label tituloVentanaE = new Label ("Desea agregar otra propiedad");
+                        Button agregarBtn = new Button("Apartar");
+                        HBox hb = new HBox(17);
+                        hb.setStyle("-fx-background-color: violet; -fx-padding: 13px;");
+                        Button continuar = new Button("Cancelar");
+                        hb.getChildren().addAll(tituloVentanaE,agregarBtn, continuar);
+                        elementosVenEmer.getChildren().add(hb);
+                        //anchorPane.getChildren().add(elementosVenEmer);
+                        /*obtener la informacion de la propiedad elejida*/
+                        RegistrarModificarPropiedad rModiProp = new RegistrarModificarPropiedad();
+                        String id=btnInformacion.getId();
+                        int pos=Integer.parseInt(id);
+                        
+                        System.out.println("get id "+id +"--"+pos+" tam propiedadesCPY"+propiedadesCpy.size());
+                        Propiedad eleccionPropiedad = propiedadesCpy.get(pos);
+                        //Propiedad eleccionPropiedad =rModiProp.obtenerDatosPropiedad(tokenn);
+                        System.out.println("informacion de propiedad elejida" + eleccionPropiedad.getDescripcionCuarto() +" - "+ eleccionPropiedad.getToken()+ " - " +eleccionPropiedad.getIdPropiedad());
+                        Propiedad elejida = new Propiedad();
+                        
+                        Scene emergente = new Scene(elementosVenEmer,600,400);
+                        inicio.setScene(emergente);
+                        inicio.setTitle("Información de cuartos");
+                        inicio.show();
+                        
+
+                    }
+                });
+                 /*aumenta en y*/
+                posY+=posY;
+                fila.add(image11, 0, i);
+                fila.add(btnInformacion, 1, i);
+            }
+            anchorPane.getChildren().add(fila);
+            
+            imagenesBuscador.removeAll(propiedades);
+        }else{
+               /*limpiar grid de las imagenes antiguas*/
+                System.out.println("entra seccion borrar");
+                Node nodo1 = anchorPane.getChildren().get(0);
+                anchorPane.getChildren().clear();
+                anchorPane.getChildren().add(0,nodo1);
         }
+        bandera=1;
     }
 }

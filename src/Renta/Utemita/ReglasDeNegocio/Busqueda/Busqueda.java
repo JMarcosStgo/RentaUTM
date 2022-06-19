@@ -1,7 +1,7 @@
 package Renta.Utemita.ReglasDeNegocio.Busqueda;
 
 import Renta.Utemita.Almacenamiento.AccesoBD.AccesoBD;
-import Renta.Utemita.ReglasDeNegocio.Propiedad;
+import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad.Propiedad;
 import java.io.IOException;
 import java.util.ArrayList;
 

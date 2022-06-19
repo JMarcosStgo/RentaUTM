@@ -3,8 +3,8 @@ package Renta.Utemita.Presentacion.VentanaPropiedad;
 
 import Renta.Utemita.Presentacion.VentanaCuartos.VentanaCuartos;
 import Renta.Utemita.Presentacion.VentanaRegistroModificacion.VentanaModificacion;
-import Renta.Utemita.ReglasDeNegocio.Propiedad;
-import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad;
+import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad.Propiedad;
+import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad.RegistrarModificarPropiedad;
 import java.io.File;
 import java.sql.Blob;
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class VentanaPropiedad extends Application{
     TextField lPrecio = new TextField();
     Text dDisponibilidad = new Text("Disponibilidad");
     ChoiceBox cb = new ChoiceBox();
-    Text dUbicacion = new Text("Ubicación (link Google Maps de la propiedad)");
+    Text dUbicacion = new Text("Ubicación");
     TextField lUbicacion = new TextField();
     Text dImagenes = new Text("Ingrese las imagenes");
     Paint blanco = Paint.valueOf("#ffffff");
@@ -372,6 +372,7 @@ public class VentanaPropiedad extends Application{
             lPrecio.setText(null);
             lUbicacion.setText(null);
             lServicios.setText(null);
+            codigo=false;
             imagenes.removeAll(imagenes);
             token=getRandomString();
             hb.setOpacity(0);
@@ -563,17 +564,17 @@ public class VentanaPropiedad extends Application{
             
         System.out.println("datos regprop"+datos);
         if(datos==true)
-        {       RegistrarModificarPropiedad rMP = new RegistrarModificarPropiedad();
+        {       RegistrarModificarPropiedad rmp2 = new RegistrarModificarPropiedad();
                 Propiedad temp=new Propiedad();
-            this.codigo=rMP.btnExisteCodigoPropiedad(token);
-            if(this.codigo==false){
+            //this.codigo=rmp2.btnExisteCodigoPropiedad(token);
+            if(codigo==false){
                 token=getRandomString();
-                rMP = new RegistrarModificarPropiedad();
+                rmp2 = new RegistrarModificarPropiedad();
                 temp=new Propiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,token,null,0);
-                rMP.ingresarPropiedad(temp);
+                rmp2.ingresarPropiedad(temp);
                 this.descripcionCuarto=null;
                 this.precio=0;
-                this.disponibilidad=null;
+                //this.disponibilidad=null;
                 this.ubicacion=null;
                 this.servicios=null;
                 this.token=null;
@@ -584,7 +585,7 @@ public class VentanaPropiedad extends Application{
                 token=inputToken.getText();
                 Propiedad temp2=new Propiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,token,imagenesBlob,id);
                 System.out.println("modificar propieadad"+temp2.getDescripcionCuarto()+"--"+temp2.getPrecio()+"--"+temp2.getDisponibilidad()+"--"+temp2.getUbicacion()+"--"+temp2.getServicios()+"--"+imagenes.size()+"--token: "+inputToken.getText()+"--"+imagenesBlob.size()+"id"+temp2.getIdPropiedad());
-                rMP.modificarPropiedad(temp2);
+                rmp2.modificarPropiedad(temp2);
                 this.token=null;
                 id=0;
             }
