@@ -3,6 +3,8 @@ package Renta.Utemita.Presentacion.VentanaCuartos;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad.Propiedad;
 import Renta.Utemita.Presentacion.VentanaPropiedad.VentanaPropiedad;
 import Renta.Utemita.Presentacion.VentanaRegistroModificacion.VentanaModificacion;
+import Renta.Utemita.ReglasDeNegocio.ApartarCuarto.ApartarCuarto;
+import Renta.Utemita.ReglasDeNegocio.ApartarCuarto.Notificaciones;
 import Renta.Utemita.ReglasDeNegocio.Busqueda.Busqueda;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad.RegistrarModificarPropiedad;
 import java.io.BufferedReader;
@@ -16,6 +18,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -53,6 +57,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
@@ -77,7 +82,9 @@ public class VentanaCuartos extends Application {
     Paint blanco = Paint.valueOf("#ffffff");
     Label bienvenidopt3;
     AnchorPane anchorPane=new AnchorPane();
-    int bandera=0;
+    int banderaActual=0;
+    int banderaAnterior=0;
+    
     int banderafist=0;
     /*variables*/
     private int idUsuario = 0;
@@ -230,18 +237,60 @@ public class VentanaCuartos extends Application {
         buscador.setPromptText("Search Box");
         
         //buscador.setPadding(new Insets(0,300,0,0));
-        ComboBox comboBox = new ComboBox();
+       // ComboBox comboBox = new ComboBox();
+        
         buscador.textProperty().addListener((ov, t, t1) -> {
         });
         ListView<Object> itemView = new ListView<>();
-        itemView.setItems(comboBox.getItems());
+        
+       // itemView.setItems(comboBox.getItems());
         VBox boxDerecho = new VBox(buscador,itemView);
         boxDerecho.setLayoutX(0);
         //itemView.setPrefSize(200,900);
         Group paneLateralDer = new Group();
         paneLateralDer.getChildren().addAll(boxDerecho);
         paneLateralDer.setLayoutX(0);
+        /*------------------------obtencion de notificaciones--------------------*/
+        GridPane notificaciones = new GridPane();
+        ///notificaciones.setStyle("-fx-background-color: #123456;");
+        Label prueba = new Label("prueba");
+        notificaciones.add(prueba,0,0);
         
+        /* create list object */
+        ListView<String> listViewReference = new ListView<String>();
+        /* aqui se deben agregar las notificaciones */
+        listViewReference.getItems().add("First Item");
+        listViewReference.getItems().add("Second Item");
+        listViewReference.getItems().add("Third Item");
+        listViewReference.getItems().add("Fourth Item");
+        listViewReference.getItems().add("Fifth Item");
+        /* creating vertical box to add item objects */
+        VBox vBox = new VBox(listViewReference);
+        //boxDerecho.getChildren().add(vBox);
+        //Label for education
+        Label label = new Label("Notificaciones:");
+        Label label2 = new Label("Alumnos que han apartado cuartos");
+        Font font = Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 12);
+        label.setFont(font);
+        //lista de notificaciones
+        ApartarCuarto notificacionesCuarto = new ApartarCuarto();
+        ArrayList<Notificaciones> notiTmp=notificacionesCuarto.obtenerNotificaciones(idUsuario);
+        ObservableList<String> names = FXCollections.observableArrayList();//("Engineering", "MCA", "MBA", "Graduation", "MTECH", "Mphil", "Phd");
+        
+        for (int i = 0; i < notiTmp.size(); i++) {
+            names.add(notiTmp.get(i).getNombreAlumno());
+        }
+        
+        ListView<String> listView = new ListView<String>(names);
+        listView.setMaxSize(200, 160);
+        listView.setPadding(new Insets(0,50,0,0));
+        //Creating the layout
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(5,50,0, 0));
+        layout.getChildren().addAll(label,label2, listView);
+        layout.setStyle("-fx-background-color: BEIGE");
+        boxDerecho.getChildren().add(layout);
+        /*------------------------------------------------------------------------*/
         //paneLateralDer.prefWidth(300);
         //paneLateralDer.prefHeight(altura);
         //boxDerecho.setPadding(new Insets(0,300,0,0));
@@ -471,8 +520,15 @@ public class VentanaCuartos extends Application {
          fila.setPadding(new Insets(0,0,0,0));
          fila.setLayoutY(altura/3);
          fila.setVgap(12);
-         
-         bandera=propiedades.size();
+         fila.setHgap(50);
+         banderaActual=propiedades.size();
+         banderaAnterior=propiedadesCpy.size();
+         System.out.println(" banderas ------------------->"+banderaActual +" -- "+banderaAnterior);
+        if (banderaActual<banderaAnterior) {
+            Node nodo1 = anchorPane.getChildren().get(0);
+            anchorPane.getChildren().clear();
+            anchorPane.getChildren().add(0,nodo1); 
+        }
         fila.getChildren().clear();
         if(propiedades.size()>0){
             /*cargar todas las imagens*/
@@ -497,53 +553,132 @@ public class VentanaCuartos extends Application {
                 image11.setY(posY);
                 Button btnInformacion= new Button("Apartar");
                 btnInformacion.setId(""+i);
+                /*Grid para agregar la informacion y el boton al grid fila*/
+                Propiedad eleccionPropiedad = propiedades.get(i);
+                System.out.println("eleccion propiedad info"+eleccionPropiedad.getToken());
+                RegistrarModificarPropiedad rModProp = new RegistrarModificarPropiedad();
+                Propiedad tempo=rModProp.obtenerDatosPropiedad(eleccionPropiedad.getToken());
+                
+                GridPane infoCuartos = new GridPane();
+                Label descripcionCuarto = new Label(tempo.getDescripcionCuarto());
+                Label precio = new Label(tempo.getPrecio()+"");
+                Label disponibilidad = new Label(tempo.getDisponibilidad());
+                Label ubicacion =  new Label(tempo.getUbicacion());
+                Label servicios = new Label(tempo.getServicios());
+                
+                Text descripcioncto = new Text("Descripcion del cuarto: ");
+                Text preciocto = new Text("Precio: ");
+                Text disponibilidadcto = new Text("Disponibilidad: ");
+                Text ubicacioncto = new Text("Ubicacion: ");
+                Text servicioscto = new Text("Servicios: ");
+                
+                descripcioncto.setStyle("-fx-background-color: #2b6ff6;");
+                descripcioncto.setFont(new Font("Arial",28));
+                preciocto.setStyle("-fx-background-color: #2b6ff6;");
+                preciocto.setFont(new Font("Arial",28));
+                disponibilidadcto.setStyle("-fx-background-color: #2b6ff6;");
+                disponibilidadcto.setFont(new Font("Arial",28));
+                ubicacioncto.setStyle("-fx-background-color: #2b6ff6;");
+                ubicacioncto.setFont(new Font("Arial",28));
+                servicioscto.setStyle("-fx-background-color: #2b6ff6;");
+                servicioscto.setFont(new Font("Arial",28));
+                btnInformacion.setStyle("-fx-background-color: #2b6ff6;");
+                btnInformacion.setFont(new Font("Arial",28));
+                
+                descripcionCuarto.setFont(new Font("Arial",22));
+                precio.setFont(new Font("Arial",22));
+                disponibilidad.setFont(new Font("Arial",22));
+                ubicacion.setFont(new Font("Arial",22));
+                servicios.setFont(new Font("Arial",22));
+                descripcionCuarto.setBackground(Background.fill(blanco));
+                precio.setBackground(Background.fill(blanco));
+                disponibilidad.setBackground(Background.fill(blanco));
+                ubicacion.setBackground(Background.fill(blanco));
+                servicios.setBackground(Background.fill(blanco));
+        
+                infoCuartos.add(descripcioncto,0, 0);
+                infoCuartos.add(preciocto,0, 2);
+                infoCuartos.add(disponibilidadcto,0, 4);
+                infoCuartos.add(ubicacioncto,0, 6);
+                infoCuartos.add(servicioscto,0, 8);
+                infoCuartos.add(btnInformacion, 0, 10);
+                
+                infoCuartos.add(descripcionCuarto,0, 1);
+                infoCuartos.add(precio,0, 3);
+                infoCuartos.add(disponibilidad,0, 5);
+                infoCuartos.add(ubicacion,0, 7);
+                infoCuartos.add(servicios,0, 9);
+                //infoCuartos.add(btnInformacion, 0, 11);
+                /*Accion al pulsar el boton */
                 btnInformacion.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent t) {
-                        
-                        Stage inicio = new Stage();
-                        Group elementosVenEmer= new Group();
-                        
-                        
-                        Popup po = new Popup();
-                        po.setX(1020);
-                        po.setY(704);
-                        po.setHeight(altura/2);
-                        po.getContent().addAll(new Circle(35, 45, 64, Color.RED));
-                        Label tituloVentanaE = new Label ("Desea agregar otra propiedad");
-                        Button agregarBtn = new Button("Apartar");
-                        HBox hb = new HBox(17);
-                        hb.setStyle("-fx-background-color: violet; -fx-padding: 13px;");
-                        Button continuar = new Button("Cancelar");
-                        hb.getChildren().addAll(tituloVentanaE,agregarBtn, continuar);
-                        elementosVenEmer.getChildren().add(hb);
-                        //anchorPane.getChildren().add(elementosVenEmer);
-                        /*obtener la informacion de la propiedad elejida*/
-                        RegistrarModificarPropiedad rModiProp = new RegistrarModificarPropiedad();
-                        String id=btnInformacion.getId();
-                        int pos=Integer.parseInt(id);
-                        
-                        System.out.println("get id "+id +"--"+pos+" tam propiedadesCPY"+propiedadesCpy.size());
-                        Propiedad eleccionPropiedad = propiedadesCpy.get(pos);
-                        //Propiedad eleccionPropiedad =rModiProp.obtenerDatosPropiedad(tokenn);
-                        System.out.println("informacion de propiedad elejida" + eleccionPropiedad.getDescripcionCuarto() +" - "+ eleccionPropiedad.getToken()+ " - " +eleccionPropiedad.getIdPropiedad());
-                        Propiedad elejida = new Propiedad();
-                        
-                        Scene emergente = new Scene(elementosVenEmer,600,400);
-                        inicio.setScene(emergente);
-                        inicio.setTitle("Información de cuartos");
-                        inicio.show();
-                        
+                         /*no mostrar boton si propiedad ya no esta disponible*/
+                        /*ignorar acciones */
+                        RegistrarModificarPropiedad rModPropiedad = new RegistrarModificarPropiedad();
+                        String x=btnInformacion.getId();
+                        int poss=Integer.parseInt(x);
+                        Propiedad actual = rModPropiedad.obtenerDatosPropiedad(propiedades.get(poss).getToken());
+                        System.out.println("actual ------->" +"btnID:"+btnInformacion.getId()+" -"+ actual.getDisponibilidad()+actual.getToken()+actual.getServicios()+actual.getIdPropiedad());
+                       if(actual.getDisponibilidad().equals("No disponible")){
+                           btnInformacion.setOpacity(0);
+                       }
+                       else{       
+                
+                            Stage inicio = new Stage();
+                            Group elementosVenEmer= new Group();
+                            Popup po = new Popup();
+                            po.setX(ancho/2);
+                            po.setY(altura/2);
+                            po.setHeight(altura/10);
+                            po.setWidth(altura/8);
+                            Label tituloVentanaE = new Label ("¿Desea realmente apartar esta propiedad?");
+                            Button apartar = new Button("Apartar");
+                            HBox hb = new HBox(17);
+                            hb.setStyle("-fx-background-color: violet; -fx-padding: 13px;");
+                            Button cancelar = new Button("Cancelar");
+                           /*Evento cuando el alumno confirma apartar el cuarto*/
+                            apartar.setOnAction(new EventHandler<ActionEvent>() {
+                                @Override
+                                public void handle(ActionEvent t) {
+                                    ApartarCuarto apartarBD = new ApartarCuarto();
+                                    apartarBD.apartarCuarto(eleccionPropiedad.getToken());
+                                    /*desaparecer el boton de apartar*/
+                                    apartar.setOpacity(0);
+                                    inicio.close();
+                                    }
+                            });
+                            /*Evento cuadno pulsa en cancelar*/
+                            cancelar.setOnAction(new EventHandler<ActionEvent>() {
+                                @Override
+                                public void handle(ActionEvent t) {
+                                    inicio.close();
+                                }
+                            });
+                            hb.getChildren().addAll(tituloVentanaE,apartar, cancelar);
+                            elementosVenEmer.setStyle("-fx-background-color: violet; -fx-padding: 13px;");
+                            elementosVenEmer.getChildren().add(hb);
+                            RegistrarModificarPropiedad rModiProp = new RegistrarModificarPropiedad();
+                            String id=btnInformacion.getId();
+                            int pos=Integer.parseInt(id);
+                            Propiedad eleccionPropiedad = propiedadesCpy.get(pos);
+                            Propiedad elejida = new Propiedad();
 
+                            Scene emergente = new Scene(elementosVenEmer,500,100,Color.web("violet"));
+                            inicio.setScene(emergente);
+                            inicio.setResizable(false);
+                            inicio.setTitle("Confirmar apartado");
+                            inicio.show();
+
+                        }
                     }
                 });
                  /*aumenta en y*/
                 posY+=posY;
                 fila.add(image11, 0, i);
-                fila.add(btnInformacion, 1, i);
+                fila.add(infoCuartos, 1, i);
             }
             anchorPane.getChildren().add(fila);
-            
             imagenesBuscador.removeAll(propiedades);
         }else{
                /*limpiar grid de las imagenes antiguas*/
@@ -552,6 +687,6 @@ public class VentanaCuartos extends Application {
                 anchorPane.getChildren().clear();
                 anchorPane.getChildren().add(0,nodo1);
         }
-        bandera=1;
+       // bandera=1;
     }
 }

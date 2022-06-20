@@ -164,6 +164,12 @@ public class VentanaPropiedad extends Application{
         bienvenido.setMinWidth(ancho);
         bienvenido.setAlignment(Pos.CENTER);
         
+        ingresar.setFont(new Font("Serif", 28));
+        ingresar.setEffect(shadow);
+        ingresar.setTextFill(blanco);
+        ingresar.setBackground(Background.fill(paint2));
+        ingresar.setMinWidth(ancho/7);
+        
         errorRegPropiedad.setStyle("-fx-background-color: #ffffff;");
         errorRegPropiedad.setFont(new Font("Arial",30));
         errorRegPropiedad.setTextAlignment(TextAlignment.CENTER);
@@ -186,6 +192,9 @@ public class VentanaPropiedad extends Application{
         lPrecio.setMaxHeight(50);
         dDisponibilidad.setStyle("-fx-background-color: #ffffff;");
         dDisponibilidad.setFont(new Font("Arial",28));
+        dServicios.setStyle("-fx-background-color: #ffffff;");
+        dServicios.setFont(new Font("Arial",28));
+        
         cb.getItems().addAll("Disponible","No disponible");
         cb.setValue(cb.getItems().get(0));
         cb.setMaxWidth(100);
@@ -241,7 +250,7 @@ public class VentanaPropiedad extends Application{
         label.setMinHeight(ancho/4);
         /*grid donde se añade cada elemento del formulario*/
         grid.setHgap(10);
-        grid.setVgap(12);
+        grid.setVgap(5);
         grid.add(pane, 0,1);
         grid.add(dCuarto, 0, 2);
         grid.add(lCuarto, 0, 3);

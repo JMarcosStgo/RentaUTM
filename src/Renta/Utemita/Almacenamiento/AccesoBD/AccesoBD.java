@@ -1,12 +1,15 @@
 package Renta.Utemita.Almacenamiento.AccesoBD;
 
+import Renta.Utemita.ReglasDeNegocio.ApartarCuarto.Notificaciones;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad.Propiedad;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.Usuario;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +36,7 @@ public class AccesoBD {
    private final String cadenaConeccion="jdbc:mysql://127.0.0.1/rentautemita";
    private final String usuario="root";
    private final String contraseña="";
-   
+   private int idUsuario=0;
    public Connection con;
    public void iniciarBD(){
        try {
@@ -59,6 +62,8 @@ public class AccesoBD {
            ResultSet rs=st.executeQuery("SELECT * FROM usuario WHERE correo='"+correo+"' AND password='"+password+"'");
            //retorna verdadero si encuentra al usuario en la BD, sino False;
            if(rs.next()==true){
+               idUsuario=rs.getInt(3);
+               System.out.println("id usuario existeusuario: "+idUsuario);
                escribeArchivo(rs.getInt(3),rs.getString(7));
                return true;
            }
@@ -110,6 +115,10 @@ public class AccesoBD {
            }
             statment.setString(9,propiedad.getToken());
             statment.executeUpdate();
+            ArrayList<String>  ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
+            System.out.println("ident"+ident.get(0));
+            idUsuario=Integer.parseInt(ident.get(0));
+            caseropropiedad(idUsuario,propiedad.getToken());
             }catch (SQLException e) {
             System.out.println(e.getLocalizedMessage());
         }
@@ -142,7 +151,7 @@ public class AccesoBD {
        Propiedad temp=new Propiedad();
        try {
             Statement st = con.createStatement();
-            ResultSet rs=st.executeQuery("SELECT * FROM propiedad WHERE token='"+token+"'");
+                ResultSet rs=st.executeQuery("SELECT * FROM propiedad WHERE token='"+token+"'");
             System.out.println("rs"+rs);
             if(rs.next()==true){
                 temp.setIdPropiedad(rs.getInt(1));
@@ -235,7 +244,7 @@ public class AccesoBD {
                 usuarioBD.setCorreo(rs.getString(1));
                 usuarioBD.setContraseña(rs.getString(2));
                 usuarioBD.setIdUsuario(rs.getInt(3));
-                usuarioBD.setTelefono(rs.getInt(4));
+                usuarioBD.setTelefono(rs.getLong(4));
                 usuarioBD.setMatricula(rs.getString(5));
                 usuarioBD.setNombre(rs.getString(6));
                 
@@ -265,6 +274,7 @@ public class AccesoBD {
    
    public void escribeArchivo(int idUsuario,String tipo){
         //Un texto cualquiera guardado en una variable
+        this.idUsuario=idUsuario;
         String saludo =String.valueOf(idUsuario);
         try {
             //Crear un objeto File se encarga de crear o abrir acceso a un archivo que se especifica en su constructor
@@ -327,8 +337,8 @@ public class AccesoBD {
                     imagenes.add(image);
                     //temp.setImagenesP(imagenes);
                     imagenesBlob.add(rs.getBlob(2));
-                    imagenesBlob.add(rs.getBlob(3));
-                    imagenesBlob.add(rs.getBlob(4));
+                    //imagenesBlob.add(rs.getBlob(3));
+                    //imagenesBlob.add(rs.getBlob(4));
                     temp.setImagenesBlob(imagenesBlob);
                     tem.add(temp);
                 }catch (IOException | SQLException e) {
@@ -382,5 +392,118 @@ public class AccesoBD {
            System.out.println("error consulta get cuarto "+e.getLocalizedMessage());
        }
        return temp;
+   }
+   /**
+    * Método para actualizar la disponibiliad de un cuarto  y gurdar los
+    * datos del alumno,propiedad y casero en la BD
+    * @param token 
+    */
+   public void modificarDisponibilidad(String token){
+       int idcasero=0;
+        try {
+            String query="UPDATE propiedad SET disponibilidad='No disponible' WHERE token='"+token+"'";//+"where idPropiedad='"+propiedad.getIdPropiedad()+"'
+            PreparedStatement statment=(PreparedStatement)con.prepareStatement(query);
+            statment.executeUpdate();
+            
+            Propiedad prop=obtenerPropiedadModificar(token);
+            System.out.println("propiedad notificaciones "+prop.getIdPropiedad()+prop.getDescripcionCuarto()+prop.getToken());
+            
+           // try {
+                /*obtener id del casero de la propiedad con el token*/
+                Statement st = con.createStatement();
+                System.out.println("------");
+                
+                ResultSet rs=st.executeQuery("SELECT * FROM caseropropiedad WHERE token='"+token+"'");
+                if(rs.next()){
+                    System.out.println("rs notificaiones"+rs.getInt(1)+rs.getInt(2));//+rs.getInt(2));
+                
+                    idcasero=rs.getInt(2);
+                }
+          //  } catch (SQLException ee) {
+           //         System.out.println("error caseropropieda"+ee.getLocalizedMessage());
+            ///}
+            /* -----------*/
+            ArrayList<String>  ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
+            System.out.println("ident"+ident.get(0));
+            idUsuario=Integer.parseInt(ident.get(0));
+            System.out.println("idUsuario notificaiones"+idUsuario);
+            /* ------- */
+            //try {
+                String query2="INSERT INTO notificaciones(idAlumno,nombreAlumno,idPropiedad,idCasero) VALUES (?,?,?,?)";
+                PreparedStatement statment2=(PreparedStatement)con.prepareStatement(query2);
+                statment2.setInt(1,idUsuario);
+                Usuario tmp=obtencionDatos(idUsuario);
+                System.out.println("tmp notificaciones"+tmp.getNombre());
+                System.out.println("id usuario "+this.idUsuario+ tmp.getNombre()+tmp.getCorreo()+tmp.getIdUsuario());
+                statment2.setString(2,tmp.getNombre());
+                statment2.setInt(3,prop.getIdPropiedad());
+                statment2.setInt(4,idcasero);
+                statment2.execute();
+            //} catch (SQLException error) {
+             //   System.out.println("error al ingresar datos en la tabla notificaciones "+error.getLocalizedMessage());
+            //}
+//          notificaciones(idUsuario, token);
+       } catch (SQLException e) {
+            System.out.println("Error al actualizar cuarto "+e.getLocalizedMessage());
+       }
+    }
+   /**
+    * 
+    * @param direccion
+    * @return 
+    */
+    public ArrayList<String> leeArchivo(String direccion) {
+		ArrayList<String> tmp = new ArrayList();
+		try{
+			BufferedReader bf =new BufferedReader(new FileReader(direccion));
+			String temp="";
+			String bfRead;
+			while((bfRead=bf.readLine())!= null){
+				temp=temp+bfRead;
+                                tmp.add(temp);
+                                temp="";
+                        }
+		}catch(IOException e){
+			System.out.println("no se encontro el archivo txt"+e.getLocalizedMessage());
+		}
+		return tmp;
+    }
+   /**
+    * Método para guardar datos del alumno que ha apartado el cuarto
+    * @param idUsuario
+    * @param token 
+    */
+   public void caseropropiedad(int idUsuario,String token){
+        /*insertar tupla en tabla propiedadAlumno*/
+        try {
+            String query=" INSERT INTO caseropropiedad(idCasero,token) VALUES (?,?)";
+            PreparedStatement statment=(PreparedStatement)con.prepareStatement(query);
+            statment.setInt(1,idUsuario);
+            //Propiedad temp=obtenerPropiedadModificar(token);
+            statment.setString(2,token);
+            statment.execute();
+        } catch (SQLException e) {
+            System.out.println("Error al ingresar datos para notificar al casero "+e.getLocalizedMessage());
+        }
+   }
+   /**
+    * Método para obtener las notificaciones de un casero
+    * @param idCasero 
+     * @return  
+    */
+   public ArrayList obtenerNotificaciones(int  idCasero){
+       ArrayList<Notificaciones> notificaciones = new ArrayList();
+       try {
+            Statement st = con.createStatement();
+            ResultSet rs=st.executeQuery(" SELECT *FROM notificaciones WHERE idCasero='"+idCasero+"'");
+            //statment=(PreparedStatement)con.prepareStatement(query);
+            while(rs.next()){
+                Notificaciones notiTmp = new Notificaciones(rs.getInt(1),rs.getInt(2),rs.getInt(4),rs.getInt(5),rs.getString(3));
+                notificaciones.add(notiTmp);
+            }
+        }catch (SQLException e) {
+            System.out.println("Error al obtener las notificaciones"+e.getLocalizedMessage());
+        }
+       return notificaciones;
    }
 }

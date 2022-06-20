@@ -77,7 +77,7 @@ public class VentanaModificacion extends Application{
     /*variables*/
     private int idUsuario;
     private String nombre;
-    private int telefono;
+    private long telefono;
     private String correo;
     private String matricula;
     private String contraseña;
@@ -370,7 +370,7 @@ public class VentanaModificacion extends Application{
      * @param matricula
      * @param idUsuario 
      */
-    public void modificarUsuario(String nombre, int telefono, String correo, String contraseña,String matricula,int idUsuario){
+    public void modificarUsuario(String nombre, long telefono, String correo, String contraseña,String matricula,int idUsuario){
         System.out.println("modificar usuario"+nombre+telefono+correo+contraseña+matricula+idUsuario);
         datos=rMU.verificarDatos(nombre, telefono, correo, matricula, contraseña);
         System.out.println("datos modificar  usuario"+datos+ "---"+nombre+telefono+correo+matricula+contraseña);
