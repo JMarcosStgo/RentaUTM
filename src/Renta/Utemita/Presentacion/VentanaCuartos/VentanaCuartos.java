@@ -22,16 +22,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
@@ -46,16 +42,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
@@ -69,6 +62,7 @@ import javafx.stage.Stage;
  * @version 1.0
  */
 public class VentanaCuartos extends Application {
+    //dimensiones de la ventana
     double ancho = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
     double altura = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
     InnerShadow shadow = new InnerShadow();
@@ -76,19 +70,16 @@ public class VentanaCuartos extends Application {
     GridPane grid = new GridPane();
     Label bienvenido=new Label("Bienvenido a");
     Label bienvenidopt2=new Label("Renta Utemita");
-    //Button btnModificar = new Button();
-    //Button btnModificarUsuario = new Button();
     Button b2= new Button("apartar");
     Paint blanco = Paint.valueOf("#ffffff");
     Label bienvenidopt3;
     AnchorPane anchorPane=new AnchorPane();
     int banderaActual=0;
     int banderaAnterior=0;
-    
     int banderafist=0;
+    
     /*variables*/
     private int idUsuario = 0;
-    private int idCuarto;
     private int precioFinal=0;
     private int precioInicial=0;
     ArrayList<Propiedad> propiedades = new ArrayList();
@@ -106,14 +97,12 @@ public class VentanaCuartos extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-        /*bienvenida*/
-
         primaryStage.setX(0);
         primaryStage.setY(0);
         /*lectura del archivo*/
         try {
             ArrayList<String>  ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
-            System.out.println("ident"+ident);
+            //System.out.println("ident"+ident);
             idUsuario=Integer.parseInt(ident.get(0));
             usuarioBienvenida.setText(ident.get(1));
             bienvenidopt3=new Label("Usted a ingresado como ");
@@ -121,7 +110,7 @@ public class VentanaCuartos extends Application {
         } catch (NumberFormatException e) {
             System.out.println("error conversion al leer archivo"+e.getLocalizedMessage());
         }
-/*----------------------configuracion de la pantalla-----------------------------------------*/
+        /*----------------config        uracion de la pantalla------------------------*/
         shadow.setBlurType(BlurType.GAUSSIAN);  
         shadow.setColor(javafx.scene.paint.Color.web("#eaedf2"));  
         shadow.setHeight(25);  
@@ -151,11 +140,13 @@ public class VentanaCuartos extends Application {
         tituloBienvenidad.getChildren().add(bienvenidopt3);
         tituloBienvenidad.getChildren().add(usuarioBienvenida);
         tituloBienvenidad.setMaxWidth(ancho);
+        
         /*grid del formulario para registrar modificar propiedad*/
         grid.setStyle("-fx-background-color:white");//colorde fondo  del grid
         grid.setPadding(new Insets(100,0,altura-(altura/3),0));
         grid.setMinHeight(altura);
-        //ANCHO DEL SCROLL
+        
+        //Ancho del scroll
         grid.setMinWidth(ancho-(ancho/3));
         /*configuracion de la escena y los elementos que tendra*/
         Group root = new Group();
@@ -165,6 +156,7 @@ public class VentanaCuartos extends Application {
            new Stop(0, Color.PURPLE),
            new Stop(1, Color.BLUE)
         };
+        /*fondo*/
         LinearGradient gp = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REPEAT, stops);
         grid.setAlignment(Pos.CENTER);
         
@@ -172,52 +164,45 @@ public class VentanaCuartos extends Application {
         /*configuracion de la escena y los elementos que tendra*/
         anchorPane.setMinHeight(altura);
         anchorPane.setMaxWidth(ancho/2);
-        //anchorPane.setMaxSize(ancho,altura);
-        //anchorPane.setStyle("-fx-background-color: #ffffff;");//color de fondo
         anchorPane.setPadding(new Insets(50,0,0,0));
-        /*Se coloca el grid dentro del pane*/
         /*Scroll del formulario*/
         ScrollPane scroll = new ScrollPane();
         scroll.setPrefSize(ancho, altura);
-        //scroll.setStyle("-fx-background-color: black;");//fondo del lateral izquieerdo
         /*Se asigna contenido al scrol*/
         scroll.setContent(anchorPane);
-        //scroll.setStyle("-fx-background-color: #000000;");
         /*activar o desactivar barras laterales*/
         scroll.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
         scroll.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
         //se crea un Group para colocar dentro al splipane 
         SplitPane sp = new SplitPane();
+        /*Se coloca el grid dentro del pane*/
         anchorPane.getChildren().add(grid);
         sp1.setStyle("-fx-background-color: #00ff77;");//fondo del lateral izquieerdo
         sp1.setDisable(false);//no permite que se ajuste el panel
         sp1.setMaxSize(ancho/6,altura);
         sp1.setPadding(new Insets(200,0,00,0));
         Text modificarProp = new Text("Modificar Propiedad"); 
-        //Setting the font of the text 
+        /*Configuración de la fuente del texto*/
         modificarProp.setFont(Font.font(null, FontWeight.BOLD, 15));     
-        //Setting the color of the text 
+        //asignando el color
         modificarProp.setFill(Color.CRIMSON); 
-        //setting the position of the text 
+        //asignando la posicion del texto
         modificarProp.setX(20); 
         modificarProp.setY(00);       
         Text salir = new Text("Cerrar sesión"); 
-        //Setting the font of the text 
+        //Configuración de la fuente del texto
         salir.setFont(Font.font(null, FontWeight.BOLD, 15));     
-        //Setting the color of the text 
+        //asignando el color
         salir.setFill(Color.CRIMSON); 
-        //setting the position of the text 
+        //asignando la posicion del texto
         salir.setX(20); 
         salir.setY(400);       
-        //Creating a text 
         Text modificarPer = new Text("Modificar Perfil"); 
-        //Setting the font of the text 
         modificarPer.setFont(Font.font(null, FontWeight.BOLD, 15));     
-        //Setting the color of the text 
         modificarPer.setFill(Color.CRIMSON); 
-        //setting the position of the text 
         modificarPer.setX(20); 
         modificarPer.setY(200);       
+        /*grupo para añadir elementos*/
         Group paneLateral2 = new Group();
         /*se determina si se muestra modificar propiedad o no*/
         if(usuarioBienvenida.getText().equals("Estudiante"))
@@ -225,25 +210,18 @@ public class VentanaCuartos extends Application {
         else
             paneLateral2.getChildren().addAll(modificarPer,modificarProp,salir);
         sp1.getChildren().add(paneLateral2);
+        
         //panel de la derecha
         final StackPane panelDerecho = new StackPane();
         panelDerecho.setStyle("-fx-background-color: #00ff77;");
         panelDerecho.setMaxSize(650,altura);
         panelDerecho.setDisable(false);
         panelDerecho.setAlignment(Pos.CENTER_LEFT);
-/******corrijiendo*/
         TextField buscador = new TextField();
-        //buscador.setMinSize(20,50);
         buscador.setPromptText("Search Box");
-        
-        //buscador.setPadding(new Insets(0,300,0,0));
-       // ComboBox comboBox = new ComboBox();
-        
         buscador.textProperty().addListener((ov, t, t1) -> {
         });
         ListView<Object> itemView = new ListView<>();
-        
-       // itemView.setItems(comboBox.getItems());
         VBox boxDerecho = new VBox(buscador,itemView);
         boxDerecho.setLayoutX(0);
         //itemView.setPrefSize(200,900);
@@ -252,22 +230,9 @@ public class VentanaCuartos extends Application {
         paneLateralDer.setLayoutX(0);
         /*------------------------obtencion de notificaciones--------------------*/
         GridPane notificaciones = new GridPane();
-        ///notificaciones.setStyle("-fx-background-color: #123456;");
         Label prueba = new Label("prueba");
         notificaciones.add(prueba,0,0);
         
-        /* create list object */
-        ListView<String> listViewReference = new ListView<String>();
-        /* aqui se deben agregar las notificaciones */
-        listViewReference.getItems().add("First Item");
-        listViewReference.getItems().add("Second Item");
-        listViewReference.getItems().add("Third Item");
-        listViewReference.getItems().add("Fourth Item");
-        listViewReference.getItems().add("Fifth Item");
-        /* creating vertical box to add item objects */
-        VBox vBox = new VBox(listViewReference);
-        //boxDerecho.getChildren().add(vBox);
-        //Label for education
         Label label = new Label("Notificaciones:");
         Label label2 = new Label("Alumnos que han apartado cuartos");
         Font font = Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 12);
@@ -284,51 +249,33 @@ public class VentanaCuartos extends Application {
         ListView<String> listView = new ListView<String>(names);
         listView.setMaxSize(200, 160);
         listView.setPadding(new Insets(0,50,0,0));
-        //Creating the layout
+        //Creando el layout
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(5,50,0, 0));
         layout.getChildren().addAll(label,label2, listView);
         layout.setStyle("-fx-background-color: BEIGE");
+        /*se agrega el layout al box que va al panel lateral derecho*/
         boxDerecho.getChildren().add(layout);
-        /*------------------------------------------------------------------------*/
-        //paneLateralDer.prefWidth(300);
-        //paneLateralDer.prefHeight(altura);
-        //boxDerecho.setPadding(new Insets(0,300,0,0));
+        /*--------------------fin obtencion-----------------------------------*/
         panelDerecho.getChildren().add(paneLateralDer);
-        //panelDerecho.snapPositionX(0);
-/******corrijiendo*/
         /*agrega al stackpane el scroll y el splitpane*/
         sp.getItems().addAll(sp1, scroll,panelDerecho);
         sp.setDividerPositions(0.3f, 0.6f, 0.9f);
         /*se añade el splitpane al grupo y el label de bienvenida*/
         root.getChildren().add(sp);
         root.getChildren().add(tituloBienvenidad);
-        
         /*configuracion de la escena*/
         GridPane gridTitulo = new GridPane();
         root.getChildren().add(gridTitulo);
         primaryStage.setResizable(false);
         
         primaryStage.setFullScreen(true);
-        Scene scene = new Scene(root, ancho, altura,gp);
+        Scene scene = new Scene(root, ancho, altura);
         primaryStage.setTitle("Busqueda de cuartos");
         primaryStage.setScene(scene);
-/*----------------------fin configuracion de la pantalla-----------------------------------------*/
-        /* chat
-        TextField searchBox = new TextField();
-        boolean clickSelection = false;
-        searchBox.setPromptText("Search Box");
-        ComboBox comboBox = new ComboBox();
-        searchBox.textProperty().addListener((ov, t, t1) -> {
-            
-        });
+        /*-----------------fin configuracion de la pantalla---------------------*/
         
-        ListView<Object> itemView = new ListView<>();
-        itemView.setItems(comboBox.getItems());
-        VBox box = new VBox(searchBox,itemView);
-        grid.addRow(2, box);
-        */
-    /*********************campo de busquedad***************/
+        /***************************campo de busquedad*************************/
         TextField searchBox = new TextField();
         TextField searchBoxF = new TextField();
         searchBox.setPromptText("Precio Inicial");
@@ -342,14 +289,13 @@ public class VentanaCuartos extends Application {
         searchBoxF.setMinWidth(ancho/5);
         searchBoxF.setMinHeight(50);
         grid.setHgap(10);
-        //propiedades=buscarCuartos(precioInicial,precioFinal);
+        
         /*escucha para bloquear letras y solo aceptar 5 numeros*/
         searchBox.textProperty().addListener((ov, t, t1) -> {
-           // System.out.println("cambio busqueda"+ov);
-             //Se asigna al valor anterior
-            if(!t1.matches("[0-9]{0,5}") || t1.length()>8){
+        if(!t1.matches("[0-9]{0,5}") || t1.length()>8){
                 ((StringProperty) ov).setValue(t);
-            }else{
+        }
+        else{
                 //Se asigna el nuevo valor, porque sí coincide con la expresión
                 ((StringProperty)ov).setValue(t1);
                 try {
@@ -360,28 +306,16 @@ public class VentanaCuartos extends Application {
                 }catch (NumberFormatException e) {
                     System.out.println("error"+e.getLocalizedMessage());
                 }
-                //fila=new GridPane();
-                
-                //fila.getChildren().clear();
                 propiedades.removeAll(propiedades);
                 propiedades=buscarCuartos(precioInicial,precioFinal);
                 for (int i = 0; i <propiedades.size(); i++) {
                     propiedadesCpy.add(propiedades.get(i));
                 }
-                //propiedadesCpy.addAll(propiedades);
                 ver();
-               // eliminaDibujo();
-                
-        //Node node = fila.getChildren().get(0);
-        //fila.getChildren().clear();
-        //fila.getChildren().add(0,node);
-              //  System.out.println("cambio .."+ov + precioInicial);
-              //  System.out.println("tamaño de propiedades"+propiedades.size());
             }
         });
         searchBoxF.textProperty().addListener((ov, t, t1) -> {
-            //System.out.println("cambio busqueda"+ov);
-             //Se asigna al valor anterior
+            //Se asigna al valor anterior
             if(!t1.matches("[0-9]{0,5}") || t1.length()>8){
                 ((StringProperty) ov).setValue(t);
             }else{
@@ -395,21 +329,12 @@ public class VentanaCuartos extends Application {
                 }catch (NumberFormatException e) {
                     System.out.println("error"+e.getLocalizedMessage());
                 }
-               // System.out.println("cambio .."+ov + precioInicial);
-                //fila=new GridPane();
-                
-               // fila.getChildren().clear();
                 propiedades.removeAll(propiedades);
                 propiedades=buscarCuartos(precioInicial,precioFinal);
                 for (int i = 0; i <propiedades.size(); i++) {
                     propiedadesCpy.add(propiedades.get(i));
-                    //System.out.println("prop evento"+propiedades.get(i).getDescripcionCuarto()+propiedades.get(i).getIdPropiedad()+propiedades.get(i).getToken());
                 }
-                
                 ver();
-                //eliminaDibujo();
-                //System.out.println("tamaño de propiedades"+propiedades);
-                
             }
         });
         
@@ -418,19 +343,8 @@ public class VentanaCuartos extends Application {
         VBox box2 = new VBox(searchBoxF);
         grid.add(box,0,0);
         grid.add(box2,1,0);
-        
-        /*prubea ver*/
-        //propiedades=buscarCuartos(1,50000);
-        //ver();
-        //se obtiene todas las propiedades dentro del rango de fechas
-        //el array me devuelve todos las imagenes
-        
-        //RegistrarModificarPropiedad rMP = new RegistrarModificarPropiedad();
-        //Propiedad prop=rMP.obtenerDatosPropiedad("9999998");
-        //propiedades.add(prop);
-        
-    /*********************campo de busquedad***************/    
-/*-------------------------------------------------------------------------------------------------*/
+        /*********************fin campo de busquedad***************************/    
+
         /*Evento para cerrar sesión*/
         salir.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -468,11 +382,11 @@ public class VentanaCuartos extends Application {
         /*muestra interfaz*/
         primaryStage.show();
     }
-
-    public void idUsuarioOnline(int idUsuario){
-        this.idUsuario=idUsuario;
-    }
-    
+    /**
+     * Método para leer un archivo
+     * @param direccion
+     * @return un ArrayList de Strings
+     */
     public ArrayList<String> leeArchivo(String direccion) {
 		ArrayList<String> tmp = new ArrayList();
 		try{
@@ -506,24 +420,26 @@ public class VentanaCuartos extends Application {
     public void btnObtnerInformacion(int idPropiedad){
         /*cargar ventana emergente con informacion de la propiedad*/
     }
+    /**
+     * Metodo para crear la vista para listar las propiedades que esten en el rango
+     */
     public void ver(){
-         ImageView image11,image2,image3;
-         byte byteImage[] = null;
-         double posY=(ancho/6)+600;
-         double posX=ancho/6;
-         System.out.println("entra ve -------------------------------------------"+posY+posX);    
-         ArrayList<ImageView>imagenesBuscador = new ArrayList();
-         GridPane fila=new GridPane();
-          /**lista todas las propiedades*/
-         fila.setMinWidth(ancho-(ancho/3));
-         fila.setBackground(Background.fill(blanco));
-         fila.setPadding(new Insets(0,0,0,0));
-         fila.setLayoutY(altura/3);
-         fila.setVgap(12);
-         fila.setHgap(50);
-         banderaActual=propiedades.size();
-         banderaAnterior=propiedadesCpy.size();
-         System.out.println(" banderas ------------------->"+banderaActual +" -- "+banderaAnterior);
+        ImageView image11;
+        byte byteImage[] = null;
+        double posY=(ancho/6)+600;
+        double posX=ancho/6;
+        ArrayList<ImageView>imagenesBuscador = new ArrayList();
+        GridPane fila=new GridPane();
+        fila.setMinWidth(ancho-(ancho/3));
+        fila.setBackground(Background.fill(blanco));
+        fila.setPadding(new Insets(0,0,0,0));
+        fila.setLayoutY(altura/3);
+        fila.setVgap(12);
+        fila.setHgap(50);
+         
+        /***********************lista todas las propiedades*******************/
+        banderaActual=propiedades.size();
+        banderaAnterior=propiedadesCpy.size();
         if (banderaActual<banderaAnterior) {
             Node nodo1 = anchorPane.getChildren().get(0);
             anchorPane.getChildren().clear();
@@ -545,7 +461,7 @@ public class VentanaCuartos extends Application {
            }
 
            for (int i = 0; i <imagenesBuscador.size(); i++) {
-                System.out.println("i "+i);
+                //System.out.println("i "+i);
                 image11=imagenesBuscador.get(i);
                 image11.setFitHeight(posX+200);
                 image11.setFitWidth(posX+200);
@@ -555,7 +471,7 @@ public class VentanaCuartos extends Application {
                 btnInformacion.setId(""+i);
                 /*Grid para agregar la informacion y el boton al grid fila*/
                 Propiedad eleccionPropiedad = propiedades.get(i);
-                System.out.println("eleccion propiedad info"+eleccionPropiedad.getToken());
+                //System.out.println("eleccion propiedad info"+eleccionPropiedad.getToken());
                 RegistrarModificarPropiedad rModProp = new RegistrarModificarPropiedad();
                 Propiedad tempo=rModProp.obtenerDatosPropiedad(eleccionPropiedad.getToken());
                 
@@ -608,18 +524,18 @@ public class VentanaCuartos extends Application {
                 infoCuartos.add(disponibilidad,0, 5);
                 infoCuartos.add(ubicacion,0, 7);
                 infoCuartos.add(servicios,0, 9);
-                //infoCuartos.add(btnInformacion, 0, 11);
+                
                 /*Accion al pulsar el boton */
                 btnInformacion.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent t) {
-                         /*no mostrar boton si propiedad ya no esta disponible*/
-                        /*ignorar acciones */
-                        RegistrarModificarPropiedad rModPropiedad = new RegistrarModificarPropiedad();
-                        String x=btnInformacion.getId();
-                        int poss=Integer.parseInt(x);
-                        Propiedad actual = rModPropiedad.obtenerDatosPropiedad(propiedades.get(poss).getToken());
-                        System.out.println("actual ------->" +"btnID:"+btnInformacion.getId()+" -"+ actual.getDisponibilidad()+actual.getToken()+actual.getServicios()+actual.getIdPropiedad());
+                       /*no mostrar boton si propiedad ya no esta disponible*/
+                       /*ignorar acciones */
+                       RegistrarModificarPropiedad rModPropiedad = new RegistrarModificarPropiedad();
+                       String x=btnInformacion.getId();
+                       int poss=Integer.parseInt(x);
+                       Propiedad actual = rModPropiedad.obtenerDatosPropiedad(propiedades.get(poss).getToken());
+                       //System.out.println("actual ------->" +"btnID:"+btnInformacion.getId()+" -"+ actual.getDisponibilidad()+actual.getToken()+actual.getServicios()+actual.getIdPropiedad());
                        if(actual.getDisponibilidad().equals("No disponible")){
                            btnInformacion.setOpacity(0);
                        }
@@ -655,7 +571,7 @@ public class VentanaCuartos extends Application {
                                     inicio.close();
                                 }
                             });
-                            hb.getChildren().addAll(tituloVentanaE,apartar, cancelar);
+                            
                             elementosVenEmer.setStyle("-fx-background-color: violet; -fx-padding: 13px;");
                             elementosVenEmer.getChildren().add(hb);
                             RegistrarModificarPropiedad rModiProp = new RegistrarModificarPropiedad();
@@ -663,7 +579,9 @@ public class VentanaCuartos extends Application {
                             int pos=Integer.parseInt(id);
                             Propiedad eleccionPropiedad = propiedadesCpy.get(pos);
                             Propiedad elejida = new Propiedad();
-
+                            hb.getChildren().addAll(tituloVentanaE,apartar, cancelar);
+                            
+                            
                             Scene emergente = new Scene(elementosVenEmer,500,100,Color.web("violet"));
                             inicio.setScene(emergente);
                             inicio.setResizable(false);
@@ -682,11 +600,10 @@ public class VentanaCuartos extends Application {
             imagenesBuscador.removeAll(propiedades);
         }else{
                /*limpiar grid de las imagenes antiguas*/
-                System.out.println("entra seccion borrar");
+                //System.out.println("entra seccion borrar");
                 Node nodo1 = anchorPane.getChildren().get(0);
                 anchorPane.getChildren().clear();
                 anchorPane.getChildren().add(0,nodo1);
         }
-       // bandera=1;
     }
 }

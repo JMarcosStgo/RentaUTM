@@ -74,6 +74,7 @@ public class VentanaModificacion extends Application{
     double altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
     Paint paint2 = Paint.valueOf("#2b6ff6");
     String user;
+    
     /*variables*/
     private int idUsuario;
     private String nombre;
@@ -104,7 +105,7 @@ public class VentanaModificacion extends Application{
         /*lectura del archivo*/
         try {
             ArrayList<String> ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
-            System.out.println("ident"+ident);
+            //System.out.println("ident"+ident);
             idUsuario=Integer.parseInt(ident.get(0));
             user=ident.get(1);
                 
@@ -115,9 +116,8 @@ public class VentanaModificacion extends Application{
         try {
                 btnObtenerDatosModificar(idUsuario);
                 textFNombre.textProperty().addListener((obs, oldText, newText) -> {
-                    System.out.println("Text changed from "+oldText+" to "+newText.length());
+                    //System.out.println("Text changed from "+oldText+" to "+newText.length());
                     textFNombre.setText(newText);
-                    
                 });
                 textFNombre.setText(usuario.getNombre());
                 txtFContraseña.setText(usuario.getContraseña());
@@ -128,9 +128,8 @@ public class VentanaModificacion extends Application{
         } catch (Exception e) {
             System.out.println("error btnObtener"+e.getLocalizedMessage());
         }
-        
 
-/*--------------------------------configuracion interfaz ---------------------------------------*/
+        /*--------------------configuracion interfaz -------------------------*/
         shadow.setBlurType(BlurType.GAUSSIAN);  
         shadow.setColor(javafx.scene.paint.Color.web("#eaedf2"));  
         shadow.setHeight(25);  
@@ -146,9 +145,8 @@ public class VentanaModificacion extends Application{
         /*grid del formulario para registrar modificar propiedad*/
         grid.setStyle("-fx-background-color:white");//colorde fondo  del grid
         grid.setPadding(new Insets(altura/8,0,50,100));
-        //grid.setMaxSize(ancho,altura);
         grid.setMinHeight(altura-(altura/10));
-        //ANCHO DEL SCROLL
+        //Ancho del grid
         grid.setMinWidth(ancho);
         alerta.setStyle("-fx-background-color: #ffffff;");
         alerta.setFont(new Font("Arial",30));        
@@ -163,6 +161,12 @@ public class VentanaModificacion extends Application{
         txtNombre.setFont(new Font("Arial",28));
         textFNombre.setMinWidth(600);
         textFNombre.setMinHeight(50);
+        
+        textFNombre.setFont(new Font("Arial",24));
+        txtFContraseña.setFont(new Font("Arial",24));
+        txtFCorreo.setFont(new Font("Arial",24));
+        txtFMatricula.setFont(new Font("Arial",24));
+        txtFTelefono.setFont(new Font("Arial",24));
         
         txtMatricula.setStyle("-fx-background-color: #ffffff;");
         txtMatricula.setFont(new Font("Arial",28));
@@ -226,15 +230,13 @@ public class VentanaModificacion extends Application{
         };
         LinearGradient gp = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REPEAT, stops);
         grid.setAlignment(Pos.CENTER);
+        /*Se coloca el grid dentro del root*/
         root.getChildren().add(grid);
-        
         /*configuracion de la escena y los elementos que tendra*/
         anchorPane.setMinHeight(altura);
         anchorPane.setMaxWidth(ancho);
-        //anchorPane.setMaxSize(ancho,altura);
         anchorPane.setStyle("-fx-background-color: #ffffff;");//color de fondo
         anchorPane.setPadding(new Insets(50,0,0,0));
-        /*Se coloca el grid dentro del pane*/
         /*Scroll del formulario*/
         ScrollPane scroll = new ScrollPane();
         scroll.setPrefSize(ancho, altura);
@@ -251,22 +253,13 @@ public class VentanaModificacion extends Application{
         sp1.setDisable(false);//no permite que se ajuste el panel
         sp1.setMaxSize(ancho/5,altura);
         Text modificarProp = new Text("Modificar Propiedad"); 
-        //Setting the font of the text 
         modificarProp.setFont(Font.font(null, FontWeight.BOLD, 15));     
-        //Setting the color of the text 
         modificarProp.setFill(Color.CRIMSON); 
-        //setting the position of the text 
         modificarProp.setX(20); 
         modificarProp.setY(00);       
-
-
-        //Creating a text 
         Text menu = new Text("Menú principal"); 
-        //Setting the font of the text 
         menu.setFont(Font.font(null, FontWeight.BOLD, 15));     
-        //Setting the color of the text 
         menu.setFill(Color.CRIMSON); 
-        //setting the position of the text 
         menu.setX(20); 
         menu.setY(200);       
         Group paneLateral2 = new Group();
@@ -281,17 +274,15 @@ public class VentanaModificacion extends Application{
         sp.setDividerPositions(0.3f, 0.6f, 0.9f);
         /*se añade el splitpane al grupo y el label de bienvenida*/
         root.getChildren().add(sp);
-        //root.getChildren().add(bienvenido);
         Scene scene = new Scene(root, ancho, altura,gp);
         
         /*Define las propiedades de la escena*/ 
-      
         primaryStage.setResizable(false);
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Modificar perfil Usuario");
         primaryStage.setScene(scene);
+        /*---------------------fin interfaz-----------------------------------*/
         
-/*-----------------------------fin interfaz-----------------------------------------------------------*/
         /*Evento al presionar el texto modificar propiedad*/
         modificarProp.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -326,9 +317,9 @@ public class VentanaModificacion extends Application{
                     correo=txtFCorreo.getText();
                     contraseña=txtFContraseña.getText();
                     String tel=txtFTelefono.getText();
-                    telefono=Integer.parseInt(tel);
+                    telefono=Long.parseLong(tel);
                     matricula=txtFMatricula.getText();
-                    System.out.println("telefono"+telefono);
+                    //System.out.println("telefono"+telefono);
                     modificarUsuario(nombre, telefono, correo, contraseña,matricula,idUsuario);
                     /*se abre la nueva ventana*/
                     if(datos){
@@ -350,7 +341,7 @@ public class VentanaModificacion extends Application{
      */
     public void alertasUsuario(){
         alerta.setOpacity(1);
-        System.out.println("alertas usuario");
+        //System.out.println("alertas usuario");
     }
     /**
      * Método para obtener los datos a modificar y se puedan cargar en el formulario
@@ -359,7 +350,7 @@ public class VentanaModificacion extends Application{
     public void btnObtenerDatosModificar(int idUsuario){
         RegistrarModificarUsuario rModUser = new RegistrarModificarUsuario();
         usuario=rModUser.cargarDatos(idUsuario);
-        System.out.println("btnObtenerDatosM"+usuario.getContraseña()+usuario.getCorreo()+usuario.getMatricula());
+        //System.out.println("btnObtenerDatosM"+usuario.getContraseña()+usuario.getCorreo()+usuario.getMatricula());
     }
     /**
      * Método para pasar los datos a modificar de un usuario
@@ -371,17 +362,19 @@ public class VentanaModificacion extends Application{
      * @param idUsuario 
      */
     public void modificarUsuario(String nombre, long telefono, String correo, String contraseña,String matricula,int idUsuario){
-        System.out.println("modificar usuario"+nombre+telefono+correo+contraseña+matricula+idUsuario);
+        //System.out.println("modificar usuario"+nombre+telefono+correo+contraseña+matricula+idUsuario);
         datos=rMU.verificarDatos(nombre, telefono, correo, matricula, contraseña);
-        System.out.println("datos modificar  usuario"+datos+ "---"+nombre+telefono+correo+matricula+contraseña);
+        //System.out.println("datos modificar  usuario"+datos+ "---"+nombre+telefono+correo+matricula+contraseña);
         if(datos)
             rMU.solicitarModificacion(nombre, telefono, correo, matricula, contraseña,idUsuario);
-            /*limpiar variables*/
-            
         else
             alertasUsuario();
-        
     }
+    /**
+     * Lee un archivo txt
+     * @param direccion
+     * @return 
+     */
     public ArrayList<String>  leeArchivo(String direccion) {
         ArrayList<String> tmp = new ArrayList();
         try{

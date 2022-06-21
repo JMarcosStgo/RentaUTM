@@ -57,6 +57,8 @@ public class VentanaRegistro extends Application{
     TextField txtFTelefono = new TextField();
     Paint blanco = Paint.valueOf("#ffffff");
     private Button ingresar=new Button("Registrarse");
+    private Button cancelarRegistro=new Button("Cancelar Registro");
+    
     Text alerta = new Text("Error, ingresar datos correctos");
     Paint paint2 = Paint.valueOf("#2b6ff6");
      
@@ -90,9 +92,8 @@ public class VentanaRegistro extends Application{
         /*grid del formulario para registrar modificar propiedad*/
         grid.setStyle("-fx-background-color:white");//colorde fondo  del grid
         grid.setPadding(new Insets(altura/10,0,50,100));
-        //grid.setMaxSize(ancho,altura);
         grid.setMinHeight(altura-(altura/10));
-        //ANCHO DEL SCROLL
+        //Ancho del scroll
         grid.setMinWidth(ancho);
         alerta.setStyle("-fx-background-color: #ffffff;");
         alerta.setFont(new Font("Arial",30));        
@@ -135,6 +136,12 @@ public class VentanaRegistro extends Application{
         ingresar.setEffect(shadow);
         ingresar.setTextFill(blanco);
         ingresar.setBackground(Background.fill(paint2));
+        cancelarRegistro.setMinSize(200,50);
+        cancelarRegistro.snapPositionX(200);
+        cancelarRegistro.setEffect(shadow);
+        cancelarRegistro.setTextFill(blanco);
+        cancelarRegistro.setBackground(Background.fill(paint2));
+        
         
         tituloForm.setX(200);
         pane.getChildren().add(tituloForm);
@@ -144,7 +151,11 @@ public class VentanaRegistro extends Application{
         cb.setValue(cb.getItems().get(0));
         cb.setMaxWidth(200);
         cb.setMinHeight(50);
-        cb.setStyle("-fx-font-weight: bold;");
+        cb.setStyle("-fx-font-weight: bold;-fx-font-size:20px");
+        Group botones = new Group();
+        botones.getChildren().add(ingresar);
+        cancelarRegistro.setLayoutX(ancho/3);
+        botones.getChildren().add(cancelarRegistro);
         
         /*letra de los inputs del formulario*/
         textFNombre.setFont(new Font("Serif", 22));
@@ -165,12 +176,11 @@ public class VentanaRegistro extends Application{
         grid.add(txtContraseña,0,8);
         grid.add(txtFContraseña,0,9);
         grid.add(txtCorreo,0,10);
-        
-       // grid.add(lUbicacion,0,9);
         grid.add(txtFCorreo,0,11);
         grid.add(txtTelefono,0,12);
         grid.add(txtFTelefono,0,13);
-        grid.add(ingresar,0,14);
+        grid.add(botones,0,14);
+        //grid.add(cancelarRegistro,1,14);
         grid.add(alerta,0,15);
         alerta.setOpacity(0);
         /*configuracion de la escena y los elementos que tendra*/
@@ -194,42 +204,27 @@ public class VentanaRegistro extends Application{
         
         /* accion cuando selecciona cb como estudiante y arrendador*/
         tipo=(String) cb.getItems().get(0);
-        System.out.println("tipo default"+tipo);
+        //System.out.println("tipo default"+tipo);
         cb.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
                  tipo=(String) cb.getItems().get((Integer)t1);
-                 System.out.println(cb.getItems().get((Integer) t1)+"tipo"+tipo);
+                 //System.out.println(cb.getItems().get((Integer) t1)+"tipo"+tipo);
                  if(tipo.equals("Arrendador")){
                      txtMatricula.setOpacity(0);
                      txtFMatricula.setOpacity(0);
                      matricula="";
-                     System.out.println("entra if cb"+matricula);
+                     //System.out.println("entra if cb"+matricula);
                  }else{
                     matricula=txtFMatricula.getText();
                     txtMatricula.setOpacity(1);
                     txtFMatricula.setOpacity(1);
-                    System.out.println("entra else cb"+matricula);
+                    //System.out.println("entra else cb"+matricula);
                  }
                  
             }
         });
-        
-        /*esperar campos llenos para habilitar boton*/
-        /*
-        ingresar.eventDispatcherProperty().addListener(new ChangeListener<EventDispatcher>() {
-            @Override
-            public void changed(ObservableValue<? extends EventDispatcher> ov, EventDispatcher t, EventDispatcher t1) {
-                    if(nombre.length()>0 && telefono>0 && telefono <10000000000L && correo.length()>0 && contraseña.length()>0){
-                    System.out.println("desbloquea el boton");
-                    ingresar.setDisable(false);
-                }
-                else
-                    ingresar.setDisable(true);
             
-            }
-        });
-        */    
         /*evento al pulsar el boton */
         ingresar.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -241,7 +236,7 @@ public class VentanaRegistro extends Application{
                     String tel=txtFTelefono.getText();
                     telefono=Long.parseLong(tel);
                     matricula=txtFMatricula.getText();
-                    System.out.println("telefono"+telefono);
+                    //System.out.println("telefono"+telefono);
                     registrarUsuario(nombre, telefono, correo, contraseña,matricula,tipo);
                     /*se abre la nueva ventana*/
                     if(registro){
@@ -253,6 +248,15 @@ public class VentanaRegistro extends Application{
                     alertasUsuario();
                     System.out.println("error "+ e.getLocalizedMessage());
                 }
+            }
+        });
+        
+        /*evento cuando da clic en cancelar registro*/
+        cancelarRegistro.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                IniciarSesion sesion = new IniciarSesion();
+                sesion.start(primaryStage);
             }
         });
         /*muestra interfaz*/
@@ -273,10 +277,10 @@ public class VentanaRegistro extends Application{
         RegistrarModificarUsuario rModUser = new RegistrarModificarUsuario();
         Usuario usuario=new Usuario(nombre, telefono, correo, contraseña, matricula,tipo);
         datos=rModUser.verificarDatos(nombre, telefono, correo, matricula, contraseña); 
-        System.out.println("datos registrar usuario"+datos+"longitud matricula"+matricula.length()+ "---"+nombre+telefono+correo+matricula+contraseña);
+        //System.out.println("datos registrar usuario"+datos+"longitud matricula"+matricula.length()+ "---"+nombre+telefono+correo+matricula+contraseña);
         if(datos){
             registro=rModUser.solicitarRegistro(usuario);
-            System.out.println("registro "+registro);
+            //System.out.println("registro "+registro);
         }
         else
             alertasUsuario();
@@ -287,6 +291,6 @@ public class VentanaRegistro extends Application{
      */
     public void alertasUsuario(){
         alerta.setOpacity(1);
-        System.out.println("alertas usuario");
+        //System.out.println("alertas usuario");
     }
 }

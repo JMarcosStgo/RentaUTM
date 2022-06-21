@@ -36,9 +36,12 @@ public class IniciarSesion extends Application {
     /*metodo que lanza la ventana*/
     @Override
     public void start(Stage primaryStage) {
+        //ancho de la pantalla
         ancho=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         altura=java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        //logo de inicio
         primaryStage.getIcons().add(new Image("/imagenes/LOGO4.jpg"));
+        
         Pane root = new VentanaLogin(primaryStage);
         Image image = new Image(getClass().getResourceAsStream("/imagenes/LOGO4.jpg")); 
         Label myLabel = new Label("Sistema de busqueda de cuartos");
@@ -51,6 +54,7 @@ public class IniciarSesion extends Application {
             new Stop(0, Color.web("blue")),
             new Stop(1, Color.web("#33ffe0")),
         };
+        //color de fondo detras del grid
         LinearGradient gp = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REPEAT, stops);
         //se define el color de fondo de la parte interna
         root.setStyle("-fx-background-color: #ffffff;");
@@ -59,12 +63,7 @@ public class IniciarSesion extends Application {
         root.setPadding(new Insets(50, 00, 400, 100));
         //tamaño de la escena ancho-alto
         Scene scene = new Scene(root,ancho-(ancho/3),altura-(altura/3),gp);
-        
-        /*pasar datos entre ventanas*/
-        
-        /*prueba de envio del correo*/
-        System.out.println("correo");
-        /**se muestra la escena*/
+        /*se muestra la escena*/
         primaryStage.setScene(scene);
         root.setOpacity(1);
         primaryStage.setResizable(false);

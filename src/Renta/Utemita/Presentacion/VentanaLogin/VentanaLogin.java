@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -35,7 +36,6 @@ import javafx.stage.Stage;
  * @version 1.0
  */
 public class VentanaLogin extends FlowPane{
-
      Timeline timeline;
      Stage primaryStage;
      Label lb1Correo = new Label("Correo");
@@ -69,21 +69,21 @@ public class VentanaLogin extends FlowPane{
       * Metodo donde se inicializan elementos que estaran presentes en la escene de inicio de sesión
       */
      public void init(){
-         
-         txtCorreo.setStyle("-fx-width:1000px;");
-         lb1Correo.setFont(new Font("Serif", 28));
-         txtCorreo.setFont(new Font("Serif", 26));
-         password.setFont(new Font("Serif", 28));
-         bt1IniciarSesion.setFont(new Font("Serif", 28));
-         lb2Password.setFont(new Font("Serif", 26));
-         registrarse.setFont(new Font("Serif", 28));
-         mensajeError.setFont(new Font("Serif", 28));
-         registrarse.setFill(paint);
-         ingresarMsj.setFont(new Font("Arial", 38));
-         ingresarMsj.setStyle("-fx-font-weight: bold;");
-         ingresarMsj.setFill(paint);
-         ingresarMsj.setLineSpacing(50);
-        //setting the level property 
+        txtCorreo.setStyle("-fx-width:1000px;");
+        lb1Correo.setFont(new Font("Serif", 28));
+        txtCorreo.setFont(new Font("Serif", 26));
+        password.setFont(new Font("Serif", 28));
+        bt1IniciarSesion.setFont(new Font("Serif", 28));
+        lb2Password.setFont(new Font("Serif", 26));
+        registrarse.setFont(new Font("Serif", 28));
+        mensajeError.setFont(new Font("Serif", 28));
+        registrarse.setFill(paint);
+        ingresarMsj.setFont(new Font("Arial", 38));
+        ingresarMsj.setStyle("-fx-font-weight: bold;");
+        ingresarMsj.setFill(paint);
+        ingresarMsj.setLineSpacing(50);
+        
+        //asignando propiedades a un shadow para el efecto del boton 
         shadow.setBlurType(BlurType.GAUSSIAN);  
         shadow.setColor(javafx.scene.paint.Color.web("#eaedf2"));  
         shadow.setHeight(25);  
@@ -97,8 +97,8 @@ public class VentanaLogin extends FlowPane{
         bt1IniciarSesion.setBackground(Background.fill(paint2));
         grid.setHgap(10);
         grid.setVgap(12);
+        
         //fondo del grid de inicio de sesion
-        //grid.setEffect(blom);
         grid.add(lb1Correo, 1, 0);//10,01,11
         grid.add(txtCorreo, 2, 0);
         grid.add(lb2Password, 1, 1);
@@ -109,9 +109,10 @@ public class VentanaLogin extends FlowPane{
         grid.add(mensajeError,2,3);
         grid.setMaxWidth(800);
         grid.setMaxHeight(200);
-
+        //se añaden los elementos al grid
         getChildren().add(ingresarMsj);
         getChildren().add(grid);
+        
         /*evento para capturar enter y accionar el boton iniciar*/
         setOnKeyPressed(ke -> {
         KeyCode keyCode = ke.getCode();
@@ -150,7 +151,10 @@ public class VentanaLogin extends FlowPane{
             
         });
      }
-     
+     /**
+      * Método para detectar la acción al pulsar enter
+      * @param entrada 
+      */
     public void capturarEnter(TextField entrada){
         entrada.addEventFilter(KeyEvent.KEY_PRESSED,(KeyEvent E)->{
             //si se presiona enter
@@ -161,7 +165,7 @@ public class VentanaLogin extends FlowPane{
         
     }
     /**
-     *metodo para lanzar la ventana
+     *metodo para lanzar la ventana despues de haberse logueado
      */
     public void nuevaVentana(){
         try {
@@ -183,14 +187,13 @@ public class VentanaLogin extends FlowPane{
      * Metodo que captura la entrada del usuario y la procesa
      */
     public void iniciarSesion(){
-    
-                    System.out.println("entra al pulsar"); 
+                    //System.out.println("entra al pulsar"); 
                     /*conexion con la base de datos*/
                     AccesoBD conexion=new AccesoBD();
                     conexion.iniciarBD();
                     
                     datosVerificar=conexion.existeUsuario(txtCorreo.getText(), password.getText());
-                    System.out.println("entro"+datosVerificar);
+                    //System.out.println("entro"+datosVerificar);
                     conexion.DesconectarBD();
                     /*si se presiona el boton llama al metodo nuevoVentana para abrir la escena donde esta la vista general*/
                     try {
@@ -204,7 +207,7 @@ public class VentanaLogin extends FlowPane{
                             mostrarAlertas();
                         }
                     } catch (InterruptedException e) {
-                        System.out.println(e.getLocalizedMessage());
+                        System.out.println("error al iniciar sesión "+e.getLocalizedMessage());
                     }
     }
     /**
@@ -214,6 +217,4 @@ public class VentanaLogin extends FlowPane{
     public void mostrarAlertas() throws InterruptedException{
         mensajeError.setOpacity(1);
     }
-    
-    
 }

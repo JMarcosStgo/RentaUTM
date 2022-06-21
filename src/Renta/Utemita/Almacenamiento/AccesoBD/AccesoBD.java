@@ -42,8 +42,6 @@ public class AccesoBD {
        try {
             Class.forName(driver);
             con=DriverManager.getConnection(cadenaConeccion,usuario,contraseña);
-           // JOptionPane.showMessageDialog(null,"Conexion exitosa a la base de datos");
-            
        } catch (ClassNotFoundException | SQLException e) {
            JOptionPane.showMessageDialog(null,"Error al establecer la conexion con la base de datos"+e);
        }
@@ -63,7 +61,7 @@ public class AccesoBD {
            //retorna verdadero si encuentra al usuario en la BD, sino False;
            if(rs.next()==true){
                idUsuario=rs.getInt(3);
-               System.out.println("id usuario existeusuario: "+idUsuario);
+               //System.out.println("id usuario existeusuario: "+idUsuario);
                escribeArchivo(rs.getInt(3),rs.getString(7));
                return true;
            }
@@ -77,7 +75,6 @@ public class AccesoBD {
     */
    public void DesconectarBD(){
        try {con.close();
-           //JOptionPane.showMessageDialog(null,"Sesion BD terminada de manera exitosa");           
        } catch (SQLException e) {
            JOptionPane.showMessageDialog(null,"A ocurrido un error al desconectar la base de datos");
        }
@@ -116,7 +113,7 @@ public class AccesoBD {
             statment.setString(9,propiedad.getToken());
             statment.executeUpdate();
             ArrayList<String>  ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
-            System.out.println("ident"+ident.get(0));
+            //System.out.println("ident"+ident.get(0));
             idUsuario=Integer.parseInt(ident.get(0));
             caseropropiedad(idUsuario,propiedad.getToken());
             }catch (SQLException e) {
@@ -151,8 +148,8 @@ public class AccesoBD {
        Propiedad temp=new Propiedad();
        try {
             Statement st = con.createStatement();
-                ResultSet rs=st.executeQuery("SELECT * FROM propiedad WHERE token='"+token+"'");
-            System.out.println("rs"+rs);
+            ResultSet rs=st.executeQuery("SELECT * FROM propiedad WHERE token='"+token+"'");
+            //System.out.println("rs"+rs);
             if(rs.next()==true){
                 temp.setIdPropiedad(rs.getInt(1));
                 temp.setDescripcionCuarto(rs.getString(2));
@@ -184,7 +181,7 @@ public class AccesoBD {
                 }
                 return temp;
             }
-            System.out.println(temp);
+            //System.out.println(temp);
         }catch (SQLException e) {
             System.out.println("error alta propiedad"+e.getLocalizedMessage());
         }
@@ -247,7 +244,6 @@ public class AccesoBD {
                 usuarioBD.setTelefono(rs.getLong(4));
                 usuarioBD.setMatricula(rs.getString(5));
                 usuarioBD.setNombre(rs.getString(6));
-                
                 return usuarioBD;
             }
        } catch (SQLException e) {
@@ -286,9 +282,6 @@ public class AccesoBD {
             escribir.write(saludo);
             escribir.write("\n");
             escribir.write(tipo);
-            
-            
-
             //Cerramos la conexion
             escribir.close();
         } //Si existe un problema al escribir cae aqui
@@ -303,9 +296,6 @@ public class AccesoBD {
     * @return valor Propiedad, una lista de cuartos 
     */
    public ArrayList<Propiedad> listCuartosPrecios(int precioInicial , int precioFianl){
-            //String query="SELECT * FROM propiedad WHERE precio>='"+precioInicial+"' AND precio<='"+precioFianl+"'";
-            //st = con.createStatement();
-           //ResultSet rs=st.executeQuery("SELECT * FROM usuario WHERE correo='"+correo+"' AND password='"+password+"'");
         ArrayList <Propiedad> tem = new ArrayList();
         try{
             Statement st = con.createStatement();
@@ -314,18 +304,11 @@ public class AccesoBD {
             while (rs.next()) {
                 //System.out.println("lista cuartos x precio");
                 Propiedad temp = new Propiedad();
-                //temp.setIdPropiedad(rs.getInt(1));
-                //temp.setDescripcionCuarto(rs.getString(2));
-                //temp.setPrecio(rs.getInt(3));
-                //temp.setDisponibilidad(rs.getString(4));
-                //temp.setUbicacion(rs.getString(5));
-                //temp.setServicios(rs.getString(6));
                 temp.setToken(rs.getString(1));
                 /*lectura de los archivos blob y se convierten en tipo Image*/
                 try {
                     ArrayList <Image> imagenes = new ArrayList();
                     ArrayList <Blob> imagenesBlob = new ArrayList();
-                    
                     InputStream in = rs.getBinaryStream(2);
                     BufferedImage image = ImageIO.read(in);
                     imagenes.add(image);
@@ -335,10 +318,7 @@ public class AccesoBD {
                     in = rs.getBinaryStream(4);
                     image = ImageIO.read(in);
                     imagenes.add(image);
-                    //temp.setImagenesP(imagenes);
                     imagenesBlob.add(rs.getBlob(2));
-                    //imagenesBlob.add(rs.getBlob(3));
-                    //imagenesBlob.add(rs.getBlob(4));
                     temp.setImagenesBlob(imagenesBlob);
                     tem.add(temp);
                 }catch (IOException | SQLException e) {
@@ -370,7 +350,7 @@ public class AccesoBD {
                 temp.setServicios(rs.getString(6));
                 
                 ArrayList <Image> imagenes = new ArrayList();
-                    ArrayList <Blob> imagenesBlob = new ArrayList();
+                ArrayList <Blob> imagenesBlob = new ArrayList();
                     
                     InputStream in = rs.getBinaryStream(7);
                     BufferedImage image = ImageIO.read(in);
@@ -406,43 +386,30 @@ public class AccesoBD {
             statment.executeUpdate();
             
             Propiedad prop=obtenerPropiedadModificar(token);
-            System.out.println("propiedad notificaciones "+prop.getIdPropiedad()+prop.getDescripcionCuarto()+prop.getToken());
-            
-           // try {
+            //System.out.println("propiedad notificaciones "+prop.getIdPropiedad()+prop.getDescripcionCuarto()+prop.getToken());
                 /*obtener id del casero de la propiedad con el token*/
                 Statement st = con.createStatement();
-                System.out.println("------");
-                
+                //System.out.println("------");
                 ResultSet rs=st.executeQuery("SELECT * FROM caseropropiedad WHERE token='"+token+"'");
                 if(rs.next()){
-                    System.out.println("rs notificaiones"+rs.getInt(1)+rs.getInt(2));//+rs.getInt(2));
-                
+                    //System.out.println("rs notificaiones"+rs.getInt(1)+rs.getInt(2));//+rs.getInt(2));
                     idcasero=rs.getInt(2);
                 }
-          //  } catch (SQLException ee) {
-           //         System.out.println("error caseropropieda"+ee.getLocalizedMessage());
-            ///}
-            /* -----------*/
             ArrayList<String>  ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
-            System.out.println("ident"+ident.get(0));
+            //System.out.println("ident"+ident.get(0));
             idUsuario=Integer.parseInt(ident.get(0));
-            System.out.println("idUsuario notificaiones"+idUsuario);
-            /* ------- */
-            //try {
-                String query2="INSERT INTO notificaciones(idAlumno,nombreAlumno,idPropiedad,idCasero) VALUES (?,?,?,?)";
-                PreparedStatement statment2=(PreparedStatement)con.prepareStatement(query2);
-                statment2.setInt(1,idUsuario);
-                Usuario tmp=obtencionDatos(idUsuario);
-                System.out.println("tmp notificaciones"+tmp.getNombre());
-                System.out.println("id usuario "+this.idUsuario+ tmp.getNombre()+tmp.getCorreo()+tmp.getIdUsuario());
-                statment2.setString(2,tmp.getNombre());
-                statment2.setInt(3,prop.getIdPropiedad());
-                statment2.setInt(4,idcasero);
-                statment2.execute();
-            //} catch (SQLException error) {
-             //   System.out.println("error al ingresar datos en la tabla notificaciones "+error.getLocalizedMessage());
-            //}
-//          notificaciones(idUsuario, token);
+            //System.out.println("idUsuario notificaiones"+idUsuario);
+            String query2="INSERT INTO notificaciones(idAlumno,nombreAlumno,idPropiedad,idCasero) VALUES (?,?,?,?)";
+            PreparedStatement statment2=(PreparedStatement)con.prepareStatement(query2);
+            statment2.setInt(1,idUsuario);
+            Usuario tmp=obtencionDatos(idUsuario);
+            //System.out.println("tmp notificaciones"+tmp.getNombre());
+            //System.out.println("id usuario "+this.idUsuario+ tmp.getNombre()+tmp.getCorreo()+tmp.getIdUsuario());
+            statment2.setString(2,tmp.getNombre());
+            statment2.setInt(3,prop.getIdPropiedad());
+            statment2.setInt(4,idcasero);
+            statment2.execute();
+            
        } catch (SQLException e) {
             System.out.println("Error al actualizar cuarto "+e.getLocalizedMessage());
        }
