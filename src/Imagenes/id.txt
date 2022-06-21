@@ -1,2 +1,2 @@
-33
-Arrendador
+1
+Estudiante

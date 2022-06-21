@@ -6,6 +6,7 @@ import Renta.Utemita.Presentacion.VentanaRegistroModificacion.VentanaModificacio
 import Renta.Utemita.ReglasDeNegocio.ApartarCuarto.ApartarCuarto;
 import Renta.Utemita.ReglasDeNegocio.ApartarCuarto.Notificaciones;
 import Renta.Utemita.ReglasDeNegocio.Busqueda.Busqueda;
+import Renta.Utemita.ReglasDeNegocio.IniciarSesion.IniciarSesion;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad.RegistrarModificarPropiedad;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -351,7 +352,9 @@ public class VentanaCuartos extends Application {
             @Override
             public void handle(MouseEvent t) {
                 try {
-                    primaryStage.close();
+                    //primaryStage.close();
+                    IniciarSesion inicio = new IniciarSesion();
+                    inicio.start(primaryStage);
                 } catch (Exception e) {
                 }
             }

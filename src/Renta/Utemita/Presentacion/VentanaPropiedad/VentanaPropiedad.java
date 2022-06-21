@@ -559,15 +559,15 @@ public class VentanaPropiedad extends Application{
      * @param imagenesBlob 
      */
     public void registrarPropiedad(String descripcionCuarto,int precio,String disponibilidad,String ubicacion,String servicios,ArrayList <String> imagenes,String token,ArrayList <Blob> imagenesBlob){
-        System.out.println("registro propiedad ->>>>>"+descripcionCuarto+"--"+precio+"--"+disponibilidad+"--"+ubicacion+"--"+servicios+"--"+imagenes.size()+"--token: "+token+"--"+imagenesBlob.size());
-        System.out.println("token registro propiedad"+this.token);
-        System.out.println("token registrarPropiedad"+token);
-        System.out.println("codigoregistrarPropiedad"+codigo);
+        //System.out.println("registro propiedad ->>>>>"+descripcionCuarto+"--"+precio+"--"+disponibilidad+"--"+ubicacion+"--"+servicios+"--"+imagenes.size()+"--token: "+token+"--"+imagenesBlob.size());
+        //System.out.println("token registro propiedad"+this.token);
+        //System.out.println("token registrarPropiedad"+token);
+        //System.out.println("codigoregistrarPropiedad"+codigo);
         
         RegistrarModificarPropiedad rMP2 = new RegistrarModificarPropiedad();
         this.datos=rMP2.verificarDatos(descripcionCuarto,precio,disponibilidad,ubicacion,imagenes,servicios);
             
-        System.out.println("datos regprop"+datos);
+        //System.out.println("datos regprop"+datos);
         if(datos==true)
         {   errorRegPropiedad.setOpacity(0);
             RegistrarModificarPropiedad rmp2 = new RegistrarModificarPropiedad();
