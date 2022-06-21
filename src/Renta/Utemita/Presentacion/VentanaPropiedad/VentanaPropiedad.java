@@ -83,7 +83,7 @@ public class VentanaPropiedad extends Application{
     Text dImagenes = new Text("Ingrese las imagenes");
     Paint blanco = Paint.valueOf("#ffffff");
     File imgFile;
-    Text errorRegPropiedad = new Text("Error,no se ha podido ingreasar los datos, revise sus datos proporcionados");
+    Text errorRegPropiedad = new Text("Error,no se ha podido ingresar los datos, revise sus datos proporcionados");
     private Button ingresar=new Button("Ingresar datos");
     
     /*variables*/
@@ -262,7 +262,7 @@ public class VentanaPropiedad extends Application{
         grid.add(imagenesP,0,12);
         grid.add(ingresar,0,13);
         grid.add(errorRegPropiedad,0,14);
-        
+        errorRegPropiedad.setOpacity(0);
         /*configuracion de la escena y los elementos que tendra*/
         anchorPane.setMinHeight(altura);
         anchorPane.setMaxWidth(ancho);
@@ -332,17 +332,23 @@ public class VentanaPropiedad extends Application{
         hb.setStyle("-fx-background-color: violet; -fx-padding: 13px;");
         Button continuar = new Button("Continuar");
         /*Se muestra el mensaje continuar si datos!=false*/
-        hb.getChildren().addAll(tituloVentanaE,agregarBtn, continuar);
         
-        if (datos==true) {
-            hb.setOpacity(1);
-            agregarBtn.setDisable(true);
-            continuar.setDisable(true);
-        }else{
+        //if (datos==false) {
+        
+            //hb.setOpacity(1);
+            //agregarBtn.setDisable(true);
+            //continuar.setDisable(true);
+//           hb.getChildren().addAll(tituloVentanaE,agregarBtn, continuar);
+          // hb.getChildren().addAll(tituloVentanaE,agregarBtn, c);    
+        //}else{
+            //hb.setOpacity(0);
+            //agregarBtn.setDisable(true);
+            //continuar.setDisable(true);
+            hb.getChildren().addAll(tituloVentanaE,agregarBtn, continuar);
+            grid.add(hb,0,15);
             hb.setOpacity(0);
-            agregarBtn.setDisable(true);
-            continuar.setDisable(true);
-        }
+                                
+        //}
         /*Evento para solo permitir entrada de numeros en precio*/
         
         /*Evento al presionar el texto modificar propiedad*/
@@ -456,11 +462,12 @@ public class VentanaPropiedad extends Application{
                         servicios=null;
                         token=null;
                         try {
-                            if(banderaGrid==0){
-                                grid.add(hb,0,15);
+                            if(datos==true){
+                               hb.setOpacity(1);
+                                //grid.add(hb,0,15);
                                 banderaGrid=1;
                             }else{
-                                hb.setOpacity(1);
+                                hb.setOpacity(0);
                             }
                             imagenes.removeAll(imagenes);
 
@@ -484,6 +491,7 @@ public class VentanaPropiedad extends Application{
     public void mostrarAlertas(){
         //System.out.println("estado de datos: "+codigo+"error al ingresar datos a la propiedad");
         errorRegPropiedad.setOpacity(1);
+        
     }
     public  String getRandomString() 
     {   int i=10;
@@ -561,7 +569,8 @@ public class VentanaPropiedad extends Application{
             
         System.out.println("datos regprop"+datos);
         if(datos==true)
-        {   RegistrarModificarPropiedad rmp2 = new RegistrarModificarPropiedad();
+        {   errorRegPropiedad.setOpacity(0);
+            RegistrarModificarPropiedad rmp2 = new RegistrarModificarPropiedad();
             Propiedad temp=new Propiedad();
             if(codigo==false){
                 token=getRandomString();
@@ -586,6 +595,7 @@ public class VentanaPropiedad extends Application{
             }
         }
         else{
+            errorRegPropiedad.setOpacity(1);
             mostrarAlertas();
         }
     }

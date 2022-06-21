@@ -255,7 +255,8 @@ public class VentanaCuartos extends Application {
         layout.getChildren().addAll(label,label2, listView);
         layout.setStyle("-fx-background-color: BEIGE");
         /*se agrega el layout al box que va al panel lateral derecho*/
-        boxDerecho.getChildren().add(layout);
+        if(usuarioBienvenida.getText().equals("Arrendador"))
+            boxDerecho.getChildren().add(layout);
         /*--------------------fin obtencion-----------------------------------*/
         panelDerecho.getChildren().add(paneLateralDer);
         /*agrega al stackpane el scroll y el splitpane*/
@@ -517,8 +518,10 @@ public class VentanaCuartos extends Application {
                 infoCuartos.add(disponibilidadcto,0, 4);
                 infoCuartos.add(ubicacioncto,0, 6);
                 infoCuartos.add(servicioscto,0, 8);
+                if(usuarioBienvenida.getText().equals("Arrendador")){
+                    btnInformacion.setDisable(true);
+                }
                 infoCuartos.add(btnInformacion, 0, 10);
-                
                 infoCuartos.add(descripcionCuarto,0, 1);
                 infoCuartos.add(precio,0, 3);
                 infoCuartos.add(disponibilidad,0, 5);
