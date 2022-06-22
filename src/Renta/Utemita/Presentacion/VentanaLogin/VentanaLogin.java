@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -39,7 +38,7 @@ public class VentanaLogin extends FlowPane{
      Timeline timeline;
      Stage primaryStage;
      Label lb1Correo = new Label("Correo");
-     Text mensajeError=new Text("Error al ingresar su Correo o Password");
+     Text mensajeError=new Text("Error, Correo o Password invalidos, ingresar datos nuevamente");
      TextField txtCorreo = new TextField();
      Label lb2Password = new Label("Password");
      final PasswordField password = new PasswordField();
@@ -76,7 +75,7 @@ public class VentanaLogin extends FlowPane{
         bt1IniciarSesion.setFont(new Font("Serif", 28));
         lb2Password.setFont(new Font("Serif", 26));
         registrarse.setFont(new Font("Serif", 28));
-        mensajeError.setFont(new Font("Serif", 28));
+        mensajeError.setFont(new Font("Serif", 20));
         registrarse.setFill(paint);
         ingresarMsj.setFont(new Font("Arial", 38));
         ingresarMsj.setStyle("-fx-font-weight: bold;");

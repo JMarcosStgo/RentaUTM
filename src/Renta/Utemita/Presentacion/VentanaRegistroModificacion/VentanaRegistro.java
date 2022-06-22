@@ -1,4 +1,4 @@
-package Renta.Utemita.Presentacion.VentanaRegistroModificacion;
+    package Renta.Utemita.Presentacion.VentanaRegistroModificacion;
 
 import Renta.Utemita.ReglasDeNegocio.IniciarSesion.IniciarSesion;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.RegistrarModificarUsuario;
@@ -59,7 +59,7 @@ public class VentanaRegistro extends Application{
     private Button ingresar=new Button("Registrarse");
     private Button cancelarRegistro=new Button("Cancelar Registro");
     
-    Text alerta = new Text("Error, ingresar datos correctos");
+    Text alerta = new Text("Error, datos incorrectos o incompletos, ingresar nuevamente");
     Paint paint2 = Paint.valueOf("#2b6ff6");
      
     /*variables*/

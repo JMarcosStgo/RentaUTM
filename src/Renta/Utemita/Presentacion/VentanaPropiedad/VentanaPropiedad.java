@@ -323,12 +323,13 @@ public class VentanaPropiedad extends Application{
         /*-----------ventana emergente----------------------------------------*/
         Popup po = new Popup();
         po.setX(205);
-        po.setY(304);
+        po.setY(104);
         po.setHeight(altura/2);
         po.getContent().addAll(new Circle(35, 45, 64, Color.RED));
         Label tituloVentanaE = new Label ("Desea agregar otra propiedad");
         Button agregarBtn = new Button("Agregar");
         HBox hb = new HBox(17);
+        hb.setLayoutY(30);
         hb.setStyle("-fx-background-color: violet; -fx-padding: 13px;");
         Button continuar = new Button("Continuar");
         /*Se muestra el mensaje continuar si datos!=false*/

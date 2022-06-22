@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -78,7 +79,8 @@ public class VentanaCuartos extends Application {
     int banderaActual=0;
     int banderaAnterior=0;
     int banderafist=0;
-    
+    ArrayList<Integer> color = new ArrayList();
+        
     /*variables*/
     private int idUsuario = 0;
     private int precioFinal=0;
@@ -118,7 +120,7 @@ public class VentanaCuartos extends Application {
         shadow.setRadius(12);  
         shadow.setWidth(20);  
         shadow.setChoke(0.9);
-        bienvenido.setStyle("-fx-background-color: #2962ff;");
+        bienvenido.setStyle("-fx-background-color: #03A9F4;");
         bienvenido.setFont(new Font("Arial",20));
         bienvenidopt2.setFont(new Font("Arial",28));
         bienvenidopt3.setFont(new Font("Arial",20));
@@ -153,12 +155,21 @@ public class VentanaCuartos extends Application {
         Group root = new Group();
         final StackPane sp1 = new StackPane();
         //fondo del pandel lateral
+        /*
         Stop[] stops = new Stop[] {
            new Stop(0, Color.PURPLE),
            new Stop(1, Color.BLUE)
         };
         /*fondo*/
+        //LinearGradient gp = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REPEAT, stops);
+        Stop[] stops = new Stop[] {
+            new Stop(0, Color.web("blue")),
+            new Stop(1, Color.web("#33ffe0")),
+        };
+        //color de fondo detras del grid
         LinearGradient gp = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REPEAT, stops);
+        //se define el color de fondo de la parte interna
+        
         grid.setAlignment(Pos.CENTER);
         
         root.getChildren().add(grid);
@@ -179,6 +190,7 @@ public class VentanaCuartos extends Application {
         /*Se coloca el grid dentro del pane*/
         anchorPane.getChildren().add(grid);
         sp1.setStyle("-fx-background-color: #00ff77;");//fondo del lateral izquieerdo
+        
         sp1.setDisable(false);//no permite que se ajuste el panel
         sp1.setMaxSize(ancho/6,altura);
         sp1.setPadding(new Insets(200,0,00,0));
@@ -214,7 +226,7 @@ public class VentanaCuartos extends Application {
         
         //panel de la derecha
         final StackPane panelDerecho = new StackPane();
-        panelDerecho.setStyle("-fx-background-color: #00ff77;");
+        panelDerecho.setStyle("-fx-background-color: #B4E5FC;");
         panelDerecho.setMaxSize(650,altura);
         panelDerecho.setDisable(false);
         panelDerecho.setAlignment(Pos.CENTER_LEFT);
@@ -407,6 +419,7 @@ public class VentanaCuartos extends Application {
 		}
 		return tmp;
     }
+    
     /**
      * Método para obtener los cuartos dentro del rango ingresado por el usuario
      * @param precioInicial
@@ -486,23 +499,23 @@ public class VentanaCuartos extends Application {
                 Label ubicacion =  new Label(tempo.getUbicacion());
                 Label servicios = new Label(tempo.getServicios());
                 
-                Text descripcioncto = new Text("Descripcion del cuarto: ");
+                Text descripcioncto = new Text("Descripción del cuarto: ");
                 Text preciocto = new Text("Precio: ");
                 Text disponibilidadcto = new Text("Disponibilidad: ");
-                Text ubicacioncto = new Text("Ubicacion: ");
+                Text ubicacioncto = new Text("Ubicación: ");
                 Text servicioscto = new Text("Servicios: ");
                 
-                descripcioncto.setStyle("-fx-background-color: #2b6ff6;");
+                descripcioncto.setStyle("-fx-background-color: #212121;");
                 descripcioncto.setFont(new Font("Arial",28));
                 preciocto.setStyle("-fx-background-color: #2b6ff6;");
                 preciocto.setFont(new Font("Arial",28));
-                disponibilidadcto.setStyle("-fx-background-color: #2b6ff6;");
+                disponibilidadcto.setStyle("-fx-background-color: #212121;");
                 disponibilidadcto.setFont(new Font("Arial",28));
-                ubicacioncto.setStyle("-fx-background-color: #2b6ff6;");
+                ubicacioncto.setStyle("-fx-background-color: #212121;");
                 ubicacioncto.setFont(new Font("Arial",28));
-                servicioscto.setStyle("-fx-background-color: #2b6ff6;");
+                servicioscto.setStyle("-fx-background-color: #212121;");
                 servicioscto.setFont(new Font("Arial",28));
-                btnInformacion.setStyle("-fx-background-color: #2b6ff6;");
+                btnInformacion.setStyle("-fx-background-color: #00BCD4;");
                 btnInformacion.setFont(new Font("Arial",28));
                 
                 descripcionCuarto.setFont(new Font("Arial",22));
@@ -510,11 +523,11 @@ public class VentanaCuartos extends Application {
                 disponibilidad.setFont(new Font("Arial",22));
                 ubicacion.setFont(new Font("Arial",22));
                 servicios.setFont(new Font("Arial",22));
-                descripcionCuarto.setBackground(Background.fill(blanco));
-                precio.setBackground(Background.fill(blanco));
-                disponibilidad.setBackground(Background.fill(blanco));
-                ubicacion.setBackground(Background.fill(blanco));
-                servicios.setBackground(Background.fill(blanco));
+                descripcionCuarto.setTextFill(Color.web("#757575"));//#757575
+                precio.setTextFill(Color.web("#757575"));
+                disponibilidad.setTextFill(Color.web("#757575"));
+                ubicacion.setTextFill(Color.web("#757575"));
+                servicios.setTextFill(Color.web("#757575"));
         
                 infoCuartos.add(descripcioncto,0, 0);
                 infoCuartos.add(preciocto,0, 2);
