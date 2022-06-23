@@ -249,17 +249,17 @@ public class VentanaModificacion extends Application{
         //se crea un Group para colocar dentro al splipane 
         SplitPane sp = new SplitPane();
         anchorPane.getChildren().add(grid);
-        sp1.setStyle("-fx-background-color: #00ff77;");//fondo del lateral izquieerdo
+        sp1.setStyle("-fx-background-color: #B4E5FC;");//fondo del lateral izquieerdo
         sp1.setDisable(false);//no permite que se ajuste el panel
         sp1.setMaxSize(ancho/5,altura);
         Text modificarProp = new Text("Modificar Propiedad"); 
         modificarProp.setFont(Font.font(null, FontWeight.BOLD, 15));     
-        modificarProp.setFill(Color.CRIMSON); 
+        modificarProp.setFill(Color.PURPLE); 
         modificarProp.setX(20); 
         modificarProp.setY(00);       
         Text menu = new Text("Menú principal"); 
         menu.setFont(Font.font(null, FontWeight.BOLD, 15));     
-        menu.setFill(Color.CRIMSON); 
+        menu.setFill(Color.PURPLE); 
         menu.setX(20); 
         menu.setY(200);       
         Group paneLateral2 = new Group();
