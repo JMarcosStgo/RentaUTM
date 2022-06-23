@@ -132,12 +132,20 @@ public class AccesoBD {
         Statement st;
         ResultSet rs;
         try {
+            ArrayList<String>  ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
+            idUsuario=Integer.parseInt(ident.get(0));
+           
             st = con.createStatement();
-            rs=st.executeQuery("SELECT * FROM propiedad WHERE token='"+token+"'");
-            
-            if(rs.next()==true){retorno=true;}
+            //rs=st.executeQuery("SELECT * FROM propiedad WHERE token='"+token+"' AND caseropropiedad.idCasero='"+idUsuario+"' ");
+            rs=st.executeQuery("SELECT DISTINCT * FROM propiedad INNER JOIN caseropropiedad ON caseropropiedad.idCasero='"+idUsuario+"' AND propiedad.token='"+token+"' AND propiedad.token=caseropropiedad.token");//  -WHERE token='"+token+"' AND caseropropiedad.idCasero='"+idUsuario+"' ");
+                              //SELECT DISTINCT *FROM propiedad INNER JOIN caseropropiedad ON caseropropiedad.idCasero=35 AND propiedad.token='HK70BQR8N7' AND propiedad.token=caseropropiedad.token;
+            //SELECT DISTINCT *FROM propiedad INNER JOIN caseropropiedad ON caseropropiedad.idCasero=33 AND propiedad.token='JBIVSEC3CB';
+            if(rs.next()==true){
+                System.out.println("rs----"+rs.getInt(3));
+                retorno=true;
+            }
         } catch (SQLException ex) {
-           Logger.getLogger(AccesoBD.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error, al verificar codigo de la propiedad"+ex.getLocalizedMessage());
        }
        return retorno;
    }

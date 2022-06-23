@@ -308,6 +308,13 @@ public class VentanaCuartos extends Application {
         searchBoxF.setMinHeight(50);
         grid.setHgap(10);
         
+        /*se listan inicialmente todas las propiedades*/
+        propiedades=buscarCuartos(1,50000);
+        for (int i = 0; i <propiedades.size(); i++) {
+            propiedadesCpy.add(propiedades.get(i));
+        }
+        ver();
+        
         /*escucha para bloquear letras y solo aceptar 5 numeros*/
         searchBox.textProperty().addListener((ov, t, t1) -> {
         if(!t1.matches("[0-9]{0,5}") || t1.length()>8){
@@ -580,7 +587,7 @@ public class VentanaCuartos extends Application {
                             Label tituloVentanaE = new Label ("¿Desea realmente apartar esta propiedad?");
                             Button apartar = new Button("Apartar");
                             HBox hb = new HBox(17);
-                            hb.setStyle("-fx-background-color: violet; -fx-padding: 13px;");
+                            hb.setStyle("-fx-background-color: #B4E5FC; -fx-padding: 13px;");
                             Button cancelar = new Button("Cancelar");
                            /*Evento cuando el alumno confirma apartar el cuarto*/
                             apartar.setOnAction(new EventHandler<ActionEvent>() {
@@ -593,7 +600,7 @@ public class VentanaCuartos extends Application {
                                     inicio.close();
                                     }
                             });
-                            /*Evento cuadno pulsa en cancelar*/
+                            /*Evento cuando pulsa en cancelar*/
                             cancelar.setOnAction(new EventHandler<ActionEvent>() {
                                 @Override
                                 public void handle(ActionEvent t) {
@@ -601,7 +608,7 @@ public class VentanaCuartos extends Application {
                                 }
                             });
                             
-                            elementosVenEmer.setStyle("-fx-background-color: violet; -fx-padding: 13px;");
+                            elementosVenEmer.setStyle("-fx-background-color: #B4E5FC; -fx-padding: 13px;");
                             elementosVenEmer.getChildren().add(hb);
                             RegistrarModificarPropiedad rModiProp = new RegistrarModificarPropiedad();
                             String id=btnInformacion.getId();
@@ -610,7 +617,7 @@ public class VentanaCuartos extends Application {
                             Propiedad elejida = new Propiedad();
                             hb.getChildren().addAll(tituloVentanaE,apartar, cancelar);
                             
-                            Scene emergente = new Scene(elementosVenEmer,500,100,Color.web("violet"));
+                            Scene emergente = new Scene(elementosVenEmer,500,100,Color.web("B4E5FC"));
                             inicio.setScene(emergente);
                             inicio.setResizable(false);
                             inicio.setTitle("Confirmar apartado");

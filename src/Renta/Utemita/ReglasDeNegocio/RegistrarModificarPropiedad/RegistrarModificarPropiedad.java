@@ -48,7 +48,7 @@ public class RegistrarModificarPropiedad {
     public boolean btnExisteCodigoPropiedad(String token){
         AccesoBD conexion =new AccesoBD();
         conexion.iniciarBD();
-        codigo=conexion.verificacionCodigoPropiedad(token);
+        codigo=conexion.verificacionCodigoPropiedad(token);//true
         System.out.println("codigo "+codigo);
         conexion.DesconectarBD();
         return codigo;

@@ -70,6 +70,8 @@ public class VentanaPropiedad extends Application{
     Paint paint=Paint.valueOf("blue");
         
     Text tituloForm = new Text("Registro propiedad");
+    Text tituloForm2 = new Text("Modificar propiedad");
+    
     Text dCuarto = new Text("Descripción del cuarto");
     TextField lCuarto = new TextField();
     Text dServicios = new Text("Servicios");
@@ -178,6 +180,12 @@ public class VentanaPropiedad extends Application{
         tituloForm.setTextAlignment(TextAlignment.CENTER);
         tituloForm.setStyle("-fx-font-weight: bold;");
         tituloForm.setFill(paint);
+        tituloForm2.setStyle("-fx-background-color: #ffffff;");
+        tituloForm2.setFont(new Font("Arial",30));
+        tituloForm2.setStyle("-fx-padding-left:600px;");
+        tituloForm2.setTextAlignment(TextAlignment.CENTER);
+        tituloForm2.setStyle("-fx-font-weight: bold;");
+        tituloForm2.setFill(paint);
         
         dCuarto.setStyle("-fx-background-color: #ffffff;");
         dCuarto.setFont(new Font("Arial",28));
@@ -212,7 +220,8 @@ public class VentanaPropiedad extends Application{
         imagenesP.setMinWidth(100);
         
         tituloForm.setX(ancho/4);
-        pane.getChildren().add(tituloForm);
+        tituloForm2.setX(ancho/4);
+        
         pane.setMinHeight(50);
         
         /*tamaño de letra de los inputs*/
@@ -330,7 +339,7 @@ public class VentanaPropiedad extends Application{
         Button agregarBtn = new Button("Agregar");
         HBox hb = new HBox(17);
         hb.setLayoutY(30);
-        hb.setStyle("-fx-background-color: violet; -fx-padding: 13px;");
+        hb.setStyle("-fx-background-color: #B4E5FC; -fx-padding: 13px;");
         Button continuar = new Button("Continuar");
         /*Se muestra el mensaje continuar si datos!=false*/
         
@@ -524,10 +533,12 @@ public class VentanaPropiedad extends Application{
         //System.out.println("codigo"+codigo);
         /*si codigo es falso se muestra el formulario en limpio*/
         if(codigo==false){
+            pane.getChildren().add(tituloForm);
             anchorPane.getChildren().add(grid);
             //System.out.println("token generado"+this.token);
         }/*se carga los datos en el formulario*/
         else{
+            pane.getChildren().add(tituloForm2);
             /*codigo==true se obtiene los datos de la base de datos*/
             Propiedad temp=rMP.obtenerDatosPropiedad(token);
             //System.out.println("temp"+temp.getDescripcionCuarto()+temp.getDisponibilidad()+temp.getServicios()+temp.getToken());
