@@ -19,7 +19,7 @@ public class RegistrarModificarUsuario {
      */
     public boolean verificarDatos(String nombre,long telefono,String correo,String matricula,String contraseña){
         try {
-            if(nombre.length()>0 && telefono>0 && telefono <10000000000L && correo.length()>0 && contraseña.length()>0){
+            if(nombre.length()>0 && telefono>999999999 && telefono <10000000000L && correo.length()>0 && contraseña.length()>0){
             /*es alumno*/
             String tem[]=correo.split("@");
             if(matricula.length()>0 && tem[1].equals("gs.utm.mx"))

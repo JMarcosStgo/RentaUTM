@@ -10,7 +10,6 @@ import Renta.Utemita.ReglasDeNegocio.IniciarSesion.IniciarSesion;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad.RegistrarModificarPropiedad;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Blob;
@@ -20,7 +19,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -135,8 +133,8 @@ public class VentanaCuartos extends Application {
         bienvenido.setPadding(new Insets(0,0,0,350));
         bienvenidopt2.setAlignment(Pos.CENTER);
         bienvenidopt2.setLayoutX(500);
-        bienvenidopt3.setLayoutX(1000);
-        usuarioBienvenida.setLayoutX(ancho-250);
+        bienvenidopt3.setLayoutX(800);
+        usuarioBienvenida.setLayoutX(ancho-500);
        
         AnchorPane tituloBienvenidad = new AnchorPane();
         tituloBienvenidad.getChildren().add(bienvenido);
@@ -289,7 +287,7 @@ public class VentanaCuartos extends Application {
         root.getChildren().add(gridTitulo);
         primaryStage.setResizable(false);
         
-        primaryStage.setFullScreen(true);
+        //primaryStage.setFullScreen(true);
         Scene scene = new Scene(root, ancho, altura);
         primaryStage.setTitle("Busqueda de cuartos");
         primaryStage.setScene(scene);
@@ -370,9 +368,12 @@ public class VentanaCuartos extends Application {
             @Override
             public void handle(MouseEvent t) {
                 try {
+                    //Scene escena = new Scene(grid);
+                    Stage stage = new Stage();
+                    primaryStage.close();
                     System.out.println("cerrar sesion"+usuarioBienvenida.getText());
                     IniciarSesion inicio = new IniciarSesion();
-                    inicio.start(primaryStage);
+                    inicio.start(stage);
                 } catch (Exception e) {
                 }
             }
@@ -609,13 +610,11 @@ public class VentanaCuartos extends Application {
                             Propiedad elejida = new Propiedad();
                             hb.getChildren().addAll(tituloVentanaE,apartar, cancelar);
                             
-                            
                             Scene emergente = new Scene(elementosVenEmer,500,100,Color.web("violet"));
                             inicio.setScene(emergente);
                             inicio.setResizable(false);
                             inicio.setTitle("Confirmar apartado");
                             inicio.show();
-
                         }
                     }
                 });
