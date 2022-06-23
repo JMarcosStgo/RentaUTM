@@ -10,6 +10,7 @@ import Renta.Utemita.ReglasDeNegocio.IniciarSesion.IniciarSesion;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad.RegistrarModificarPropiedad;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Blob;
@@ -105,7 +106,7 @@ public class VentanaCuartos extends Application {
         /*lectura del archivo*/
         try {
             ArrayList<String>  ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
-            //System.out.println("ident"+ident);
+            System.out.println("ident"+ident.get(1));
             idUsuario=Integer.parseInt(ident.get(0));
             usuarioBienvenida.setText(ident.get(1));
             bienvenidopt3=new Label("Usted a ingresado como ");
@@ -189,7 +190,7 @@ public class VentanaCuartos extends Application {
         SplitPane sp = new SplitPane();
         /*Se coloca el grid dentro del pane*/
         anchorPane.getChildren().add(grid);
-        sp1.setStyle("-fx-background-color: #00ff77;");//fondo del lateral izquieerdo
+        sp1.setStyle("-fx-background-color: #B4E5FC;");//fondo del lateral izquieerdo
         
         sp1.setDisable(false);//no permite que se ajuste el panel
         sp1.setMaxSize(ancho/6,altura);
@@ -198,7 +199,7 @@ public class VentanaCuartos extends Application {
         /*Configuración de la fuente del texto*/
         modificarProp.setFont(Font.font(null, FontWeight.BOLD, 15));     
         //asignando el color
-        modificarProp.setFill(Color.CRIMSON); 
+        modificarProp.setFill(Color.PURPLE); 
         //asignando la posicion del texto
         modificarProp.setX(20); 
         modificarProp.setY(00);       
@@ -206,13 +207,13 @@ public class VentanaCuartos extends Application {
         //Configuración de la fuente del texto
         salir.setFont(Font.font(null, FontWeight.BOLD, 15));     
         //asignando el color
-        salir.setFill(Color.CRIMSON); 
+        salir.setFill(Color.PURPLE); 
         //asignando la posicion del texto
         salir.setX(20); 
         salir.setY(400);       
         Text modificarPer = new Text("Modificar Perfil"); 
         modificarPer.setFont(Font.font(null, FontWeight.BOLD, 15));     
-        modificarPer.setFill(Color.CRIMSON); 
+        modificarPer.setFill(Color.PURPLE); 
         modificarPer.setX(20); 
         modificarPer.setY(200);       
         /*grupo para añadir elementos*/
@@ -231,16 +232,21 @@ public class VentanaCuartos extends Application {
         panelDerecho.setDisable(false);
         panelDerecho.setAlignment(Pos.CENTER_LEFT);
         TextField buscador = new TextField();
-        buscador.setPromptText("Search Box");
+        buscador.setPromptText("Chat");
         buscador.textProperty().addListener((ov, t, t1) -> {
         });
+        buscador.setPadding(new Insets(20,0,0,0));
+        buscador.setDisable(true);
         ListView<Object> itemView = new ListView<>();
         VBox boxDerecho = new VBox(buscador,itemView);
         boxDerecho.setLayoutX(0);
+        //boxDerecho.setLayoutY(100);
+        boxDerecho.setPadding(new Insets(50,0,0,0));
         //itemView.setPrefSize(200,900);
         Group paneLateralDer = new Group();
         paneLateralDer.getChildren().addAll(boxDerecho);
         paneLateralDer.setLayoutX(0);
+        
         /*------------------------obtencion de notificaciones--------------------*/
         GridPane notificaciones = new GridPane();
         Label prueba = new Label("prueba");
@@ -260,7 +266,7 @@ public class VentanaCuartos extends Application {
         }
         
         ListView<String> listView = new ListView<String>(names);
-        listView.setMaxSize(200, 160);
+        listView.setMaxSize(200, ancho/5);
         listView.setPadding(new Insets(0,50,0,0));
         //Creando el layout
         VBox layout = new VBox(10);
@@ -364,7 +370,7 @@ public class VentanaCuartos extends Application {
             @Override
             public void handle(MouseEvent t) {
                 try {
-                    //primaryStage.close();
+                    System.out.println("cerrar sesion"+usuarioBienvenida.getText());
                     IniciarSesion inicio = new IniciarSesion();
                     inicio.start(primaryStage);
                 } catch (Exception e) {
@@ -491,7 +497,7 @@ public class VentanaCuartos extends Application {
                 //System.out.println("eleccion propiedad info"+eleccionPropiedad.getToken());
                 RegistrarModificarPropiedad rModProp = new RegistrarModificarPropiedad();
                 Propiedad tempo=rModProp.obtenerDatosPropiedad(eleccionPropiedad.getToken());
-                
+                System.out.println("infor de cuartos grid"+tempo.getDisponibilidad());
                 GridPane infoCuartos = new GridPane();
                 Label descripcionCuarto = new Label(tempo.getDescripcionCuarto());
                 Label precio = new Label(tempo.getPrecio()+"");
@@ -535,6 +541,9 @@ public class VentanaCuartos extends Application {
                 infoCuartos.add(ubicacioncto,0, 6);
                 infoCuartos.add(servicioscto,0, 8);
                 if(usuarioBienvenida.getText().equals("Arrendador")){
+                    btnInformacion.setDisable(true);
+                }
+                if(tempo.getDisponibilidad().equals("No disponible")){
                     btnInformacion.setDisable(true);
                 }
                 infoCuartos.add(btnInformacion, 0, 10);

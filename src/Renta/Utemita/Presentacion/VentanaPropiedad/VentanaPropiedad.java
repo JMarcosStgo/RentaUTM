@@ -288,19 +288,19 @@ public class VentanaPropiedad extends Application{
            new Stop(0, Color.PURPLE),
            new Stop(1, Color.BLUE)
         };
-        sp1.setStyle("-fx-background-color: #00ff77;");//fondo del lateral izquierdo
+        sp1.setStyle("-fx-background-color: #B4E5FC;");//fondo del lateral izquierdo
         sp1.setDisable(false);//no permite que se ajuste el panel
         sp1.setMaxSize(ancho/5,altura);
         Text menu = new Text("Menú Principal"); 
         //asignando la fuente del texto
         menu.setFont(Font.font(null, FontWeight.BOLD, 15));     
         //asignando el color del texto
-        menu.setFill(Color.CRIMSON); 
+        menu.setFill(Color.PURPLE); 
         menu.setX(20); 
         menu.setY(00);       
         Text modificarPer = new Text("Modificar Perfil"); 
         modificarPer.setFont(Font.font(null, FontWeight.BOLD, 15));     
-        modificarPer.setFill(Color.CRIMSON); 
+        modificarPer.setFill(Color.PURPLE); 
         modificarPer.setX(20); 
         modificarPer.setY(200); 
         /*grupo para añadir el menu y el texto para modificar propiedad*/
