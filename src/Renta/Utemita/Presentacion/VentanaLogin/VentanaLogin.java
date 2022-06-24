@@ -57,7 +57,7 @@ public class VentanaLogin extends Application {
         //color de fondo detras del grid
         LinearGradient gp = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REPEAT, stops);
         //se define el color de fondo de la parte interna
-        root.setStyle("-fx-background-color: #ffffff;");
+        root.setStyle("-fx-background-color: white;");
         Pane.layoutInArea(root, 500, 80, 0, 00, 0, Insets.EMPTY, true, true, HPos.CENTER, VPos.CENTER, true);
         //padding de la parte central
         root.setPadding(new Insets(50, 00, 400, 100));

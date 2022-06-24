@@ -175,6 +175,8 @@ public class VentanaCuartos extends Application {
         /*configuracion de la escena y los elementos que tendra*/
         anchorPane.setMinHeight(altura);
         anchorPane.setMaxWidth(ancho/2);
+        anchorPane.setMinWidth(ancho);
+        anchorPane.setBackground(Background.fill(blanco));
         anchorPane.setPadding(new Insets(50,0,0,0));
         /*Scroll del formulario*/
         ScrollPane scroll = new ScrollPane();
@@ -182,8 +184,8 @@ public class VentanaCuartos extends Application {
         /*Se asigna contenido al scrol*/
         scroll.setContent(anchorPane);
         /*activar o desactivar barras laterales*/
-        scroll.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
-        scroll.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
+        scroll.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scroll.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.ALWAYS);
         //se crea un Group para colocar dentro al splipane 
         SplitPane sp = new SplitPane();
         /*Se coloca el grid dentro del pane*/
@@ -289,7 +291,7 @@ public class VentanaCuartos extends Application {
         primaryStage.setResizable(false);
         
         //primaryStage.setFullScreen(true);
-        Scene scene = new Scene(root, ancho, altura);
+        Scene scene = new Scene(root, ancho, altura,Color.WHITE);
         primaryStage.setTitle("Busqueda de cuartos");
         primaryStage.setScene(scene);
         /*-----------------fin configuracion de la pantalla---------------------*/
@@ -463,6 +465,7 @@ public class VentanaCuartos extends Application {
         ArrayList<ImageView>imagenesBuscador = new ArrayList();
         GridPane fila=new GridPane();
         fila.setMinWidth(ancho-(ancho/3));
+        fila.setMaxWidth(2*ancho);
         fila.setBackground(Background.fill(blanco));
         fila.setPadding(new Insets(0,0,0,0));
         fila.setLayoutY(altura/3);
@@ -495,8 +498,8 @@ public class VentanaCuartos extends Application {
            for (int i = 0; i <imagenesBuscador.size(); i++) {
                 //System.out.println("i "+i);
                 image11=imagenesBuscador.get(i);
-                image11.setFitHeight(posX+200);
-                image11.setFitWidth(posX+200);
+                image11.setFitHeight(posX+100);
+                image11.setFitWidth(posX+100);
                 image11.setX(100);
                 image11.setY(posY);
                 Button btnInformacion= new Button("Apartar");
@@ -508,6 +511,7 @@ public class VentanaCuartos extends Application {
                 Propiedad tempo=rModProp.obtenerDatosPropiedad(eleccionPropiedad.getToken());
                 //System.out.println("infor de cuartos grid"+tempo.getDisponibilidad());
                 GridPane infoCuartos = new GridPane();
+                infoCuartos.setMaxWidth(ancho);
                 Label descripcionCuarto = new Label(tempo.getDescripcionCuarto());
                 Label precio = new Label(tempo.getPrecio()+"");
                 Label disponibilidad = new Label(tempo.getDisponibilidad());
@@ -533,7 +537,7 @@ public class VentanaCuartos extends Application {
                 btnInformacion.setStyle("-fx-background-color: #00BCD4;");
                 btnInformacion.setFont(new Font("Arial",28));
                 
-                descripcionCuarto.setFont(new Font("Arial",22));
+                descripcionCuarto.setFont(new Font("Arial",20));
                 precio.setFont(new Font("Arial",22));
                 disponibilidad.setFont(new Font("Arial",22));
                 ubicacion.setFont(new Font("Arial",22));
