@@ -64,8 +64,9 @@ public class RegistrarModificarPropiedad {
      * @return valor boleano, verdaro en caso de no encontrar errores
      */
     public boolean verificarDatos(String descripcionCuarto,int precio,String disponibilidad,String ubicacion, ArrayList<String> imagenes,String servicios){
+        
         /*caso 1: sea distinto de null, imagenes menor a 3 y precio sea invalido*/
-        if(descripcionCuarto.length()>0 && precio>0 && precio<50000 && disponibilidad.length()>0 && ubicacion.length()>0 && imagenes.size()==3 &&servicios.length()>0){
+        if(descripcionCuarto.length()>0 && precio>0 && precio<50000 && disponibilidad.length()>0 &&imagenes.size()==1 && ubicacion.length()>0  &&servicios.length()>0){
             return true;
         }
         /*caso 2: en cualquier otro caso se toma como datos invalidos*/

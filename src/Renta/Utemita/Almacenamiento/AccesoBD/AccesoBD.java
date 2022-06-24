@@ -62,7 +62,7 @@ public class AccesoBD {
            //retorna verdadero si encuentra al usuario en la BD, sino False;
            if(rs.next()==true){
                idUsuario=rs.getInt(3);
-               System.out.println("existe usuario"+rs.getString(7));
+               //System.out.println("existe usuario"+rs.getString(7));
                //System.out.println("id usuario existeusuario: "+idUsuario);
                escribeArchivo(rs.getInt(3),rs.getString(7));
                return true;
@@ -88,7 +88,7 @@ public class AccesoBD {
    public void altaPropiedad(Propiedad propiedad){
        try {
             Statement st = con.createStatement();
-            String query="INSERT INTO propiedad (descripcion,precio,disponibilidad,ubicacion,servicios,imagen1,imagen2,imagen3,token) VALUES (?,?,?,?,?,?,?,?,?)";
+            String query="INSERT INTO propiedad (descripcion,precio,disponibilidad,ubicacion,servicios,imagen1,token) VALUES (?,?,?,?,?,?,?)";
             PreparedStatement statment=(PreparedStatement)con.prepareStatement(query);
             statment.setString(1,propiedad.getDescripcionCuarto());
             statment.setFloat(2,propiedad.getPrecio());
@@ -103,16 +103,16 @@ public class AccesoBD {
                 File file = new File(propiedad.getImagenes().get(0));
                 input = new FileInputStream(file);
                 statment.setBinaryStream(6, input);
-                file = new File(propiedad.getImagenes().get(1));
-                input2 = new FileInputStream(file);
-                statment.setBinaryStream(7, input2);
-                file = new File(propiedad.getImagenes().get(2));
-                input3 = new FileInputStream(file);
-                statment.setBinaryStream(8, input3);
+                //file = new File(propiedad.getImagenes().get(1));
+                //input2 = new FileInputStream(file);
+                //statment.setBinaryStream(7, input2);
+                //file = new File(propiedad.getImagenes().get(2));
+                //input3 = new FileInputStream(file);
+                //statment.setBinaryStream(8, input3);
            } catch (FileNotFoundException | SQLException e) {
                 System.out.println("error al dar de alta una propiedad"+e.getLocalizedMessage());
            }
-            statment.setString(9,propiedad.getToken());
+            statment.setString(7,propiedad.getToken());
             statment.executeUpdate();
             ArrayList<String>  ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
             //System.out.println("ident"+ident.get(0));
@@ -141,7 +141,7 @@ public class AccesoBD {
                               //SELECT DISTINCT *FROM propiedad INNER JOIN caseropropiedad ON caseropropiedad.idCasero=35 AND propiedad.token='HK70BQR8N7' AND propiedad.token=caseropropiedad.token;
             //SELECT DISTINCT *FROM propiedad INNER JOIN caseropropiedad ON caseropropiedad.idCasero=33 AND propiedad.token='JBIVSEC3CB';
             if(rs.next()==true){
-                System.out.println("rs----"+rs.getInt(3));
+               // System.out.println("rs----"+rs.getInt(3));
                 retorno=true;
             }
         } catch (SQLException ex) {
@@ -175,16 +175,16 @@ public class AccesoBD {
                     InputStream in = rs.getBinaryStream(7);
                     BufferedImage image = ImageIO.read(in);
                     imagenes.add(image);
-                    in = rs.getBinaryStream(8);
-                    image = ImageIO.read(in);
+                    //in = rs.getBinaryStream(8);
+                    //image = ImageIO.read(in);
                     imagenes.add(image);
-                    in = rs.getBinaryStream(9);
-                    image = ImageIO.read(in);
-                    imagenes.add(image);
+                    //in = rs.getBinaryStream(9);
+                    //image = ImageIO.read(in);
+                    //imagenes.add(image);
                     temp.setImagenesP(imagenes);
                     imagenesBlob.add(rs.getBlob(7));
-                    imagenesBlob.add(rs.getBlob(8));
-                    imagenesBlob.add(rs.getBlob(9));
+                    //imagenesBlob.add(rs.getBlob(8));
+                    //imagenesBlob.add(rs.getBlob(9));
                     temp.setImagenesBlob(imagenesBlob);
                 } catch (IOException | SQLException e) {
                     System.out.println(e.getLocalizedMessage());
@@ -205,7 +205,7 @@ public class AccesoBD {
    public boolean actualizarPropiedad(Propiedad propiedad){
         try {
             Statement st = con.createStatement();
-            String query="UPDATE propiedad SET descripcion='"+propiedad.getDescripcionCuarto()+"' ,precio='"+propiedad.getPrecio()+"'  ,disponibilidad='"+propiedad.getDisponibilidad()+"'       ,ubicacion='"+propiedad.getUbicacion()+"'  ,servicios='"+propiedad.getServicios()+"'  ,imagen1='"+propiedad.getImagenesBlob().get(0)+"'     ,imagen2='"+propiedad.getImagenesBlob().get(1)+"'    ,imagen3='"+propiedad.getImagenesBlob().get(2)+"'"   +",token='"+propiedad.getToken()+"'" +"where idPropiedad='"+propiedad.getIdPropiedad()+"'";
+            String query="UPDATE propiedad SET descripcion='"+propiedad.getDescripcionCuarto()+"' ,precio='"+propiedad.getPrecio()+"'  ,disponibilidad='"+propiedad.getDisponibilidad()+"'       ,ubicacion='"+propiedad.getUbicacion()+"'  ,servicios='"+propiedad.getServicios()+"'  ,imagen1='"+propiedad.getImagenesBlob().get(0)+"'   ,token='"+propiedad.getToken()+"' where idPropiedad='"+propiedad.getIdPropiedad()+"'";
             PreparedStatement statment=(PreparedStatement)con.prepareStatement(query);
             //ResultSet rs=st.executeQuery("UPDATE propiedad SET ? WHERE idPropiedad='"+propiedad.getIdPropiedad()+"'"+propiedad);
             statment.executeUpdate();
@@ -312,7 +312,7 @@ public class AccesoBD {
         ArrayList <Propiedad> tem = new ArrayList();
         try{
             Statement st = con.createStatement();
-            ResultSet rs=st.executeQuery("SELECT token,imagen1,imagen2,imagen3 FROM propiedad WHERE precio>='"+precioInicial+"' AND precio<='"+precioFianl+"'");
+            ResultSet rs=st.executeQuery("SELECT token,imagen1 FROM propiedad WHERE precio>='"+precioInicial+"' AND precio<='"+precioFianl+"'");
             //System.out.println("try listar cuartos");
             while (rs.next()) {
                 //System.out.println("lista cuartos x precio");
@@ -325,13 +325,13 @@ public class AccesoBD {
                     InputStream in = rs.getBinaryStream(2);
                     BufferedImage image = ImageIO.read(in);
                     imagenes.add(image);
-                    in = rs.getBinaryStream(3);
+                    //in = rs.getBinaryStream(3);
+                   // image = ImageIO.read(in);
+                    //imagenes.add(image);
+                    //in = rs.getBinaryStream(4);
                     image = ImageIO.read(in);
                     imagenes.add(image);
-                    in = rs.getBinaryStream(4);
-                    image = ImageIO.read(in);
-                    imagenes.add(image);
-                    imagenesBlob.add(rs.getBlob(2));
+                   imagenesBlob.add(rs.getBlob(2));
                     temp.setImagenesBlob(imagenesBlob);
                     tem.add(temp);
                 }catch (IOException | SQLException e) {

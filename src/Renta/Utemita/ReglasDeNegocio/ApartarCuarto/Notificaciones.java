@@ -6,14 +6,14 @@ package Renta.Utemita.ReglasDeNegocio.ApartarCuarto;
  * @version 1.0
  */
 public class Notificaciones {
-    private int idNotificaion;
+    private int idNotificacion;
     private int idAlumno;
     private int idPropiedad;
     private int idCasero;
     private String nombreAlumno;
 
     public Notificaciones(int idNotificaion, int idAlumno, int idPropiedad, int idCasero, String nombreAlumno) {
-        this.idNotificaion = idNotificaion;
+        this.idNotificacion = idNotificaion;
         this.idAlumno = idAlumno;
         this.idPropiedad = idPropiedad;
         this.idCasero = idCasero;
@@ -21,11 +21,11 @@ public class Notificaciones {
     }
 
     public int getIdNotificaion() {
-        return idNotificaion;
+        return idNotificacion;
     }
 
     public void setIdNotificaion(int idNotificaion) {
-        this.idNotificaion = idNotificaion;
+        this.idNotificacion = idNotificaion;
     }
 
     public int getIdAlumno() {

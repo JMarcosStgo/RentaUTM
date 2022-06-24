@@ -1,6 +1,6 @@
     package Renta.Utemita.Presentacion.VentanaRegistroModificacion;
 
-import Renta.Utemita.ReglasDeNegocio.IniciarSesion.IniciarSesion;
+import Renta.Utemita.Presentacion.VentanaLogin.VentanaLogin;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.RegistrarModificarUsuario;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarUsuario.Usuario;
 import javafx.application.Application;
@@ -240,7 +240,7 @@ public class VentanaRegistro extends Application{
                     registrarUsuario(nombre, telefono, correo, contraseña,matricula,tipo);
                     /*se abre la nueva ventana*/
                     if(registro){
-                        IniciarSesion inicio = new IniciarSesion();
+                        VentanaLogin inicio = new VentanaLogin();
                         primaryStage.setX(ancho/6);
                         inicio.start(primaryStage);
                     }
@@ -255,7 +255,7 @@ public class VentanaRegistro extends Application{
         cancelarRegistro.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                IniciarSesion sesion = new IniciarSesion();
+                VentanaLogin sesion = new VentanaLogin();
                 sesion.start(primaryStage);
             }
         });

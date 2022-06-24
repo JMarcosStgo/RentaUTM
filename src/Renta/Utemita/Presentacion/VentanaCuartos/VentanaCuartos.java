@@ -6,7 +6,7 @@ import Renta.Utemita.Presentacion.VentanaRegistroModificacion.VentanaModificacio
 import Renta.Utemita.ReglasDeNegocio.ApartarCuarto.ApartarCuarto;
 import Renta.Utemita.ReglasDeNegocio.ApartarCuarto.Notificaciones;
 import Renta.Utemita.ReglasDeNegocio.Busqueda.Busqueda;
-import Renta.Utemita.ReglasDeNegocio.IniciarSesion.IniciarSesion;
+import Renta.Utemita.Presentacion.VentanaLogin.VentanaLogin;
 import Renta.Utemita.ReglasDeNegocio.RegistrarModificarPropiedad.RegistrarModificarPropiedad;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -64,7 +64,7 @@ import javafx.stage.Stage;
  */
 public class VentanaCuartos extends Application {
     //dimensiones de la ventana
-    double ancho = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+    double ancho = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();//1920,1080
     double altura = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
     InnerShadow shadow = new InnerShadow();
     Label usuarioBienvenida = new Label();
@@ -104,7 +104,7 @@ public class VentanaCuartos extends Application {
         /*lectura del archivo*/
         try {
             ArrayList<String>  ident=leeArchivo("..\\RentaUTM\\src\\Imagenes\\id.txt");
-            System.out.println("ident"+ident.get(1));
+            //System.out.println("ident"+ident.get(1));
             idUsuario=Integer.parseInt(ident.get(0));
             usuarioBienvenida.setText(ident.get(1));
             bienvenidopt3=new Label("Usted a ingresado como ");
@@ -193,7 +193,7 @@ public class VentanaCuartos extends Application {
         sp1.setDisable(false);//no permite que se ajuste el panel
         sp1.setMaxSize(ancho/6,altura);
         sp1.setPadding(new Insets(200,0,00,0));
-        Text modificarProp = new Text("Modificar Propiedad"); 
+        Text modificarProp = new Text("Modificar/Registrar Propiedad"); 
         /*Configuración de la fuente del texto*/
         modificarProp.setFont(Font.font(null, FontWeight.BOLD, 15));     
         //asignando el color
@@ -226,7 +226,7 @@ public class VentanaCuartos extends Application {
         //panel de la derecha
         final StackPane panelDerecho = new StackPane();
         panelDerecho.setStyle("-fx-background-color: #B4E5FC;");
-        panelDerecho.setMaxSize(650,altura);
+        panelDerecho.setMaxSize(700,altura);
         panelDerecho.setDisable(false);
         panelDerecho.setAlignment(Pos.CENTER_LEFT);
         TextField buscador = new TextField();
@@ -254,6 +254,7 @@ public class VentanaCuartos extends Application {
         Label label2 = new Label("Alumnos que han apartado cuartos");
         Font font = Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 12);
         label.setFont(font);
+        label.setMinWidth(100);
         //lista de notificaciones
         ApartarCuarto notificacionesCuarto = new ApartarCuarto();
         ArrayList<Notificaciones> notiTmp=notificacionesCuarto.obtenerNotificaciones(idUsuario);
@@ -265,10 +266,10 @@ public class VentanaCuartos extends Application {
         
         ListView<String> listView = new ListView<String>(names);
         listView.setMaxSize(200, ancho/5);
-        listView.setPadding(new Insets(0,50,0,0));
+        listView.setPadding(new Insets(5,30,0,0));
         //Creando el layout
         VBox layout = new VBox(10);
-        layout.setPadding(new Insets(5,50,0, 0));
+        layout.setPadding(new Insets(5,30,0, 0));
         layout.getChildren().addAll(label,label2, listView);
         layout.setStyle("-fx-background-color: BEIGE");
         /*se agrega el layout al box que va al panel lateral derecho*/
@@ -378,8 +379,8 @@ public class VentanaCuartos extends Application {
                     //Scene escena = new Scene(grid);
                     Stage stage = new Stage();
                     primaryStage.close();
-                    System.out.println("cerrar sesion"+usuarioBienvenida.getText());
-                    IniciarSesion inicio = new IniciarSesion();
+                    //System.out.println("cerrar sesion"+usuarioBienvenida.getText());
+                    VentanaLogin inicio = new VentanaLogin();
                     inicio.start(stage);
                 } catch (Exception e) {
                 }
@@ -505,7 +506,7 @@ public class VentanaCuartos extends Application {
                 //System.out.println("eleccion propiedad info"+eleccionPropiedad.getToken());
                 RegistrarModificarPropiedad rModProp = new RegistrarModificarPropiedad();
                 Propiedad tempo=rModProp.obtenerDatosPropiedad(eleccionPropiedad.getToken());
-                System.out.println("infor de cuartos grid"+tempo.getDisponibilidad());
+                //System.out.println("infor de cuartos grid"+tempo.getDisponibilidad());
                 GridPane infoCuartos = new GridPane();
                 Label descripcionCuarto = new Label(tempo.getDescripcionCuarto());
                 Label precio = new Label(tempo.getPrecio()+"");
@@ -576,7 +577,6 @@ public class VentanaCuartos extends Application {
                            btnInformacion.setOpacity(0);
                        }
                        else{       
-                
                             Stage inicio = new Stage();
                             Group elementosVenEmer= new Group();
                             Popup po = new Popup();

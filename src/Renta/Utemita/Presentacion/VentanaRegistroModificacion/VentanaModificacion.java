@@ -252,7 +252,7 @@ public class VentanaModificacion extends Application{
         sp1.setStyle("-fx-background-color: #B4E5FC;");//fondo del lateral izquieerdo
         sp1.setDisable(false);//no permite que se ajuste el panel
         sp1.setMaxSize(ancho/5,altura);
-        Text modificarProp = new Text("Modificar Propiedad"); 
+        Text modificarProp = new Text("Modificar/Registrar Propiedad"); 
         modificarProp.setFont(Font.font(null, FontWeight.BOLD, 15));     
         modificarProp.setFill(Color.PURPLE); 
         modificarProp.setX(20); 

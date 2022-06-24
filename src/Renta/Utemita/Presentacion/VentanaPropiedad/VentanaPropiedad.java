@@ -216,7 +216,7 @@ public class VentanaPropiedad extends Application{
         
         dImagenes.setStyle("-fx-background-color: #000000;");
         dImagenes.setFont(new Font("Arial",28));
-        Button imagenesP=new Button("Seleccionar 3 Imagenes");
+        Button imagenesP=new Button("Seleccionar imagen");
         imagenesP.setMinWidth(100);
         
         tituloForm.setX(ancho/4);
@@ -430,6 +430,7 @@ public class VentanaPropiedad extends Application{
                 ingresarCodigoPropiedad(token);
            }
         });
+        //imagenes.removeAll(imagenes);
         /*Evento para leer imagenes*/
         imagenesP.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
@@ -444,14 +445,14 @@ public class VentanaPropiedad extends Application{
             // Obtener la imagen seleccionada
             imgFile = fileChooser.showOpenDialog(null);
             //System.out.println("file"+imgFile.getAbsolutePath());
-            if(this.imagenes.size()<3){
+            if(this.imagenes.size()<=1){
                 this.imagenes.add(imgFile.getAbsolutePath());
             }
             }catch(Exception e){
             System.out.println("Error no se ingresaron imagenes"+e.getLocalizedMessage());
             }
         });
-       
+        
         /*Evento para ingresar datos del formulario*/
         ingresar.setMaxWidth(100);
         ingresar.setOnAction(new EventHandler<ActionEvent>() {
@@ -535,6 +536,7 @@ public class VentanaPropiedad extends Application{
         if(codigo==false){
             pane.getChildren().add(tituloForm);
             anchorPane.getChildren().add(grid);
+            imagenes.removeAll(imagenes);
             //System.out.println("token generado"+this.token);
         }/*se carga los datos en el formulario*/
         else{
@@ -549,11 +551,12 @@ public class VentanaPropiedad extends Application{
             lUbicacion.setText(temp.getUbicacion());
             lServicios.setText(temp.getServicios());
             imagenesBlob.add(temp.getImagenesBlob().get(0));
-            imagenesBlob.add(temp.getImagenesBlob().get(1));
-            imagenesBlob.add(temp.getImagenesBlob().get(2));
-            imagenes.add(" ");
-            imagenes.add(" ");
-            imagenes.add(" ");
+            //imagenesBlob.add(temp.getImagenesBlob().get(1));
+            //imagenesBlob.add(temp.getImagenesBlob().get(2));
+            for (int i = 0; i <temp.getImagenesBlob().size(); i++) {
+                imagenes.add(" ");
+            }
+            System.out.println("imagenes tam "+imagenes.size());
             token=temp.getToken();
             //System.out.println("token ingresar prop"+this.token);
             anchorPane.getChildren().add(grid);
@@ -571,15 +574,15 @@ public class VentanaPropiedad extends Application{
      * @param imagenesBlob 
      */
     public void registrarPropiedad(String descripcionCuarto,int precio,String disponibilidad,String ubicacion,String servicios,ArrayList <String> imagenes,String token,ArrayList <Blob> imagenesBlob){
-        //System.out.println("registro propiedad ->>>>>"+descripcionCuarto+"--"+precio+"--"+disponibilidad+"--"+ubicacion+"--"+servicios+"--"+imagenes.size()+"--token: "+token+"--"+imagenesBlob.size());
-        //System.out.println("token registro propiedad"+this.token);
-        //System.out.println("token registrarPropiedad"+token);
-        //System.out.println("codigoregistrarPropiedad"+codigo);
-        
+        System.out.println("registro propiedad ->>>>>"+descripcionCuarto+"--"+precio+"--"+disponibilidad+"--"+ubicacion+"--"+servicios+"--"+imagenes.size()+"--token: "+token+"--"+imagenesBlob.size());
+        System.out.println("token registro propiedad"+this.token);
+        System.out.println("token registrarPropiedad"+token);
+        System.out.println("codigoregistrarPropiedad"+codigo);
+        System.out.println("imagenes blob"+imagenesBlob.size());
         RegistrarModificarPropiedad rMP2 = new RegistrarModificarPropiedad();
         this.datos=rMP2.verificarDatos(descripcionCuarto,precio,disponibilidad,ubicacion,imagenes,servicios);
             
-        //System.out.println("datos regprop"+datos);
+        System.out.println("datos regprop"+datos);
         if(datos==true)
         {   errorRegPropiedad.setOpacity(0);
             RegistrarModificarPropiedad rmp2 = new RegistrarModificarPropiedad();
@@ -602,6 +605,7 @@ public class VentanaPropiedad extends Application{
                 Propiedad temp2=new Propiedad(descripcionCuarto,precio,disponibilidad,ubicacion,servicios,imagenes,token,imagenesBlob,id);
                 //System.out.println("modificar propieadad"+temp2.getDescripcionCuarto()+"--"+temp2.getPrecio()+"--"+temp2.getDisponibilidad()+"--"+temp2.getUbicacion()+"--"+temp2.getServicios()+"--"+imagenes.size()+"--token: "+inputToken.getText()+"--"+imagenesBlob.size()+"id"+temp2.getIdPropiedad());
                 rmp2.modificarPropiedad(temp2);
+                this.imagenes.removeAll(imagenes);
                 this.token=null;
                 id=0;
             }
